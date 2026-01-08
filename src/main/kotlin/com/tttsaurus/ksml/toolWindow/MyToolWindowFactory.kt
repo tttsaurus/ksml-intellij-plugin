@@ -1,4 +1,4 @@
-package com.github.tttsaurus.ksmlintellijplugin.toolWindow
+package com.tttsaurus.ksml.toolWindow
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -8,8 +8,8 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
-import com.github.tttsaurus.ksmlintellijplugin.MyBundle
-import com.github.tttsaurus.ksmlintellijplugin.services.MyProjectService
+import com.tttsaurus.ksml.MyBundle
+import com.tttsaurus.ksml.services.MyProjectService
 import javax.swing.JButton
 
 

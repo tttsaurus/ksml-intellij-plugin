@@ -1,4 +1,4 @@
-package com.github.tttsaurus.ksmlintellijplugin
+package com.tttsaurus.ksml
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls

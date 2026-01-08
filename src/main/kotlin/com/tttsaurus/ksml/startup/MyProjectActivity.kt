@@ -1,4 +1,4 @@
-package com.github.tttsaurus.ksmlintellijplugin.startup
+package com.tttsaurus.ksml.startup
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project

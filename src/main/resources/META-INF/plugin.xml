@@ -9,7 +9,7 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.tttsaurus.ksmlintellijplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.tttsaurus.ksmlintellijplugin.startup.MyProjectActivity" />
+        <toolWindow factoryClass="com.tttsaurus.ksml.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <postStartupActivity implementation="com.tttsaurus.ksml.startup.MyProjectActivity" />
     </extensions>
 </idea-plugin>

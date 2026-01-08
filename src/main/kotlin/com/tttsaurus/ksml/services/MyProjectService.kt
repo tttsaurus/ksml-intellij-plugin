@@ -1,9 +1,9 @@
-package com.github.tttsaurus.ksmlintellijplugin.services
+package com.tttsaurus.ksml.services
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.github.tttsaurus.ksmlintellijplugin.MyBundle
+import com.tttsaurus.ksml.MyBundle
 
 @Service(Service.Level.PROJECT)
 class MyProjectService(project: Project) {
