@@ -1,1 +1,10 @@
-@module a
+@module asd
+@gl_version asd
+
+@gl_requires 110
+void func() {
+asdasd
+asd
+asdas
+dasd
+}
