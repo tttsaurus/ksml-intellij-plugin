@@ -11,14 +11,14 @@ import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.tttsaurus.ksml.grammar.psi.*;
 
-public class GlslStructImpl extends ASTWrapperPsiElement implements GlslStruct {
+public class AnyChunkImpl extends ASTWrapperPsiElement implements AnyChunk {
 
-  public GlslStructImpl(@NotNull ASTNode node) {
+  public AnyChunkImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull Visitor visitor) {
-    visitor.visitGlslStruct(this);
+    visitor.visitAnyChunk(this);
   }
 
   @Override
@@ -28,15 +28,21 @@ public class GlslStructImpl extends ASTWrapperPsiElement implements GlslStruct {
   }
 
   @Override
-  @NotNull
-  public GlslChunk getGlslChunk() {
-    return findNotNullChildByClass(GlslChunk.class);
+  @Nullable
+  public PsiElement getGlslSymbol() {
+    return findChildByType(GLSL_SYMBOL);
   }
 
   @Override
-  @NotNull
-  public PsiElement getGlslStructHead() {
-    return findNotNullChildByType(GLSL_STRUCT_HEAD);
+  @Nullable
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNumber() {
+    return findChildByType(NUMBER);
   }
 
 }

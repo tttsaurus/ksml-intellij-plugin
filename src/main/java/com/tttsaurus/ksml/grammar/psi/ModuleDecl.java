@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface ModuleDecl extends PsiElement {
 
-  @NotNull
+  @Nullable
   PsiElement getIdentifier();
 
 }

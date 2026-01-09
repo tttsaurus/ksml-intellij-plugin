@@ -28,9 +28,9 @@ public class GlRequiresDeclImpl extends ASTWrapperPsiElement implements GlRequir
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getNumber() {
-    return findNotNullChildByType(NUMBER);
+    return findChildByType(NUMBER);
   }
 
 }

@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GlslFunction extends PsiElement {
+public interface AnyChunk extends PsiElement {
 
-  @NotNull
-  GlslChunk getGlslChunk();
+  @Nullable
+  PsiElement getGlslSymbol();
 
-  @NotNull
-  PsiElement getGlslFunctionHead();
+  @Nullable
+  PsiElement getIdentifier();
+
+  @Nullable
+  PsiElement getNumber();
 
 }

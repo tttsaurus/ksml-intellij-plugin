@@ -28,9 +28,9 @@ public class GlVersionDeclImpl extends ASTWrapperPsiElement implements GlVersion
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getNumber() {
-    return findNotNullChildByType(NUMBER);
+    return findChildByType(NUMBER);
   }
 
 }

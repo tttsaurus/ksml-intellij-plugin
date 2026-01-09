@@ -28,9 +28,9 @@ public class FeatureDeclImpl extends ASTWrapperPsiElement implements FeatureDecl
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
+    return findChildByType(IDENTIFIER);
   }
 
 }

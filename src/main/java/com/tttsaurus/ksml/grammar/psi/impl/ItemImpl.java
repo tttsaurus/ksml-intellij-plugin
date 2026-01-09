@@ -29,20 +29,8 @@ public class ItemImpl extends ASTWrapperPsiElement implements Item {
 
   @Override
   @Nullable
-  public GlslChunk getGlslChunk() {
-    return findChildByClass(GlslChunk.class);
-  }
-
-  @Override
-  @Nullable
-  public GlslFunction getGlslFunction() {
-    return findChildByClass(GlslFunction.class);
-  }
-
-  @Override
-  @Nullable
-  public GlslStruct getGlslStruct() {
-    return findChildByClass(GlslStruct.class);
+  public AnyChunk getAnyChunk() {
+    return findChildByClass(AnyChunk.class);
   }
 
   @Override

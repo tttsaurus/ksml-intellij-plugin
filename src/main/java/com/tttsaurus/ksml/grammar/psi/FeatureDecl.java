@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface FeatureDecl extends PsiElement {
 
-  @NotNull
+  @Nullable
   PsiElement getIdentifier();
 
 }

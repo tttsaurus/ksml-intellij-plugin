@@ -3,6 +3,24 @@
 // asd
 
 @gl_requires 110
-void func() {
-put anything here
+
+@gl_requires 110
+
+@feature a
+
+asd
+
+@gl_requires asd
+asd
+
+aasd
+
+void func()
+{
+// adsasd
+//asd
+
 }
+
+@gl_requires 12300123
+

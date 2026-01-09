@@ -8,12 +8,9 @@ import com.tttsaurus.ksml.grammar.psi.impl.*;
 
 public interface KsmlTypes {
 
+  IElementType ANY_CHUNK = new IElementType("ANY_CHUNK", null);
   IElementType EXPORT_DECL = new IElementType("EXPORT_DECL", null);
   IElementType FEATURE_DECL = new IElementType("FEATURE_DECL", null);
-  IElementType GLSL_CHUNK = new IElementType("GLSL_CHUNK", null);
-  IElementType GLSL_FUNCTION = new IElementType("GLSL_FUNCTION", null);
-  IElementType GLSL_STRUCT = new IElementType("GLSL_STRUCT", null);
-  IElementType GLSL_TOKEN = new IElementType("GLSL_TOKEN", null);
   IElementType GL_REQUIRES_DECL = new IElementType("GL_REQUIRES_DECL", null);
   IElementType GL_VERSION_DECL = new IElementType("GL_VERSION_DECL", null);
   IElementType ITEM = new IElementType("ITEM", null);
@@ -25,8 +22,6 @@ public interface KsmlTypes {
   IElementType COMMENT = new IElementType("COMMENT", null);
   IElementType EXPORT = new IElementType("export", null);
   IElementType FEATURE = new IElementType("feature", null);
-  IElementType GLSL_FUNCTION_HEAD = new IElementType("GLSL_FUNCTION_HEAD", null);
-  IElementType GLSL_STRUCT_HEAD = new IElementType("GLSL_STRUCT_HEAD", null);
   IElementType GLSL_SYMBOL = new IElementType("GLSL_SYMBOL", null);
   IElementType GL_REQUIRES = new IElementType("gl_requires", null);
   IElementType GL_VERSION = new IElementType("gl_version", null);
@@ -38,23 +33,14 @@ public interface KsmlTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == EXPORT_DECL) {
+      if (type == ANY_CHUNK) {
+        return new AnyChunkImpl(node);
+      }
+      else if (type == EXPORT_DECL) {
         return new ExportDeclImpl(node);
       }
       else if (type == FEATURE_DECL) {
         return new FeatureDeclImpl(node);
-      }
-      else if (type == GLSL_CHUNK) {
-        return new GlslChunkImpl(node);
-      }
-      else if (type == GLSL_FUNCTION) {
-        return new GlslFunctionImpl(node);
-      }
-      else if (type == GLSL_STRUCT) {
-        return new GlslStructImpl(node);
-      }
-      else if (type == GLSL_TOKEN) {
-        return new GlslTokenImpl(node);
       }
       else if (type == GL_REQUIRES_DECL) {
         return new GlRequiresDeclImpl(node);

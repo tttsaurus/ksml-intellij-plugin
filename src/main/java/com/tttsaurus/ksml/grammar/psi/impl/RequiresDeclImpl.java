@@ -28,9 +28,9 @@ public class RequiresDeclImpl extends ASTWrapperPsiElement implements RequiresDe
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getIdentifier() {
-    return findNotNullChildByType(IDENTIFIER);
+    return findChildByType(IDENTIFIER);
   }
 
 }

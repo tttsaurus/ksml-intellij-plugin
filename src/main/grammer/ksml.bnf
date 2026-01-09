@@ -14,9 +14,6 @@
     GL_REQUIRES='gl_requires'
     FEATURE='feature'
 
-    GLSL_FUNCTION_HEAD='regexp:[A-Za-z_][A-Za-z_0-9]*[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\([^\n\r)]*\)[ \t]*'
-    GLSL_STRUCT_HEAD='regexp:struct[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*'
-
     IDENTIFIER='regexp:[A-Za-z_][A-Za-z_0-9]*'
     NUMBER='regexp:[0-9]+'
 
@@ -29,17 +26,9 @@
 
 file ::= item*
 
-item ::= ksml_annotation
-        | glsl_function
-        | glsl_struct
-        | glsl_chunk
+item ::= ksml_annotation | any_chunk
 
-glsl_function ::= GLSL_FUNCTION_HEAD glsl_chunk
-glsl_struct ::= GLSL_STRUCT_HEAD glsl_chunk
-glsl_chunk ::= glsl_token+
-
-glsl_token ::= GLSL_SYMBOL
-            | IDENTIFIER
+any_chunk ::= IDENTIFIER | NUMBER | GLSL_SYMBOL
 
 ksml_annotation ::= module_decl
                   | requires_decl
@@ -50,14 +39,14 @@ ksml_annotation ::= module_decl
 
 
 
-module_decl ::= AT MODULE IDENTIFIER
+module_decl ::= AT MODULE IDENTIFIER {pin=1}
 
-requires_decl ::= AT REQUIRES IDENTIFIER
+requires_decl ::= AT REQUIRES IDENTIFIER {pin=1}
 
-gl_version_decl ::= AT GL_VERSION NUMBER
+gl_version_decl ::= AT GL_VERSION NUMBER {pin=1}
 
-gl_requires_decl ::= AT GL_REQUIRES NUMBER
+gl_requires_decl ::= AT GL_REQUIRES NUMBER {pin=1}
 
-feature_decl ::= AT FEATURE IDENTIFIER
+feature_decl ::= AT FEATURE IDENTIFIER {pin=1}
 
-export_decl ::= AT EXPORT IDENTIFIER?
+export_decl ::= AT EXPORT IDENTIFIER? {pin=1}

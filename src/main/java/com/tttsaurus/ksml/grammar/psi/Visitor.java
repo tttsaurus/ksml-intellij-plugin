@@ -7,6 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public class Visitor extends PsiElementVisitor {
 
+  public void visitAnyChunk(@NotNull AnyChunk o) {
+    visitPsiElement(o);
+  }
+
   public void visitExportDecl(@NotNull ExportDecl o) {
     visitPsiElement(o);
   }
@@ -20,22 +24,6 @@ public class Visitor extends PsiElementVisitor {
   }
 
   public void visitGlVersionDecl(@NotNull GlVersionDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitGlslChunk(@NotNull GlslChunk o) {
-    visitPsiElement(o);
-  }
-
-  public void visitGlslFunction(@NotNull GlslFunction o) {
-    visitPsiElement(o);
-  }
-
-  public void visitGlslStruct(@NotNull GlslStruct o) {
-    visitPsiElement(o);
-  }
-
-  public void visitGlslToken(@NotNull GlslToken o) {
     visitPsiElement(o);
   }
 

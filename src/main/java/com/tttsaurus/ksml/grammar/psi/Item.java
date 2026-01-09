@@ -8,13 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface Item extends PsiElement {
 
   @Nullable
-  GlslChunk getGlslChunk();
-
-  @Nullable
-  GlslFunction getGlslFunction();
-
-  @Nullable
-  GlslStruct getGlslStruct();
+  AnyChunk getAnyChunk();
 
   @Nullable
   KsmlAnnotation getKsmlAnnotation();

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GlVersionDecl extends PsiElement {
 
-  @NotNull
+  @Nullable
   PsiElement getNumber();
 
 }
