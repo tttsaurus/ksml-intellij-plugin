@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.tttsaurus.ksml.grammar_mixin.AnyChunkImplMixin;
 import com.tttsaurus.ksml.grammar.psi.*;
 
-public class AnyChunkImpl extends ASTWrapperPsiElement implements AnyChunk {
+public class AnyChunkImpl extends AnyChunkImplMixin implements AnyChunk {
 
   public AnyChunkImpl(@NotNull ASTNode node) {
     super(node);

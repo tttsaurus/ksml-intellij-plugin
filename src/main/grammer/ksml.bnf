@@ -28,14 +28,18 @@ file ::= item*
 
 item ::= ksml_annotation | any_chunk
 
-any_chunk ::= IDENTIFIER | NUMBER | GLSL_SYMBOL
-
 ksml_annotation ::= module_decl
                   | requires_decl
                   | gl_version_decl
                   | gl_requires_decl
                   | export_decl
                   | feature_decl
+
+any_chunk ::= IDENTIFIER | NUMBER | GLSL_SYMBOL
+{
+  implements = "com.intellij.psi.PsiLanguageInjectionHost"
+  mixin = "com.tttsaurus.ksml.grammar_mixin.AnyChunkImplMixin"
+}
 
 
 

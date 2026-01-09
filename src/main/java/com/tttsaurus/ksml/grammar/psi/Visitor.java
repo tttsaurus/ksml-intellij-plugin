@@ -4,11 +4,12 @@ package com.tttsaurus.ksml.grammar.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiLanguageInjectionHost;
 
 public class Visitor extends PsiElementVisitor {
 
   public void visitAnyChunk(@NotNull AnyChunk o) {
-    visitPsiElement(o);
+    visitPsiLanguageInjectionHost(o);
   }
 
   public void visitExportDecl(@NotNull ExportDecl o) {
@@ -41,6 +42,10 @@ public class Visitor extends PsiElementVisitor {
 
   public void visitRequiresDecl(@NotNull RequiresDecl o) {
     visitPsiElement(o);
+  }
+
+  public void visitPsiLanguageInjectionHost(@NotNull PsiLanguageInjectionHost o) {
+    visitElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {
