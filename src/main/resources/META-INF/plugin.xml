@@ -17,6 +17,7 @@
         <lang.fileViewProviderFactory language="KSML" implementationClass="com.tttsaurus.ksml.view.KsmlGlslViewProviderFactory"/>
 
         <languageInjector implementation="com.tttsaurus.ksml.embed.KsmlInGlslInjector"/>
+        <annotator language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.annotator.KiGImportAnnotator"/>
         <lang.parserDefinition language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.parser.KiGParserDefinition"/>
 <!--        <lang.syntaxHighlighterFactory language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.highlight.KsmlSyntaxHighlighterFactory"/>-->
 
