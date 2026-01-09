@@ -9,7 +9,7 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.tttsaurus.ksml.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <toolWindow factoryClass="com.tttsaurus.ksml.tool_window.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.tttsaurus.ksml.startup.MyProjectActivity"/>
 
         <fileType name="KSML" language="KSML" implementationClass="com.tttsaurus.ksml.KsmlFileTypeDef"/>

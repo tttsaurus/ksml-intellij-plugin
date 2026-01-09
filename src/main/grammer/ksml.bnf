@@ -1,0 +1,65 @@
+{
+  parserClass="com.tttsaurus.ksml.grammar.KsmlParser"
+  psiPackage="com.tttsaurus.ksml.grammar.psi"
+  psiImplPackage="com.tttsaurus.ksml.grammar.psi.impl"
+  elementTypeHolderClass="com.tttsaurus.ksml.grammar.psi.KsmlTypes"
+  tokenTypeClass="com.tttsaurus.ksml.grammar.psi.KsmlTokenType"
+
+  tokens = [
+    AT='@'
+
+    MODULE='module'
+    REQUIRES='requires'
+    EXPORT='export'
+    GL_VERSION='gl_version'
+    GL_REQUIRES='gl_requires'
+    FEATURE='feature'
+
+    GLSL_FUNCTION_HEAD='regexp:[A-Za-z_][A-Za-z_0-9]*[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\([^\n\r)]*\)[ \t]*\{'
+    GLSL_STRUCT_HEAD='regexp:struct[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\{'
+
+    IDENTIFIER='regexp:[A-Za-z_][A-Za-z_0-9]*'
+    NUMBER='regexp:[0-9]+'
+
+    WHITE_SPACE='regexp:[ \t\r\n]+'
+    COMMENT='regexp://[^\n]*|/\*([^*]|\*+[^*/])*\*+/'
+
+    ANY='regexp:[^@A-Za-z_0-9]'
+  ]
+}
+
+file ::= item*
+
+item ::= ksml_annotation
+        | glsl_function
+        | glsl_struct
+        | glsl_chunk
+
+glsl_function ::= GLSL_FUNCTION_HEAD glsl_chunk
+glsl_struct ::= GLSL_STRUCT_HEAD glsl_chunk
+glsl_chunk ::= glsl_token+
+
+glsl_token ::= NUMBER
+            | IDENTIFIER
+            | ANY
+
+ksml_annotation ::= module_decl
+                  | requires_decl
+                  | gl_version_decl
+                  | gl_requires_decl
+                  | export_decl
+                  | feature_decl
+
+
+
+module_decl ::= AT MODULE IDENTIFIER
+
+requires_decl ::= AT REQUIRES IDENTIFIER
+
+gl_version_decl ::= AT GL_VERSION NUMBER
+
+gl_requires_decl ::= AT GL_REQUIRES NUMBER
+
+feature_decl ::= AT FEATURE IDENTIFIER
+
+export_decl ::= AT EXPORT IDENTIFIER?

@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.toolWindow
+package com.tttsaurus.ksml.tool_window
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger

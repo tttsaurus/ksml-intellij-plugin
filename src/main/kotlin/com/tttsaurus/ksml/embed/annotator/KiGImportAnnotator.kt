@@ -19,7 +19,7 @@ class KiGImportAnnotator : Annotator {
         if (next == null || next.node.elementType != KiGTokenTypes.IDENT) {
             holder.newAnnotation(
                 HighlightSeverity.ERROR,
-                "Missing package name after @import"
+                "Missing module name after @import"
             )
                 .range(element.textRange)
                 .create()

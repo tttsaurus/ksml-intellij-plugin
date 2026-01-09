@@ -1,4 +1,5 @@
-// @import abc
+// @import test
+// @import test
 
 #version 330 core
 
