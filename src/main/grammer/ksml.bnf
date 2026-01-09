@@ -3,7 +3,6 @@
   psiPackage="com.tttsaurus.ksml.grammar.psi"
   psiImplPackage="com.tttsaurus.ksml.grammar.psi.impl"
   elementTypeHolderClass="com.tttsaurus.ksml.grammar.psi.KsmlTypes"
-  tokenTypeClass="com.tttsaurus.ksml.grammar.psi.KsmlTokenType"
 
   tokens = [
     AT='@'

@@ -21,19 +21,19 @@ public interface KsmlTypes {
   IElementType MODULE_DECL = new IElementType("MODULE_DECL", null);
   IElementType REQUIRES_DECL = new IElementType("REQUIRES_DECL", null);
 
-  IElementType ANY = new KsmlTokenType("ANY");
-  IElementType AT = new KsmlTokenType("@");
-  IElementType COMMENT = new KsmlTokenType("COMMENT");
-  IElementType EXPORT = new KsmlTokenType("export");
-  IElementType FEATURE = new KsmlTokenType("feature");
-  IElementType GLSL_FUNCTION_HEAD = new KsmlTokenType("GLSL_FUNCTION_HEAD");
-  IElementType GLSL_STRUCT_HEAD = new KsmlTokenType("GLSL_STRUCT_HEAD");
-  IElementType GL_REQUIRES = new KsmlTokenType("gl_requires");
-  IElementType GL_VERSION = new KsmlTokenType("gl_version");
-  IElementType IDENTIFIER = new KsmlTokenType("IDENTIFIER");
-  IElementType MODULE = new KsmlTokenType("module");
-  IElementType NUMBER = new KsmlTokenType("NUMBER");
-  IElementType REQUIRES = new KsmlTokenType("requires");
+  IElementType ANY = new IElementType("ANY", null);
+  IElementType AT = new IElementType("@", null);
+  IElementType COMMENT = new IElementType("COMMENT", null);
+  IElementType EXPORT = new IElementType("export", null);
+  IElementType FEATURE = new IElementType("feature", null);
+  IElementType GLSL_FUNCTION_HEAD = new IElementType("GLSL_FUNCTION_HEAD", null);
+  IElementType GLSL_STRUCT_HEAD = new IElementType("GLSL_STRUCT_HEAD", null);
+  IElementType GL_REQUIRES = new IElementType("gl_requires", null);
+  IElementType GL_VERSION = new IElementType("gl_version", null);
+  IElementType IDENTIFIER = new IElementType("IDENTIFIER", null);
+  IElementType MODULE = new IElementType("module", null);
+  IElementType NUMBER = new IElementType("NUMBER", null);
+  IElementType REQUIRES = new IElementType("requires", null);
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
