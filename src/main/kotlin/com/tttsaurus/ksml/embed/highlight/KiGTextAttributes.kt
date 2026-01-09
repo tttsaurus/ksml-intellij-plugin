@@ -1,0 +1,18 @@
+package com.tttsaurus.ksml.embed.highlight
+
+import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
+import com.intellij.openapi.editor.colors.TextAttributesKey
+
+object KiGTextAttributes {
+    val IMPORT =
+        TextAttributesKey.createTextAttributesKey(
+            "KIG_IMPORT",
+            DefaultLanguageHighlighterColors.KEYWORD
+        )
+
+    val IDENT =
+        TextAttributesKey.createTextAttributesKey(
+            "KSML_IDENT",
+            DefaultLanguageHighlighterColors.IDENTIFIER
+        )
+}

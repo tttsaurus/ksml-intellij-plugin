@@ -12,7 +12,6 @@ import com.tttsaurus.ksml.MyBundle
 import com.tttsaurus.ksml.services.MyProjectService
 import javax.swing.JButton
 
-
 class MyToolWindowFactory : ToolWindowFactory {
 
     init {

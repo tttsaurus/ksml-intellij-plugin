@@ -1,0 +1,10 @@
+package com.tttsaurus.ksml
+
+import com.intellij.openapi.fileTypes.LanguageFileType
+
+open class KsmlFileTypeDef : LanguageFileType(KsmlLanguage) {
+    override fun getName() = "KSML"
+    override fun getDescription() = "Kirino shader meta language"
+    override fun getDefaultExtension() = "ksml"
+    override fun getIcon() = null
+}
