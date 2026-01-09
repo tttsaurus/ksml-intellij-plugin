@@ -21,13 +21,13 @@ public interface KsmlTypes {
   IElementType MODULE_DECL = new IElementType("MODULE_DECL", null);
   IElementType REQUIRES_DECL = new IElementType("REQUIRES_DECL", null);
 
-  IElementType ANY = new IElementType("ANY", null);
   IElementType AT = new IElementType("@", null);
   IElementType COMMENT = new IElementType("COMMENT", null);
   IElementType EXPORT = new IElementType("export", null);
   IElementType FEATURE = new IElementType("feature", null);
   IElementType GLSL_FUNCTION_HEAD = new IElementType("GLSL_FUNCTION_HEAD", null);
   IElementType GLSL_STRUCT_HEAD = new IElementType("GLSL_STRUCT_HEAD", null);
+  IElementType GLSL_SYMBOL = new IElementType("GLSL_SYMBOL", null);
   IElementType GL_REQUIRES = new IElementType("gl_requires", null);
   IElementType GL_VERSION = new IElementType("gl_version", null);
   IElementType IDENTIFIER = new IElementType("IDENTIFIER", null);

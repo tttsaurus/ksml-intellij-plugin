@@ -25,13 +25,13 @@ import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
 EOL=\R
 WHITE_SPACE=\s+
 
-GLSL_FUNCTION_HEAD=[A-Za-z_][A-Za-z_0-9]*[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\([^\n\r)]*\)[ \t]*\{
-GLSL_STRUCT_HEAD=struct[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\{
+GLSL_FUNCTION_HEAD=[A-Za-z_][A-Za-z_0-9]*[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\([^\n\r)]*\)[ \t]*
+GLSL_STRUCT_HEAD=struct[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*
 IDENTIFIER=[A-Za-z_][A-Za-z_0-9]*
 NUMBER=[0-9]+
 WHITE_SPACE=[ \t\r\n]+
 COMMENT="//"[^\n]*|"/"\*([^*]|\*+[^*/])*\*+"/"
-ANY=[^@A-Za-z_0-9]
+GLSL_SYMBOL=[{}();,=.+\-*/]
 
 %%
 <YYINITIAL> {
@@ -51,7 +51,7 @@ ANY=[^@A-Za-z_0-9]
   {NUMBER}                   { return NUMBER; }
   {WHITE_SPACE}              { return WHITE_SPACE; }
   {COMMENT}                  { return COMMENT; }
-  {ANY}                      { return ANY; }
+  {GLSL_SYMBOL}              { return GLSL_SYMBOL; }
 
 }
 

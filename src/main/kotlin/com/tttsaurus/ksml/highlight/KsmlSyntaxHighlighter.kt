@@ -35,6 +35,8 @@ class KsmlSyntaxHighlighter : SyntaxHighlighter {
 
             KsmlTypes.NUMBER -> NUMBER_KEYS
 
+            KsmlTypes.COMMENT -> COMMENT_KEYS
+
             else -> EMPTY_KEYS
         }
 
@@ -64,6 +66,13 @@ class KsmlSyntaxHighlighter : SyntaxHighlighter {
             TextAttributesKey.createTextAttributesKey(
                 "KSML_NUMBER",
                 DefaultLanguageHighlighterColors.NUMBER
+            )
+        )
+
+        private val COMMENT_KEYS = arrayOf(
+            TextAttributesKey.createTextAttributesKey(
+                "KSML_COMMENT",
+                DefaultLanguageHighlighterColors.LINE_COMMENT
             )
         )
 

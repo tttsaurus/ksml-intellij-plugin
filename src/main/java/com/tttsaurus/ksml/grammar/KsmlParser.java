@@ -107,6 +107,7 @@ public class KsmlParser implements PsiParser, LightPsiParser {
   // glsl_token+
   public static boolean glsl_chunk(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "glsl_chunk")) return false;
+    if (!nextTokenIs(b, "<glsl chunk>", GLSL_SYMBOL, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, GLSL_CHUNK, "<glsl chunk>");
     r = glsl_token(b, l + 1);
@@ -146,16 +147,15 @@ public class KsmlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NUMBER
+  // GLSL_SYMBOL
   //             | IDENTIFIER
-  //             | ANY
   public static boolean glsl_token(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "glsl_token")) return false;
+    if (!nextTokenIs(b, "<glsl token>", GLSL_SYMBOL, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, GLSL_TOKEN, "<glsl token>");
-    r = consumeToken(b, NUMBER);
+    r = consumeToken(b, GLSL_SYMBOL);
     if (!r) r = consumeToken(b, IDENTIFIER);
-    if (!r) r = consumeToken(b, ANY);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

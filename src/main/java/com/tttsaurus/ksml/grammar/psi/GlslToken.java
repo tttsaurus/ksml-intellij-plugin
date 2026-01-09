@@ -8,12 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GlslToken extends PsiElement {
 
   @Nullable
-  PsiElement getAny();
+  PsiElement getGlslSymbol();
 
   @Nullable
   PsiElement getIdentifier();
-
-  @Nullable
-  PsiElement getNumber();
 
 }

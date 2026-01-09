@@ -14,8 +14,8 @@
     GL_REQUIRES='gl_requires'
     FEATURE='feature'
 
-    GLSL_FUNCTION_HEAD='regexp:[A-Za-z_][A-Za-z_0-9]*[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\([^\n\r)]*\)[ \t]*\{'
-    GLSL_STRUCT_HEAD='regexp:struct[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\{'
+    GLSL_FUNCTION_HEAD='regexp:[A-Za-z_][A-Za-z_0-9]*[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*\([^\n\r)]*\)[ \t]*'
+    GLSL_STRUCT_HEAD='regexp:struct[ \t]+[A-Za-z_][A-Za-z_0-9]*[ \t]*'
 
     IDENTIFIER='regexp:[A-Za-z_][A-Za-z_0-9]*'
     NUMBER='regexp:[0-9]+'
@@ -23,7 +23,7 @@
     WHITE_SPACE='regexp:[ \t\r\n]+'
     COMMENT='regexp://[^\n]*|/\*([^*]|\*+[^*/])*\*+/'
 
-    ANY='regexp:[^@A-Za-z_0-9]'
+    GLSL_SYMBOL='regexp:[{}();,=.+\-*/]'
   ]
 }
 
@@ -38,9 +38,8 @@ glsl_function ::= GLSL_FUNCTION_HEAD glsl_chunk
 glsl_struct ::= GLSL_STRUCT_HEAD glsl_chunk
 glsl_chunk ::= glsl_token+
 
-glsl_token ::= NUMBER
+glsl_token ::= GLSL_SYMBOL
             | IDENTIFIER
-            | ANY
 
 ksml_annotation ::= module_decl
                   | requires_decl

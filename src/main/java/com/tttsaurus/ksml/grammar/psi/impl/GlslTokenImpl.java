@@ -29,20 +29,14 @@ public class GlslTokenImpl extends ASTWrapperPsiElement implements GlslToken {
 
   @Override
   @Nullable
-  public PsiElement getAny() {
-    return findChildByType(ANY);
+  public PsiElement getGlslSymbol() {
+    return findChildByType(GLSL_SYMBOL);
   }
 
   @Override
   @Nullable
   public PsiElement getIdentifier() {
     return findChildByType(IDENTIFIER);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNumber() {
-    return findChildByType(NUMBER);
   }
 
 }
