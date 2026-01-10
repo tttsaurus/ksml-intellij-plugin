@@ -43,8 +43,6 @@ class KsmlParserDefinition : ParserDefinition {
         TokenSet.EMPTY
 
     override fun createElement(node: ASTNode): PsiElement {
-        LOGGER.info("KsmlParserDefinition Debug: " + node.text)
-
         return KsmlTypes.Factory.createElement(node)
     }
 

@@ -32,8 +32,6 @@ class KsmlInGlslInjector : LanguageInjector {
         val end = raw.indexOfLast { !it.isWhitespace() } + 1
         if (end <= index) return
 
-        LOGGER.info("KsmlInGlslInjector Debug: " + raw.substring(index, end))
-
         places.addPlace(
             KiGLanguage.INSTANCE,
             TextRange(index, end),

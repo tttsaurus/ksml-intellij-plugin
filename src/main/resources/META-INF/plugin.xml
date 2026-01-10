@@ -26,9 +26,9 @@
                 language="KSML"
                 implementationClass="com.tttsaurus.ksml.highlight.KsmlSyntaxHighlighterFactory"/>
 
-        <annotator language="KSML" implementationClass="com.tttsaurus.ksml.annotator.KsmlTestAnnotator"/>
+<!--        <annotator language="KSML" implementationClass="com.tttsaurus.ksml.annotator.KsmlTestAnnotator"/>-->
 
-        <multiHostInjector implementation="com.tttsaurus.ksml.embed.GlslInKsmlInjector"/>
+        <languageInjector implementation="com.tttsaurus.ksml.embed.GlslInKsmlInjector"/>
         <languageInjector implementation="com.tttsaurus.ksml.embed.KsmlInGlslInjector"/>
         <annotator language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.annotator.KiGImportAnnotator"/>
         <lang.parserDefinition language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.parser.KiGParserDefinition"/>

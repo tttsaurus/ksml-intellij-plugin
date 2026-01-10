@@ -5,9 +5,8 @@
 
 @gl_requires 110
 /*
-asdasd
-asd
-as
-asd
-asddd
+void func() {
+    int a = 1;
+}
 */
+
