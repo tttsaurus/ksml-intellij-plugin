@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.embed
+package com.tttsaurus.ksml.language.embed_lang
 
 import com.intellij.lang.Language
 

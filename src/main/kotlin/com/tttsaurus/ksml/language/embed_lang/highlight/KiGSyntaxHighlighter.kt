@@ -1,12 +1,12 @@
-package com.tttsaurus.ksml.language.embed.highlight
+package com.tttsaurus.ksml.language.embed_lang.highlight
 
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.psi.tree.IElementType
-import com.tttsaurus.ksml.language.embed.lexer.KiGLexer
-import com.tttsaurus.ksml.language.embed.lexer.KiGTokenTypes
+import com.tttsaurus.ksml.language.embed_lang.lexer.KiGLexer
+import com.tttsaurus.ksml.language.embed_lang.KiGTypes
 
 class KiGSyntaxHighlighter : SyntaxHighlighter {
 
@@ -20,8 +20,8 @@ class KiGSyntaxHighlighter : SyntaxHighlighter {
 
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
         when (tokenType) {
-            KiGTokenTypes.IMPORT -> arrayOf(KiGTextAttributes.IMPORT)
-            KiGTokenTypes.IDENT -> arrayOf(KiGTextAttributes.IDENT)
+            KiGTypes.IMPORT -> arrayOf(KiGTextAttributes.IMPORT)
+            KiGTypes.IDENT -> arrayOf(KiGTextAttributes.IDENT)
             else -> TextAttributesKey.EMPTY_ARRAY
         }
 }

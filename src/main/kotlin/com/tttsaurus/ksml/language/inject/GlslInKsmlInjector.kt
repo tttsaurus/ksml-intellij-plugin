@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.embed.inject
+package com.tttsaurus.ksml.language.inject
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange

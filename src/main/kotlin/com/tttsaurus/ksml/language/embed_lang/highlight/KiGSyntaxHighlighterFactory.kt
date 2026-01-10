@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.embed.highlight
+package com.tttsaurus.ksml.language.embed_lang.highlight
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory

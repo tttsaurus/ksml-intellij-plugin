@@ -34,8 +34,8 @@ class GlslEditorListener : EditorFactoryListener {
 
         if (file.fileType.defaultExtension != "glsl") return
 
-        disposeOverlays(editor)
-        installOverlays(editor)
+        disposeRenderers(editor)
+        installRenderers(editor)
 
         LOGGER.info("GlslEditorListener: custom renderers installed")
     }
@@ -43,7 +43,7 @@ class GlslEditorListener : EditorFactoryListener {
     override fun editorReleased(event: EditorFactoryEvent) {
         val editor = event.editor
 
-        disposeOverlays(editor)
+        disposeRenderers(editor)
 
         LOGGER.info("GlslEditorListener: custom renderers disposed")
     }
@@ -87,7 +87,7 @@ class GlslEditorListener : EditorFactoryListener {
         list.add(highlighter)
     }
 
-    private fun installOverlays(editor: Editor) {
+    private fun installRenderers(editor: Editor) {
         val inlayList = editor.getUserData(GLSL_INLAYS_KEY)
             ?: mutableListOf<Inlay<*>>().also { editor.putUserData(GLSL_INLAYS_KEY, it) }
 
@@ -114,7 +114,7 @@ class GlslEditorListener : EditorFactoryListener {
         )
     }
 
-    private fun disposeOverlays(editor: Editor) {
+    private fun disposeRenderers(editor: Editor) {
         editor.getUserData(GLSL_INLAYS_KEY)?.let { list ->
             for (i in list.size - 1 downTo 0) {
                 Disposer.dispose(list[i])

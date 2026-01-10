@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.embed.annotator
+package com.tttsaurus.ksml.language.embed_lang.annotator
 
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.AnnotationHolder
@@ -7,17 +7,17 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiTreeUtil
 import com.tttsaurus.ksml.KsmlBundle
-import com.tttsaurus.ksml.language.embed.lexer.KiGTokenTypes
+import com.tttsaurus.ksml.language.embed_lang.KiGTypes
 
 class KiGImportAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return
-        if (node.elementType != KiGTokenTypes.IMPORT) return
+        if (node.elementType != KiGTypes.IMPORT) return
 
         val next = nextNonWhitespaceLeaf(element)
 
-        if (next == null || next.node.elementType != KiGTokenTypes.IDENT) {
+        if (next == null || next.node.elementType != KiGTypes.IDENT) {
             holder.newAnnotation(
                 HighlightSeverity.ERROR,
                 KsmlBundle.message("KsmlInGlsl.importError")

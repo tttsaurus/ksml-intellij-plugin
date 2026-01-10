@@ -1,9 +1,10 @@
-package com.tttsaurus.ksml.language.embed.lexer
+package com.tttsaurus.ksml.language.embed_lang.lexer
 
 import com.intellij.lexer.LexerBase
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
+import com.tttsaurus.ksml.language.embed_lang.KiGTypes
 
 class KiGLexer : LexerBase() {
 
@@ -55,14 +56,14 @@ class KiGLexer : LexerBase() {
         // @import
         if (matchesAt(start, "@import")) {
             end = start + 7
-            tokenType = KiGTokenTypes.IMPORT
+            tokenType = KiGTypes.IMPORT
             LOGGER.info("KiGLexer.advance: IMPORT, start=$start, end=$end")
             return
         }
 
         // identifier
         while (end < bufferEnd && !buffer[end].isWhitespace()) end++
-        tokenType = KiGTokenTypes.IDENT
+        tokenType = KiGTypes.IDENT
         LOGGER.info("KiGLexer.advance: IDENT, start=$start, end=$end")
     }
 

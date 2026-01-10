@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.embed.highlight
+package com.tttsaurus.ksml.language.embed_lang.highlight
 
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -12,7 +12,7 @@ object KiGTextAttributes {
 
     val IDENT =
         TextAttributesKey.createTextAttributesKey(
-            "KSML_IDENT",
+            "KIG_IDENT",
             DefaultLanguageHighlighterColors.IDENTIFIER
         )
 }

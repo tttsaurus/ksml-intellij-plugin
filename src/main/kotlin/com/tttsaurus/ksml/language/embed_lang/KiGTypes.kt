@@ -1,9 +1,8 @@
-package com.tttsaurus.ksml.language.embed.lexer
+package com.tttsaurus.ksml.language.embed_lang
 
 import com.intellij.psi.tree.IElementType
-import com.tttsaurus.ksml.language.embed.KiGLanguage
 
-object KiGTokenTypes {
+object KiGTypes {
     val IMPORT = IElementType("IMPORT", KiGLanguage.INSTANCE) // import
     val IDENT = IElementType("IDENT", KiGLanguage.INSTANCE) // identifier
 }
