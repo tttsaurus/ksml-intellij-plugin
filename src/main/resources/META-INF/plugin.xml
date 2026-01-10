@@ -6,33 +6,44 @@
 
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.KsmlBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.tttsaurus.ksml.tool_window.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.tttsaurus.ksml.startup.MyProjectActivity"/>
+        <toolWindow factoryClass="com.tttsaurus.ksml.tool_window.KsmlToolWindowFactory" id="MyToolWindow"/>
+        <postStartupActivity implementation="com.tttsaurus.ksml.startup.KsmlStartupActivity"/>
 
         <fileType
                 name="KSML"
                 language="KSML"
                 extensions="ksml"
-                implementationClass="com.tttsaurus.ksml.KsmlFileTypeDef"/>
+                implementationClass="com.tttsaurus.ksml.language.KsmlFileTypeDef"/>
 
         <lang.parserDefinition
                 language="KSML"
-                implementationClass="com.tttsaurus.ksml.parser.KsmlParserDefinition"/>
+                implementationClass="com.tttsaurus.ksml.language.parser.KsmlParserDefinition"/>
 
         <lang.syntaxHighlighterFactory
                 language="KSML"
-                implementationClass="com.tttsaurus.ksml.highlight.KsmlSyntaxHighlighterFactory"/>
+                implementationClass="com.tttsaurus.ksml.language.highlight.KsmlSyntaxHighlighterFactory"/>
 
-<!--        <annotator language="KSML" implementationClass="com.tttsaurus.ksml.annotator.KsmlTestAnnotator"/>-->
+<!--        <annotator -->
+<!--                language="KSML" -->
+<!--                implementationClass="com.tttsaurus.ksml.annotator.KsmlTestAnnotator"/>-->
 
-        <languageInjector implementation="com.tttsaurus.ksml.embed.GlslInKsmlInjector"/>
-        <languageInjector implementation="com.tttsaurus.ksml.embed.KsmlInGlslInjector"/>
-        <annotator language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.annotator.KiGImportAnnotator"/>
-        <lang.parserDefinition language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.parser.KiGParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.highlight.KsmlSyntaxHighlighterFactory"/>
+        <languageInjector implementation="com.tttsaurus.ksml.language.embed.inject.GlslInKsmlInjector"/>
+        <languageInjector implementation="com.tttsaurus.ksml.language.embed.inject.KsmlInGlslInjector"/>
+
+        <annotator
+                language="KsmlInGlsl"
+                implementationClass="com.tttsaurus.ksml.language.embed.annotator.KiGImportAnnotator"/>
+
+        <lang.parserDefinition
+                language="KsmlInGlsl"
+                implementationClass="com.tttsaurus.ksml.language.embed.parser.KiGParserDefinition"/>
+
+        <lang.syntaxHighlighterFactory
+                language="KsmlInGlsl"
+                implementationClass="com.tttsaurus.ksml.language.embed.highlight.KiGSyntaxHighlighterFactory"/>
 
     </extensions>
 </idea-plugin>

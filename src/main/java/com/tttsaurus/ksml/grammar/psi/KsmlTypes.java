@@ -4,8 +4,8 @@ package com.tttsaurus.ksml.grammar.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
-import com.tttsaurus.ksml.KsmlElementType;
-import com.tttsaurus.ksml.KsmlTokenType;
+import com.tttsaurus.ksml.language.KsmlElementType;
+import com.tttsaurus.ksml.language.KsmlTokenType;
 import com.tttsaurus.ksml.grammar.psi.impl.*;
 
 public interface KsmlTypes {
