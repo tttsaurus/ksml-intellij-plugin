@@ -1,28 +1,13 @@
-@module ad // asd
+@module ad
+
 @gl_version 110
 // asd
 
 @gl_requires 110
+/*
+asdasd
 asd
-as{}
-
-@gl_requires 110
-
-@feature a
-
 asd
-
-@gl_requires asd
 asd
-
-aasd
-
-void func()
-{
-// adsasd
-//asd
-
-}
-
-@gl_requires 12300123
-
+asddd
+*/

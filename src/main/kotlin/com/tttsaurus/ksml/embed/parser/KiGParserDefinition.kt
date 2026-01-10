@@ -35,7 +35,7 @@ class KiGParserDefinition : ParserDefinition {
     }
 
     override fun getFileNodeType(): IFileElementType =
-        KiGFileElementType
+        KiGFileElementType.INSTANCE
 
     override fun getCommentTokens(): TokenSet =
         TokenSet.EMPTY
@@ -48,7 +48,7 @@ class KiGParserDefinition : ParserDefinition {
     }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile {
-        return object : PsiFileImpl(KiGFileElementType, KiGFileElementType, viewProvider) {
+        return object : PsiFileImpl(KiGFileElementType.INSTANCE, KiGFileElementType.INSTANCE, viewProvider) {
             override fun getFileType() = viewProvider.virtualFile.fileType
             override fun accept(visitor: PsiElementVisitor) {
             }

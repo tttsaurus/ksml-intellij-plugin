@@ -8,7 +8,7 @@ import com.tttsaurus.ksml.grammar.psi.impl.*;
 
 public interface KsmlTypes {
 
-  IElementType ANY_CHUNK = new IElementType("ANY_CHUNK", null);
+  IElementType CODE_COMMENT = new IElementType("CODE_COMMENT", null);
   IElementType EXPORT_DECL = new IElementType("EXPORT_DECL", null);
   IElementType FEATURE_DECL = new IElementType("FEATURE_DECL", null);
   IElementType GL_REQUIRES_DECL = new IElementType("GL_REQUIRES_DECL", null);
@@ -20,45 +20,46 @@ public interface KsmlTypes {
 
   IElementType AT = new IElementType("@", null);
   IElementType COMMENT = new IElementType("COMMENT", null);
+  IElementType EOL = new IElementType("EOL", null);
   IElementType EXPORT = new IElementType("export", null);
   IElementType FEATURE = new IElementType("feature", null);
-  IElementType GLSL_SYMBOL = new IElementType("GLSL_SYMBOL", null);
   IElementType GL_REQUIRES = new IElementType("gl_requires", null);
   IElementType GL_VERSION = new IElementType("gl_version", null);
   IElementType IDENTIFIER = new IElementType("IDENTIFIER", null);
   IElementType MODULE = new IElementType("module", null);
   IElementType NUMBER = new IElementType("NUMBER", null);
   IElementType REQUIRES = new IElementType("requires", null);
+  IElementType WHITE_SPACE = new IElementType("WHITE_SPACE", null);
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == ANY_CHUNK) {
-        return new AnyChunkImpl(node);
+      if (type == CODE_COMMENT) {
+        return new KsmlCodeCommentImpl(node);
       }
       else if (type == EXPORT_DECL) {
-        return new ExportDeclImpl(node);
+        return new KsmlExportDeclImpl(node);
       }
       else if (type == FEATURE_DECL) {
-        return new FeatureDeclImpl(node);
+        return new KsmlFeatureDeclImpl(node);
       }
       else if (type == GL_REQUIRES_DECL) {
-        return new GlRequiresDeclImpl(node);
+        return new KsmlGlRequiresDeclImpl(node);
       }
       else if (type == GL_VERSION_DECL) {
-        return new GlVersionDeclImpl(node);
+        return new KsmlGlVersionDeclImpl(node);
       }
       else if (type == ITEM) {
-        return new ItemImpl(node);
+        return new KsmlItemImpl(node);
       }
       else if (type == KSML_ANNOTATION) {
-        return new KsmlAnnotationImpl(node);
+        return new KsmlKsmlAnnotationImpl(node);
       }
       else if (type == MODULE_DECL) {
-        return new ModuleDeclImpl(node);
+        return new KsmlModuleDeclImpl(node);
       }
       else if (type == REQUIRES_DECL) {
-        return new RequiresDeclImpl(node);
+        return new KsmlRequiresDeclImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

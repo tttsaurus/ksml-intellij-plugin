@@ -12,11 +12,21 @@
         <toolWindow factoryClass="com.tttsaurus.ksml.tool_window.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.tttsaurus.ksml.startup.MyProjectActivity"/>
 
-        <fileType name="KSML" language="KSML" extensions="ksml" implementationClass="com.tttsaurus.ksml.KsmlFileTypeDef"/>
-        <lang.parserDefinition language="KSML" implementationClass="com.tttsaurus.ksml.parser.KsmlParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="KSML" implementationClass="com.tttsaurus.ksml.highlight.KsmlSyntaxHighlighterFactory"/>
+        <fileType
+                name="KSML"
+                language="KSML"
+                extensions="ksml"
+                implementationClass="com.tttsaurus.ksml.KsmlFileTypeDef"/>
 
-        <languageInjector implementation="com.tttsaurus.ksml.embed.GlslInKsmlInjector"/>
+        <lang.parserDefinition
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.parser.KsmlParserDefinition"/>
+
+        <lang.syntaxHighlighterFactory
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.highlight.KsmlSyntaxHighlighterFactory"/>
+
+        <multiHostInjector implementation="com.tttsaurus.ksml.embed.GlslInKsmlInjector"/>
         <languageInjector implementation="com.tttsaurus.ksml.embed.KsmlInGlslInjector"/>
         <annotator language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.annotator.KiGImportAnnotator"/>
         <lang.parserDefinition language="KsmlInGlsl" implementationClass="com.tttsaurus.ksml.embed.parser.KiGParserDefinition"/>

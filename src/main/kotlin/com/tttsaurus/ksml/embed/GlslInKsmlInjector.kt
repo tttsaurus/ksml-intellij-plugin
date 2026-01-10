@@ -1,17 +1,14 @@
 package com.tttsaurus.ksml.embed
 
+import com.intellij.lang.injection.MultiHostInjector
+import com.intellij.lang.injection.MultiHostRegistrar
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.InjectedLanguagePlaces
-import com.intellij.psi.LanguageInjector
-import com.intellij.psi.PsiLanguageInjectionHost
-import com.intellij.psi.util.PsiTreeUtil
-import com.tttsaurus.ksml.GlslLanguage
+import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiElement
 import com.tttsaurus.ksml.KsmlLanguage
-import com.tttsaurus.ksml.grammar.psi.AnyChunk
-import com.tttsaurus.ksml.grammar.psi.KsmlAnnotation
+import org.jetbrains.annotations.Unmodifiable
 
-class GlslInKsmlInjector : LanguageInjector {
+class GlslInKsmlInjector : MultiHostInjector {
 
     private val LOGGER : Logger = Logger.getInstance(GlslInKsmlInjector::class.java)
 
@@ -19,22 +16,18 @@ class GlslInKsmlInjector : LanguageInjector {
         LOGGER.info("GlslInKsmlInjector Created")
     }
 
-    override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
-        val chunk = host as? AnyChunk ?: return
-        val file = chunk.containingFile ?: return
-        if (!file.isPhysical) return
+    override fun getLanguagesToInject(
+        registrar: MultiHostRegistrar,
+        host: PsiElement
+    ) {
+        val file = host.containingFile ?: return
 
-        LOGGER.info("GlslInKsmlInjector Debug: " + file.language.toString())
+        LOGGER.info("GlslInKsmlInjector Debug: " + host.text)
 
         if (file.language != KsmlLanguage) return
+    }
 
-        if (PsiTreeUtil.getParentOfType(chunk, KsmlAnnotation::class.java) != null) return
-
-        places.addPlace(
-            GlslLanguage.GLSL_LANGUAGE,
-            TextRange.from(0, chunk.textLength),
-            null,
-            null
-        )
+    override fun elementsToInjectIn(): @Unmodifiable List<Class<out PsiElement>> {
+        return listOf(PsiElement::class.java)
     }
 }

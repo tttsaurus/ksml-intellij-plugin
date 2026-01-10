@@ -2,5 +2,8 @@ package com.tttsaurus.ksml
 
 import com.intellij.psi.tree.IFileElementType
 
-object KsmlFileElementType : IFileElementType(KsmlLanguage) {
+class KsmlFileElementType : IFileElementType(KsmlLanguage.INSTANCE) {
+    companion object {
+        val INSTANCE = KsmlFileElementType()
+    }
 }

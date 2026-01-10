@@ -11,26 +11,26 @@ import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.tttsaurus.ksml.grammar.psi.*;
 
-public class RequiresDeclImpl extends ASTWrapperPsiElement implements RequiresDecl {
+public class KsmlCodeCommentImpl extends ASTWrapperPsiElement implements KsmlCodeComment {
 
-  public RequiresDeclImpl(@NotNull ASTNode node) {
+  public KsmlCodeCommentImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitRequiresDecl(this);
+  public void accept(@NotNull KsmlVisitor visitor) {
+    visitor.visitCodeComment(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) accept((Visitor)visitor);
+    if (visitor instanceof KsmlVisitor) accept((KsmlVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
+  @NotNull
+  public PsiElement getComment() {
+    return findNotNullChildByType(COMMENT);
   }
 
 }

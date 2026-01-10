@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ExportDecl extends PsiElement {
+public interface KsmlGlRequiresDecl extends PsiElement {
 
-  @Nullable
-  PsiElement getIdentifier();
+  @NotNull
+  PsiElement getEol();
+
+  @NotNull
+  PsiElement getNumber();
 
 }

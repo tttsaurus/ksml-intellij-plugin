@@ -2,5 +2,8 @@ package com.tttsaurus.ksml.embed
 
 import com.intellij.psi.tree.IFileElementType
 
-object KiGFileElementType : IFileElementType(KiGLanguage) {
+class KiGFileElementType : IFileElementType(KiGLanguage.INSTANCE) {
+    companion object {
+        val INSTANCE = KiGFileElementType()
+    }
 }

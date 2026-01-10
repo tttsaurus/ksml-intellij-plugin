@@ -8,41 +8,35 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
-import com.tttsaurus.ksml.grammar_mixin.AnyChunkImplMixin;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.tttsaurus.ksml.grammar.psi.*;
 
-public class AnyChunkImpl extends AnyChunkImplMixin implements AnyChunk {
+public class KsmlFeatureDeclImpl extends ASTWrapperPsiElement implements KsmlFeatureDecl {
 
-  public AnyChunkImpl(@NotNull ASTNode node) {
+  public KsmlFeatureDeclImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitAnyChunk(this);
+  public void accept(@NotNull KsmlVisitor visitor) {
+    visitor.visitFeatureDecl(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) accept((Visitor)visitor);
+    if (visitor instanceof KsmlVisitor) accept((KsmlVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public PsiElement getGlslSymbol() {
-    return findChildByType(GLSL_SYMBOL);
+  @NotNull
+  public PsiElement getEol() {
+    return findNotNullChildByType(EOL);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getIdentifier() {
-    return findChildByType(IDENTIFIER);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNumber() {
-    return findChildByType(NUMBER);
+    return findNotNullChildByType(IDENTIFIER);
   }
 
 }

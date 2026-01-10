@@ -11,26 +11,32 @@ import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.tttsaurus.ksml.grammar.psi.*;
 
-public class GlVersionDeclImpl extends ASTWrapperPsiElement implements GlVersionDecl {
+public class KsmlGlRequiresDeclImpl extends ASTWrapperPsiElement implements KsmlGlRequiresDecl {
 
-  public GlVersionDeclImpl(@NotNull ASTNode node) {
+  public KsmlGlRequiresDeclImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  public void accept(@NotNull Visitor visitor) {
-    visitor.visitGlVersionDecl(this);
+  public void accept(@NotNull KsmlVisitor visitor) {
+    visitor.visitGlRequiresDecl(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof Visitor) accept((Visitor)visitor);
+    if (visitor instanceof KsmlVisitor) accept((KsmlVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
+  @NotNull
+  public PsiElement getEol() {
+    return findNotNullChildByType(EOL);
+  }
+
+  @Override
+  @NotNull
   public PsiElement getNumber() {
-    return findChildByType(NUMBER);
+    return findNotNullChildByType(NUMBER);
   }
 
 }

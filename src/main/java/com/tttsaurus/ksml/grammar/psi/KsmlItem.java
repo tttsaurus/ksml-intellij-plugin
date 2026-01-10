@@ -5,12 +5,18 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface Item extends PsiElement {
+public interface KsmlItem extends PsiElement {
 
   @Nullable
-  AnyChunk getAnyChunk();
+  KsmlCodeComment getCodeComment();
 
   @Nullable
-  KsmlAnnotation getKsmlAnnotation();
+  KsmlKsmlAnnotation getKsmlAnnotation();
+
+  @Nullable
+  PsiElement getEol();
+
+  @Nullable
+  PsiElement getWhiteSpace();
 
 }

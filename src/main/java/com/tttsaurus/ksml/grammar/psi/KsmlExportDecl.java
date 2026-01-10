@@ -5,7 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface ModuleDecl extends PsiElement {
+public interface KsmlExportDecl extends PsiElement {
+
+  @NotNull
+  PsiElement getEol();
 
   @Nullable
   PsiElement getIdentifier();

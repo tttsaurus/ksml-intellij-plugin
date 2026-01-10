@@ -35,7 +35,7 @@ class KsmlInGlslInjector : LanguageInjector {
         LOGGER.info("KsmlInGlslInjector Debug: " + raw.substring(index, end))
 
         places.addPlace(
-            KiGLanguage,
+            KiGLanguage.INSTANCE,
             TextRange(index, end),
             null,
             null

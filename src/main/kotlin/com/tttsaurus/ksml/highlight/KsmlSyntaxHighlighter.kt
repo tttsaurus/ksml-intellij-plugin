@@ -33,7 +33,8 @@ class KsmlSyntaxHighlighter : SyntaxHighlighter {
 
             KsmlTypes.NUMBER -> NUMBER_KEYS
 
-            KsmlTypes.COMMENT -> COMMENT_KEYS
+            KsmlTypes.COMMENT,
+            KsmlTypes.CODE_COMMENT -> COMMENT_KEYS
 
             else -> EMPTY_KEYS
         }

@@ -12,7 +12,7 @@ import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
-public class KsmlParser implements PsiParser, LightPsiParser {
+public class _KsmlParser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType t, PsiBuilder b) {
     parseLight(t, b);
@@ -36,30 +36,29 @@ public class KsmlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | NUMBER | GLSL_SYMBOL
-  public static boolean any_chunk(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "any_chunk")) return false;
+  // COMMENT
+  public static boolean code_comment(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "code_comment")) return false;
+    if (!nextTokenIs(b, COMMENT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, ANY_CHUNK, "<any chunk>");
-    r = consumeToken(b, IDENTIFIER);
-    if (!r) r = consumeToken(b, NUMBER);
-    if (!r) r = consumeToken(b, GLSL_SYMBOL);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMENT);
+    exit_section_(b, m, CODE_COMMENT, r);
     return r;
   }
 
   /* ********************************************************** */
-  // AT EXPORT IDENTIFIER?
+  // AT EXPORT IDENTIFIER? EOL
   public static boolean export_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "export_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, EXPORT_DECL, null);
-    r = consumeTokens(b, 1, AT, EXPORT);
-    p = r; // pin = 1
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, EXPORT);
     r = r && export_decl_2(b, l + 1);
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    r = r && consumeToken(b, EOL);
+    exit_section_(b, m, EXPORT_DECL, r);
+    return r;
   }
 
   // IDENTIFIER?
@@ -70,16 +69,15 @@ public class KsmlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT FEATURE IDENTIFIER
+  // AT FEATURE IDENTIFIER EOL
   public static boolean feature_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "feature_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, FEATURE_DECL, null);
-    r = consumeTokens(b, 1, AT, FEATURE, IDENTIFIER);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, FEATURE, IDENTIFIER, EOL);
+    exit_section_(b, m, FEATURE_DECL, r);
+    return r;
   }
 
   /* ********************************************************** */
@@ -95,39 +93,42 @@ public class KsmlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT GL_REQUIRES NUMBER
+  // AT GL_REQUIRES NUMBER EOL
   public static boolean gl_requires_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gl_requires_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, GL_REQUIRES_DECL, null);
-    r = consumeTokens(b, 1, AT, GL_REQUIRES, NUMBER);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, GL_REQUIRES, NUMBER, EOL);
+    exit_section_(b, m, GL_REQUIRES_DECL, r);
+    return r;
   }
 
   /* ********************************************************** */
-  // AT GL_VERSION NUMBER
+  // AT GL_VERSION NUMBER EOL
   public static boolean gl_version_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gl_version_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, GL_VERSION_DECL, null);
-    r = consumeTokens(b, 1, AT, GL_VERSION, NUMBER);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, GL_VERSION, NUMBER, EOL);
+    exit_section_(b, m, GL_VERSION_DECL, r);
+    return r;
   }
 
   /* ********************************************************** */
-  // ksml_annotation | any_chunk
+  // ksml_annotation
+  //         | code_comment
+  //         | WHITE_SPACE
+  //         | EOL
   public static boolean item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "item")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ITEM, "<item>");
     r = ksml_annotation(b, l + 1);
-    if (!r) r = any_chunk(b, l + 1);
+    if (!r) r = code_comment(b, l + 1);
+    if (!r) r = consumeToken(b, WHITE_SPACE);
+    if (!r) r = consumeToken(b, EOL);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -155,29 +156,27 @@ public class KsmlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT MODULE IDENTIFIER
+  // AT MODULE IDENTIFIER EOL
   public static boolean module_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "module_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, MODULE_DECL, null);
-    r = consumeTokens(b, 1, AT, MODULE, IDENTIFIER);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, MODULE, IDENTIFIER, EOL);
+    exit_section_(b, m, MODULE_DECL, r);
+    return r;
   }
 
   /* ********************************************************** */
-  // AT REQUIRES IDENTIFIER
+  // AT REQUIRES IDENTIFIER EOL
   public static boolean requires_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "requires_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, REQUIRES_DECL, null);
-    r = consumeTokens(b, 1, AT, REQUIRES, IDENTIFIER);
-    p = r; // pin = 1
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, REQUIRES, IDENTIFIER, EOL);
+    exit_section_(b, m, REQUIRES_DECL, r);
+    return r;
   }
 
 }

@@ -10,13 +10,13 @@ import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
 %%
 
 %{
-  public _KsmlLexer() {
+  public __KsmlLexer() {
     this((java.io.Reader)null);
   }
 %}
 
 %public
-%class _KsmlLexer
+%class __KsmlLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -27,9 +27,9 @@ WHITE_SPACE=\s+
 
 IDENTIFIER=[A-Za-z_][A-Za-z_0-9]*
 NUMBER=[0-9]+
-WHITE_SPACE=[ \t\r\n]+
+EOL=\r?\n
+WHITE_SPACE=[ \t]+
 COMMENT="//"[^\n]*|"/"\*([^*]|\*+[^*/])*\*+"/"
-GLSL_SYMBOL=[{}();,=.+\-*/]
 
 %%
 <YYINITIAL> {
@@ -45,9 +45,9 @@ GLSL_SYMBOL=[{}();,=.+\-*/]
 
   {IDENTIFIER}        { return IDENTIFIER; }
   {NUMBER}            { return NUMBER; }
+  {EOL}               { return EOL; }
   {WHITE_SPACE}       { return WHITE_SPACE; }
   {COMMENT}           { return COMMENT; }
-  {GLSL_SYMBOL}       { return GLSL_SYMBOL; }
 
 }
 
