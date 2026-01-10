@@ -4,32 +4,34 @@ package com.tttsaurus.ksml.grammar.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.tttsaurus.ksml.KsmlElementType;
+import com.tttsaurus.ksml.KsmlTokenType;
 import com.tttsaurus.ksml.grammar.psi.impl.*;
 
 public interface KsmlTypes {
 
-  IElementType CODE_COMMENT = new IElementType("CODE_COMMENT", null);
-  IElementType EXPORT_DECL = new IElementType("EXPORT_DECL", null);
-  IElementType FEATURE_DECL = new IElementType("FEATURE_DECL", null);
-  IElementType GL_REQUIRES_DECL = new IElementType("GL_REQUIRES_DECL", null);
-  IElementType GL_VERSION_DECL = new IElementType("GL_VERSION_DECL", null);
-  IElementType ITEM = new IElementType("ITEM", null);
-  IElementType KSML_ANNOTATION = new IElementType("KSML_ANNOTATION", null);
-  IElementType MODULE_DECL = new IElementType("MODULE_DECL", null);
-  IElementType REQUIRES_DECL = new IElementType("REQUIRES_DECL", null);
+  IElementType CODE_COMMENT = new KsmlElementType("CODE_COMMENT");
+  IElementType EXPORT_DECL = new KsmlElementType("EXPORT_DECL");
+  IElementType FEATURE_DECL = new KsmlElementType("FEATURE_DECL");
+  IElementType GL_REQUIRES_DECL = new KsmlElementType("GL_REQUIRES_DECL");
+  IElementType GL_VERSION_DECL = new KsmlElementType("GL_VERSION_DECL");
+  IElementType ITEM = new KsmlElementType("ITEM");
+  IElementType KSML_ANNOTATION = new KsmlElementType("KSML_ANNOTATION");
+  IElementType MODULE_DECL = new KsmlElementType("MODULE_DECL");
+  IElementType REQUIRES_DECL = new KsmlElementType("REQUIRES_DECL");
 
-  IElementType AT = new IElementType("@", null);
-  IElementType COMMENT = new IElementType("COMMENT", null);
-  IElementType EOL = new IElementType("EOL", null);
-  IElementType EXPORT = new IElementType("export", null);
-  IElementType FEATURE = new IElementType("feature", null);
-  IElementType GL_REQUIRES = new IElementType("gl_requires", null);
-  IElementType GL_VERSION = new IElementType("gl_version", null);
-  IElementType IDENTIFIER = new IElementType("IDENTIFIER", null);
-  IElementType MODULE = new IElementType("module", null);
-  IElementType NUMBER = new IElementType("NUMBER", null);
-  IElementType REQUIRES = new IElementType("requires", null);
-  IElementType WHITE_SPACE = new IElementType("WHITE_SPACE", null);
+  IElementType AT = new KsmlTokenType("@");
+  IElementType COMMENT = new KsmlTokenType("COMMENT");
+  IElementType EOL = new KsmlTokenType("EOL");
+  IElementType EXPORT = new KsmlTokenType("export");
+  IElementType FEATURE = new KsmlTokenType("feature");
+  IElementType GL_REQUIRES = new KsmlTokenType("gl_requires");
+  IElementType GL_VERSION = new KsmlTokenType("gl_version");
+  IElementType IDENTIFIER = new KsmlTokenType("IDENTIFIER");
+  IElementType MODULE = new KsmlTokenType("module");
+  IElementType NUMBER = new KsmlTokenType("NUMBER");
+  IElementType REQUIRES = new KsmlTokenType("requires");
+  IElementType WHITE_SPACE = new KsmlTokenType("WHITE_SPACE");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {

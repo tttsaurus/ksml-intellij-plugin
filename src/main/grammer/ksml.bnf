@@ -6,6 +6,8 @@
   psiPackage="com.tttsaurus.ksml.grammar.psi"
   psiImplPackage="com.tttsaurus.ksml.grammar.psi.impl"
   elementTypeHolderClass="com.tttsaurus.ksml.grammar.psi.KsmlTypes"
+  elementTypeClass="com.tttsaurus.ksml.KsmlElementType"
+  tokenTypeClass="com.tttsaurus.ksml.KsmlTokenType"
 
   tokens = [
     AT='@'
