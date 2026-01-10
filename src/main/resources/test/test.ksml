@@ -5,8 +5,9 @@
 
 @gl_requires 110
 /*
-void func() {
+int func() {
     int a = 1;
+    return a;
 }
 */
 

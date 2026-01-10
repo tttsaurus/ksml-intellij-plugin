@@ -23,9 +23,12 @@ class GlslInKsmlInjector : LanguageInjector {
         if (!file.isPhysical) return
         if (file.language != KsmlLanguage.INSTANCE) return
 
+        val text = comment.text
+        if (!text.startsWith("/*") || !text.endsWith("*/")) return
+
         places.addPlace(
             GlslLanguage.GLSL_LANGUAGE,
-            TextRange(0, comment.textLength),
+            TextRange(2, text.length - 2),
             null,
             null
         )
