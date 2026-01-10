@@ -30,6 +30,8 @@
 <!--                language="KSML" -->
 <!--                implementationClass="com.tttsaurus.ksml.annotator.KsmlTestAnnotator"/>-->
 
+        <editorFactoryListener implementation="com.tttsaurus.ksml.language.editor.GlslEditorListener"/>
+
         <languageInjector implementation="com.tttsaurus.ksml.language.embed.inject.GlslInKsmlInjector"/>
         <languageInjector implementation="com.tttsaurus.ksml.language.embed.inject.KsmlInGlslInjector"/>
 

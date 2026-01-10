@@ -1,0 +1,44 @@
+package com.tttsaurus.ksml.language.editor.renderer
+
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.markup.CustomHighlighterRenderer
+import com.intellij.openapi.editor.markup.RangeHighlighter
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.Rectangle
+
+class BackgroundRenderer : CustomHighlighterRenderer {
+
+    override fun paint(
+        editor: Editor,
+        highlighter: RangeHighlighter,
+        g: Graphics
+    ) {
+        val start = highlighter.startOffset
+        val end = highlighter.endOffset
+
+        val startXY = editor.offsetToXY(start)
+        val endXY = editor.offsetToXY(end)
+
+        val lineHeight = editor.lineHeight
+
+        val rect = Rectangle(
+            startXY.x,
+            startXY.y,
+            maxOf(40, endXY.x - startXY.x),
+            lineHeight
+        )
+
+        val g2 = g as Graphics2D
+        g2.color = Color(80, 160, 255, 120)
+        g2.fillRoundRect(
+            rect.x,
+            rect.y + 1,
+            rect.width,
+            rect.height - 2,
+            8,
+            8
+        )
+    }
+}
