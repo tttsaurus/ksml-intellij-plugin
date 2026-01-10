@@ -6,6 +6,5 @@ import com.intellij.openapi.startup.ProjectActivity
 class KsmlStartupActivity : ProjectActivity {
 
     override suspend fun execute(project: Project) {
-
     }
 }

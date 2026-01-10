@@ -13,7 +13,8 @@
                 factoryClass="com.tttsaurus.ksml.tool_window.KsmlToolWindowFactory"
                 id="MyToolWindow"/>
 
-        <postStartupActivity implementation="com.tttsaurus.ksml.startup.KsmlStartupActivity"/>
+        <postStartupActivity
+                implementation="com.tttsaurus.ksml.startup.KsmlStartupActivity"/>
 
         <fileType
                 name="KSML"
@@ -29,14 +30,21 @@
                 language="KSML"
                 implementationClass="com.tttsaurus.ksml.language.highlight.KsmlSyntaxHighlighterFactory"/>
 
+        <fileBasedIndex
+                implementation="com.tttsaurus.ksml.language.index.KsmlModuleIndex"/>
+
 <!--        <annotator -->
 <!--                language="KSML" -->
 <!--                implementationClass="com.tttsaurus.ksml.annotator.KsmlTestAnnotator"/>-->
 
-        <editorFactoryListener implementation="com.tttsaurus.ksml.language.editor.GlslEditorListener"/>
+        <editorFactoryListener
+                implementation="com.tttsaurus.ksml.language.editor.GlslEditorListener"/>
 
-        <languageInjector implementation="com.tttsaurus.ksml.language.inject.GlslInKsmlInjector"/>
-        <languageInjector implementation="com.tttsaurus.ksml.language.inject.KsmlInGlslInjector"/>
+        <languageInjector
+                implementation="com.tttsaurus.ksml.language.inject.GlslInKsmlInjector"/>
+
+        <languageInjector
+                implementation="com.tttsaurus.ksml.language.inject.KsmlInGlslInjector"/>
 
         <psi.referenceContributor
                 language="Glsl"

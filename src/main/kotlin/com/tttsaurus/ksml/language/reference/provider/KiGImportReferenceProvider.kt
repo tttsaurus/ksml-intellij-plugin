@@ -62,7 +62,6 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
                     rangeInComment,
                     true
                 )
-
             }
         }
 

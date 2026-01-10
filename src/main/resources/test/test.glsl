@@ -1,4 +1,4 @@
-// @import test asd
+// @import ad
 // @import test
 
 #version 330 core
