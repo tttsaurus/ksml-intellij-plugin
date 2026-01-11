@@ -122,7 +122,7 @@ class GlslEditorListener : EditorFactoryListener {
         for (comment: PsiComment in comments) {
             val text = comment.text
 
-            var prefixIndex = text.indexOf(importPrefix)
+            val prefixIndex = text.indexOf(importPrefix)
             if (prefixIndex == -1) continue
 
             val contentStartIndex = prefixIndex + importPrefix.length
@@ -135,7 +135,7 @@ class GlslEditorListener : EditorFactoryListener {
             val endInComment = contentStartIndex + match.range.last + 1
 
             renderList.add(ModuleRenderInfo(
-                importHint = text.substring(startInComment, endInComment),
+                importHint = "GL330",
                 hintOffset = prefixIndex + comment.textRange.startOffset,
                 importRange = IntRange(startInComment + comment.textRange.startOffset, endInComment + comment.textRange.startOffset)
             ))

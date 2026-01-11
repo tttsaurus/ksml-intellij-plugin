@@ -1,9 +1,4 @@
-// @import add
-// @import asdasd
-// @import asasasd
-// @import asssss
-// @import asddasd
-// @import asdds
+// @import test_module
 
 #version 330 core
 
@@ -18,6 +13,7 @@ out vec4 Color;
 
 void main()
 {
+    int a = test_module.func();
     gl_Position = projection * viewRot * vec4(position - worldOffset, 1.0);
     Color = color;
 }
