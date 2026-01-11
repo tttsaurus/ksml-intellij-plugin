@@ -17,7 +17,9 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
 
         val comment = element as? PsiComment
             ?: return PsiReference.EMPTY_ARRAY
+
         val text = comment.text
+        if (!text.contains("@import")) return PsiReference.EMPTY_ARRAY
 
         val importPrefix = "@import"
         val prefixIndex = text.indexOf(importPrefix)

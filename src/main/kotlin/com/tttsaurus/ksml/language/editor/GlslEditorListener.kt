@@ -115,6 +115,7 @@ class GlslEditorListener : EditorFactoryListener {
         val psiFile = PsiManager.getInstance(project).findFile(virtualFile) ?: return
 
         val comments = PsiTreeUtil.findChildrenOfType(psiFile, PsiComment::class.java)
+            .filter { it.text.contains("@import") }
 
         val importPrefix = "@import"
         val regex = Regex("""[a-zA-Z_][a-zA-Z0-9_]*""")
