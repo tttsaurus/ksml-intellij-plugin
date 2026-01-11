@@ -20,6 +20,7 @@ class KiGSyntaxHighlighter : SyntaxHighlighter {
 
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
         when (tokenType) {
+            KiGTypes.COMMENT -> arrayOf(KiGTextAttributes.COMMENT)
             KiGTypes.IMPORT -> arrayOf(KiGTextAttributes.IMPORT)
             KiGTypes.IDENT -> arrayOf(KiGTextAttributes.IDENT)
             else -> TextAttributesKey.EMPTY_ARRAY

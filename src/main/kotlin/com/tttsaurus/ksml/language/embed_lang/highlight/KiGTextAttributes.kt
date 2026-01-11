@@ -4,6 +4,12 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 
 object KiGTextAttributes {
+    val COMMENT =
+        TextAttributesKey.createTextAttributesKey(
+            "KIG_COMMENT",
+            DefaultLanguageHighlighterColors.LINE_COMMENT
+        )
+
     val IMPORT =
         TextAttributesKey.createTextAttributesKey(
             "KIG_IMPORT",

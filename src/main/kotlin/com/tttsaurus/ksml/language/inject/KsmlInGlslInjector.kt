@@ -35,7 +35,7 @@ class KsmlInGlslInjector : LanguageInjector {
 
         places.addPlace(
             KiGLanguage.INSTANCE,
-            TextRange(index, end),
+            TextRange(0, end),
             null,
             null
         )

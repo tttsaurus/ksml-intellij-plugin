@@ -49,22 +49,26 @@ class KiGLexer : LexerBase() {
         if (c.isWhitespace()) {
             while (end < bufferEnd && buffer[end].isWhitespace()) end++
             tokenType = TokenType.WHITE_SPACE
-//            LOGGER.info("KiGLexer.advance: WHITE_SPACE, start=$start, end=$end")
             return
         }
 
-        // @import
+        // comment
+        if (matchesAt(start, "//")) {
+            end = start + 2
+            tokenType = KiGTypes.COMMENT
+            return
+        }
+
+        // import
         if (matchesAt(start, "@import")) {
             end = start + 7
             tokenType = KiGTypes.IMPORT
-//            LOGGER.info("KiGLexer.advance: IMPORT, start=$start, end=$end")
             return
         }
 
         // identifier
         while (end < bufferEnd && !buffer[end].isWhitespace()) end++
         tokenType = KiGTypes.IDENT
-//        LOGGER.info("KiGLexer.advance: IDENT, start=$start, end=$end")
     }
 
     private fun matchesAt(pos: Int, s: String): Boolean {

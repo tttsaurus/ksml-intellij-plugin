@@ -1,4 +1,4 @@
-// @import test_module
+// @import test_modu
 
 #version 330 core
 
