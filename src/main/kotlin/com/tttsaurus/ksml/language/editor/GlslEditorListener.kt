@@ -13,11 +13,13 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
 import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
+import kotlin.math.max
 
 class GlslEditorListener : EditorFactoryListener {
 
@@ -37,6 +39,9 @@ class GlslEditorListener : EditorFactoryListener {
     private val GLSL_DOCUMENT_LISTENER_KEY: Key<DocumentListener> =
         Key.create("GLSL_DOCUMENT_LISTENER")
 
+    private val LAST_RENDER_LIST_KEY: Key<List<ModuleRenderInfo>> =
+        Key.create("LAST_RENDER_LIST")
+
     override fun editorCreated(event: EditorFactoryEvent) {
         val editor = event.editor
         val virtualFile = FileDocumentManager.getInstance().getFile(editor.document) ?: return
@@ -45,7 +50,7 @@ class GlslEditorListener : EditorFactoryListener {
 
         val listener = object : DocumentListener {
             override fun documentChanged(event: DocumentEvent) {
-                updateRenderers(editor)
+                updateRenderers(editor, event)
             }
         }
 
@@ -53,7 +58,7 @@ class GlslEditorListener : EditorFactoryListener {
         editor.document.addDocumentListener(listener)
         LOGGER.info("GlslEditorListener: document listener installed")
 
-        updateRenderers(editor)
+        updateRenderers(editor, null)
     }
 
     override fun editorReleased(event: EditorFactoryEvent) {
@@ -70,27 +75,43 @@ class GlslEditorListener : EditorFactoryListener {
         LOGGER.info("GlslEditorListener: renderers disposed")
     }
 
-    private fun updateRenderers(editor: Editor) {
+    private fun updateRenderers(editor: Editor, event: DocumentEvent?) {
         val virtualFile = FileDocumentManager.getInstance().getFile(editor.document) ?: return
 
         if (virtualFile.fileType.defaultExtension != "glsl") return
 
-        LOGGER.info("GlslEditorListener: update renderers")
+        val document = editor.document
+        val project = editor.project ?: return
+
+        val lastList = editor.getUserData(LAST_RENDER_LIST_KEY)
+
+        if (event != null && lastList != null) {
+            var max = -1
+            for (renderInfo: ModuleRenderInfo in lastList) {
+                max = max(max, renderInfo.importRange.last + 1)
+            }
+            if (event.offset <= max) {
+                PsiDocumentManager.getInstance(project).commitDocument(document)
+            }
+        }
 
         val renderList = mutableListOf<ModuleRenderInfo>()
-        updateRenderList(editor.project, virtualFile, renderList)
+        updateRenderList(project, virtualFile, renderList)
+
+        if (lastList == renderList) return
+
+        editor.putUserData(LAST_RENDER_LIST_KEY, renderList)
 
         if (renderList.isEmpty()) {
             disposeRenderers(editor)
         } else {
             disposeRenderers(editor)
             installRenderers(editor, renderList)
-            LOGGER.info("GlslEditorListener: renderers re-installed")
+            LOGGER.info("GlslEditorListener: updated renderers")
         }
     }
 
-    private fun updateRenderList(project: Project?, virtualFile: VirtualFile, renderList: MutableList<ModuleRenderInfo>) {
-        if (project == null) return
+    private fun updateRenderList(project: Project, virtualFile: VirtualFile, renderList: MutableList<ModuleRenderInfo>) {
         val psiFile = PsiManager.getInstance(project).findFile(virtualFile) ?: return
 
         val comments = PsiTreeUtil.findChildrenOfType(psiFile, PsiComment::class.java)
