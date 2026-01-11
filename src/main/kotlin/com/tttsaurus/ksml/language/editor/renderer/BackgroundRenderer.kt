@@ -26,7 +26,7 @@ class BackgroundRenderer : CustomHighlighterRenderer {
         val rect = Rectangle(
             startXY.x,
             startXY.y,
-            maxOf(40, endXY.x - startXY.x),
+            endXY.x - startXY.x,
             lineHeight
         )
 

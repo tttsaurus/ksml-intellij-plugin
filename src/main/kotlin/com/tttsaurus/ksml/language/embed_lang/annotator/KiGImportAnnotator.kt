@@ -14,16 +14,30 @@ class KiGImportAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return
         if (node.elementType != KiGTypes.IMPORT) return
+        if (element.firstChild != null) return
 
-        val next = nextNonWhitespaceLeaf(element)
+        val first = nextNonWhitespaceLeaf(element)
 
-        if (next == null || next.node.elementType != KiGTypes.IDENT) {
+        if (first == null || first.node.elementType != KiGTypes.IDENT) {
             holder.newAnnotation(
                 HighlightSeverity.ERROR,
                 KsmlBundle.message("KsmlInGlsl.importError")
             )
                 .range(element.textRange)
                 .create()
+            return
+        }
+
+        val second = nextNonWhitespaceLeaf(first)
+
+        if (second != null && second.node.elementType == KiGTypes.IDENT) {
+            holder.newAnnotation(
+                HighlightSeverity.ERROR,
+                KsmlBundle.message("KsmlInGlsl.importTooManyIdentifiers")
+            )
+                .range(element.textRange)
+                .create()
+            return
         }
     }
 
