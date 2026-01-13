@@ -1,5 +1,7 @@
 package com.tttsaurus.ksml.language.editor
 
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
@@ -147,35 +149,51 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         return "GL$version$profile"
     }
 
-    protected fun updateRenderers(editor: Editor, event: DocumentEvent?) {
-        val virtualFile = FileDocumentManager.getInstance().getFile(editor.document) ?: return
+    private fun applyRenderersWriteSafe(editor: Editor) {
+        val project = editor.project ?: return
+        val document = editor.document
+        val virtualFile = FileDocumentManager.getInstance().getFile(document) ?: return
         if (virtualFile.fileType.defaultExtension != "glsl") return
 
-        val document = editor.document
-        val project = editor.project ?: return
+        PsiDocumentManager.getInstance(project).commitDocument(document)
+
         val lastList = editor.getUserData(LAST_RENDER_LIST_KEY)
-
-        if (needsUpdate(document, project, lastList, event)) {
-            PsiDocumentManager.getInstance(project).commitDocument(document)
-        } else {
-            return
-        }
-
-        LOGGER.info("GlslImportRenderEditorLogic: update renderers")
-
         val newRenderList = mutableListOf<ModuleRenderInfo>()
+
         updateRenderList(project, virtualFile, newRenderList)
 
         if (lastList == newRenderList) return
 
         editor.putUserData(LAST_RENDER_LIST_KEY, newRenderList)
 
-        if (newRenderList.isEmpty()) {
-            disposeRenderers(editor)
-        } else {
-            disposeRenderers(editor)
+        disposeRenderers(editor)
+        if (newRenderList.isNotEmpty()) {
             installRenderers(editor, newRenderList)
         }
+    }
+
+    protected fun updateRenderers(editor: Editor, event: DocumentEvent?) {
+        val project = editor.project ?: return
+        val document = editor.document
+
+        // early escape
+        if (!needsUpdate(
+                document,
+                project,
+                editor.getUserData(LAST_RENDER_LIST_KEY),
+                event)) return
+
+        ApplicationManager.getApplication().invokeLater(
+            {
+                if (editor.isDisposed) return@invokeLater
+
+                ApplicationManager.getApplication().runWriteAction {
+                    LOGGER.info("GlslImportRenderEditorLogic: update renderers")
+                    applyRenderersWriteSafe(editor)
+                }
+            },
+            ModalityState.defaultModalityState()
+        )
     }
 }
 
