@@ -2,14 +2,27 @@ package com.tttsaurus.ksml.language.embed_lang.annotator
 
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.editor.markup.EffectType
+import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
+import java.awt.Color
 
-class GlslExpressionAnnotator : Annotator {
+class GlslModuleInExprAnnotator : Annotator {
+
+    private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
+        "GLSL_MODULE_REF_HIGHLIGHT",
+        TextAttributes().apply {
+            effectType = EffectType.LINE_UNDERSCORE
+            effectColor = Color(166, 210, 255, 120)
+        }
+    )
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return
@@ -32,7 +45,13 @@ class GlslExpressionAnnotator : Annotator {
 
         if (qualifier !in importedModules) return
 
-        thisLogger().info("check usage: $qualifier")
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+            .range(TextRange(
+                element.textRange.startOffset,
+                element.textRange.startOffset + qualifier.length
+            ))
+            .textAttributes(MODULE_REF_HIGHLIGHT)
+            .create()
     }
 
     private fun String.allIndicesOf(sub: String): List<Int> {

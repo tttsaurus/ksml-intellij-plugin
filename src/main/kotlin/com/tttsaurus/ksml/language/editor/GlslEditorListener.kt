@@ -206,6 +206,12 @@ class GlslEditorListener : EditorFactoryListener {
         return "GL$version$profile"
     }
 
+    private val REF_ATTRIBUTE = TextAttributes().apply {
+        foregroundColor = Color(80, 160, 255)
+        effectType = EffectType.LINE_UNDERSCORE
+        effectColor = Color(80, 160, 255)
+    }
+
     private fun installRenderers(editor: Editor, renderList: MutableList<ModuleRenderInfo>) {
         val inlayList = editor.getUserData(GLSL_INLAYS_KEY)
             ?: mutableListOf<Inlay<*>>()
@@ -224,19 +230,13 @@ class GlslEditorListener : EditorFactoryListener {
                 BadgeRenderer(renderInfo.moduleHint)
             )
 
-            val attributes = TextAttributes().apply {
-                foregroundColor = Color(80, 160, 255)
-                effectType = EffectType.LINE_UNDERSCORE
-                effectColor = Color(80, 160, 255)
-            }
-
             EditorListenerHelper.addBackground(
                 editor,
                 backgroundList,
                 renderInfo.importRange.first,
                 renderInfo.importRange.last,
                 HighlighterLayer.ADDITIONAL_SYNTAX,
-                if (renderInfo.moduleExists) attributes else null,
+                if (renderInfo.moduleExists) REF_ATTRIBUTE else null,
                 HighlighterTargetArea.EXACT_RANGE,
                 BackgroundRenderer()
             )

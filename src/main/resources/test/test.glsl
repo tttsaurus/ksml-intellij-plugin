@@ -15,7 +15,6 @@ out vec4 Color;
 
 void main()
 {
-    asd.func();
     int a = test_module.func();
     gl_Position = projection * viewRot * vec4(position - worldOffset, 1.0);
     Color = color;

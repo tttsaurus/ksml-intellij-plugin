@@ -53,7 +53,7 @@
 
         <annotator
                 language="Glsl"
-                implementationClass="com.tttsaurus.ksml.language.embed_lang.annotator.GlslExpressionAnnotator"/>
+                implementationClass="com.tttsaurus.ksml.language.embed_lang.annotator.GlslModuleInExprAnnotator"/>
 
         <annotator
                 language="KsmlInGlsl"
