@@ -8,12 +8,18 @@ import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
+import com.intellij.openapi.editor.markup.EffectType
+import com.intellij.openapi.editor.markup.HighlighterLayer
+import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
+import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
@@ -23,6 +29,7 @@ import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
 import com.tttsaurus.ksml.language.index.KsmlModuleIndex
+import java.awt.Color
 import kotlin.math.max
 
 class GlslEditorListener : EditorFactoryListener {
@@ -143,37 +150,48 @@ class GlslEditorListener : EditorFactoryListener {
             val startInComment = contentStartIndex + match.range.first
             val endInComment = contentStartIndex + match.range.last + 1
 
+            val moduleName = text.substring(startInComment, endInComment)
+            val moduleFile = fetchModulePsiFile(project, moduleName)
+            val moduleHint = fetchModuleGLVersion(moduleFile)
+
             renderList.add(ModuleRenderInfo(
-                moduleName = text.substring(startInComment, endInComment),
-                moduleHint = fetchModuleGLVersion(project, text.substring(startInComment, endInComment)),
+                moduleExists = moduleFile != null,
+                moduleName = moduleName,
+                moduleHint = moduleHint,
                 hintOffset = prefixIndex + comment.textRange.startOffset,
                 importRange = IntRange(startInComment + comment.textRange.startOffset, endInComment + comment.textRange.startOffset)
             ))
         }
     }
 
-    private fun fetchModuleGLVersion(project: Project, moduleName: String): String {
-        var result = "UNKNOWN"
+    private fun fetchModulePsiFile(project: Project, moduleName: String): PsiFile? {
+        if (DumbService.isDumb(project)) return null
 
         val scope = GlobalSearchScope.projectScope(project)
 
         val files: Collection<VirtualFile> = FileBasedIndex.getInstance()
             .getContainingFiles(KsmlModuleIndex.NAME, moduleName, scope)
 
-        val vFile = files.firstOrNull() ?: return result
-        val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return result
+        val vFile = files.firstOrNull() ?: return null
+        val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return null
+
+        return psiFile
+    }
+
+    private fun fetchModuleGLVersion(psiFile: PsiFile?): String {
+        val unknown = "UNKNOWN"
+        if (psiFile == null) return unknown
 
         val decls = PsiTreeUtil.findChildrenOfType(psiFile, KsmlGlVersionDecl::class.java)
-        val targetDecl = decls.firstOrNull() ?: return result
+        val targetDecl = decls.firstOrNull() ?: return unknown
 
         val text = targetDecl.text
 
         val regex = Regex("""^@\s*gl_version\s+([1-9][0-9]{2})(?:\s+(core|compat(?:ibility)?))?\b""")
+        val match = regex.find(text) ?: return unknown
 
-        val m = regex.find(text) ?: return result
-
-        val version = m.groupValues[1].toInt()
-        val profile = when (m.groupValues.getOrNull(2)) {
+        val version = match.groupValues[1].toInt()
+        val profile = when (match.groupValues.getOrNull(2)) {
             "core" -> "C"
             "compat", "compatibility" -> ""
             else -> ""
@@ -200,11 +218,20 @@ class GlslEditorListener : EditorFactoryListener {
                 BadgeRenderer(renderInfo.moduleHint)
             )
 
+            val attributes = TextAttributes().apply {
+                foregroundColor = Color(80, 160, 255)
+                effectType = EffectType.LINE_UNDERSCORE
+                effectColor = Color(80, 160, 255)
+            }
+
             EditorListenerHelper.addBackground(
                 editor,
                 backgroundList,
                 renderInfo.importRange.first,
                 renderInfo.importRange.last,
+                HighlighterLayer.ADDITIONAL_SYNTAX,
+                if (renderInfo.moduleExists) attributes else null,
+                HighlighterTargetArea.EXACT_RANGE,
                 BackgroundRenderer()
             )
         }

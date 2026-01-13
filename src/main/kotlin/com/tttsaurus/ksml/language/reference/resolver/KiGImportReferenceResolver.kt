@@ -1,5 +1,6 @@
 package com.tttsaurus.ksml.language.reference.resolver
 
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
@@ -27,6 +28,9 @@ class KiGImportReferenceResolver(
         if (name.isEmpty()) return null
 
         val project = element.project
+
+        if (DumbService.isDumb(project)) return null
+
         val scope = GlobalSearchScope.projectScope(project)
 
         val files: Collection<VirtualFile> = FileBasedIndex.getInstance()
