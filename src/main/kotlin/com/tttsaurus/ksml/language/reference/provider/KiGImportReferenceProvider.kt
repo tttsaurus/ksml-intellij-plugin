@@ -19,7 +19,6 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
             ?: return PsiReference.EMPTY_ARRAY
 
         val text = comment.text
-        if (!text.contains("@import")) return PsiReference.EMPTY_ARRAY
 
         val importPrefix = "@import"
         val prefixIndex = text.indexOf(importPrefix)
@@ -37,6 +36,8 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
             val startInComment = contentStartIndex + match.range.first
             val endInComment = contentStartIndex + match.range.last + 1
 
+            // the text range is accurate here
+            // but intellij doesn't display the reference range correctly
             refs += KiGImportReferenceResolver(
                 comment,
                 TextRange(startInComment, endInComment),
@@ -45,12 +46,5 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
         }
 
         return refs.toTypedArray()
-    }
-
-    private fun collectAllElements(root: PsiElement, out: MutableList<PsiElement>) {
-        out += root
-        for (child in root.children) {
-            collectAllElements(child, out)
-        }
     }
 }

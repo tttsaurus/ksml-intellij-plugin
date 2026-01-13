@@ -15,10 +15,14 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.indexing.FileBasedIndex
+import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
 import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
+import com.tttsaurus.ksml.language.index.KsmlModuleIndex
 import kotlin.math.max
 
 class GlslEditorListener : EditorFactoryListener {
@@ -85,6 +89,7 @@ class GlslEditorListener : EditorFactoryListener {
 
         val lastList = editor.getUserData(LAST_RENDER_LIST_KEY)
 
+        // forced document refresh
         if (event != null && lastList != null) {
             var max = -1
             for (renderInfo: ModuleRenderInfo in lastList) {
@@ -93,6 +98,9 @@ class GlslEditorListener : EditorFactoryListener {
             if (event.offset <= max) {
                 PsiDocumentManager.getInstance(project).commitDocument(document)
             }
+        }
+        if (lastList == null) {
+            PsiDocumentManager.getInstance(project).commitDocument(document)
         }
 
         val renderList = mutableListOf<ModuleRenderInfo>()
@@ -136,11 +144,42 @@ class GlslEditorListener : EditorFactoryListener {
             val endInComment = contentStartIndex + match.range.last + 1
 
             renderList.add(ModuleRenderInfo(
-                importHint = "GL330",
+                moduleName = text.substring(startInComment, endInComment),
+                moduleHint = fetchModuleGLVersion(project, text.substring(startInComment, endInComment)),
                 hintOffset = prefixIndex + comment.textRange.startOffset,
                 importRange = IntRange(startInComment + comment.textRange.startOffset, endInComment + comment.textRange.startOffset)
             ))
         }
+    }
+
+    private fun fetchModuleGLVersion(project: Project, moduleName: String): String {
+        var result = "UNKNOWN"
+
+        val scope = GlobalSearchScope.projectScope(project)
+
+        val files: Collection<VirtualFile> = FileBasedIndex.getInstance()
+            .getContainingFiles(KsmlModuleIndex.NAME, moduleName, scope)
+
+        val vFile = files.firstOrNull() ?: return result
+        val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return result
+
+        val decls = PsiTreeUtil.findChildrenOfType(psiFile, KsmlGlVersionDecl::class.java)
+        val targetDecl = decls.firstOrNull() ?: return result
+
+        val text = targetDecl.text
+
+        val regex = Regex("""^@\s*gl_version\s+([1-9][0-9]{2})(?:\s+(core|compat(?:ibility)?))?\b""")
+
+        val m = regex.find(text) ?: return result
+
+        val version = m.groupValues[1].toInt()
+        val profile = when (m.groupValues.getOrNull(2)) {
+            "core" -> "C"
+            "compat", "compatibility" -> ""
+            else -> ""
+        }
+
+        return "GL$version$profile"
     }
 
     private fun installRenderers(editor: Editor, renderList: MutableList<ModuleRenderInfo>) {
@@ -158,7 +197,7 @@ class GlslEditorListener : EditorFactoryListener {
                 editor,
                 inlayList,
                 renderInfo.hintOffset,
-                BadgeRenderer(renderInfo.importHint)
+                BadgeRenderer(renderInfo.moduleHint)
             )
 
             EditorListenerHelper.addBackground(
