@@ -20,10 +20,14 @@ class GlslModuleInExprAnnotator : Annotator {
         private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
             "GLSL_MODULE_REF_HIGHLIGHT",
             TextAttributes().apply {
+                foregroundColor = Color(255, 139, 70)
                 effectType = EffectType.LINE_UNDERSCORE
                 effectColor = Color(166, 210, 255, 120)
             }
         )
+
+        private val IMPORT_REGEX =
+            Regex("""//\s*@import\s+([a-zA-Z_][a-zA-Z0-9_]*)""")
     }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -67,9 +71,6 @@ class GlslModuleInExprAnnotator : Annotator {
 
         return result
     }
-
-    private val IMPORT_REGEX =
-        Regex("""//\s*@import\s+([a-zA-Z_][a-zA-Z0-9_]*)""")
 
     private fun PsiFile.getImportedModulesCached(): Set<String> {
         val project = project
