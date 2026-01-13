@@ -97,6 +97,7 @@ class GlslEditorListener : EditorFactoryListener {
         val lastList = editor.getUserData(LAST_RENDER_LIST_KEY)
 
         // forced document refresh
+        var update = false
         if (event != null && lastList != null) {
             var max = -1
             for (renderInfo: ModuleRenderInfo in lastList) {
@@ -104,11 +105,17 @@ class GlslEditorListener : EditorFactoryListener {
             }
             if (event.offset <= max) {
                 PsiDocumentManager.getInstance(project).commitDocument(document)
+                update = true
             }
         }
         if (lastList == null) {
             PsiDocumentManager.getInstance(project).commitDocument(document)
+            update = true
         }
+
+        if (!update) return
+
+        LOGGER.info("GlslEditorListener: update renderers")
 
         val renderList = mutableListOf<ModuleRenderInfo>()
         updateRenderList(project, virtualFile, renderList)
@@ -122,7 +129,6 @@ class GlslEditorListener : EditorFactoryListener {
         } else {
             disposeRenderers(editor)
             installRenderers(editor, renderList)
-            LOGGER.info("GlslEditorListener: updated renderers")
         }
     }
 

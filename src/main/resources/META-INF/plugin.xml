@@ -34,9 +34,9 @@
         <fileBasedIndex
                 implementation="com.tttsaurus.ksml.language.index.KsmlModuleIndex"/>
 
-<!--        <annotator -->
-<!--                language="KSML" -->
-<!--                implementationClass="com.tttsaurus.ksml.annotator.KsmlTestAnnotator"/>-->
+        <annotator
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.language.annotator.KsmlMetaDirectiveAnnotator"/>
 
         <editorFactoryListener
                 implementation="com.tttsaurus.ksml.language.editor.GlslEditorListener"/>
@@ -52,6 +52,10 @@
                 implementation="com.tttsaurus.ksml.language.reference.KiGReferenceContributor"/>
 
         <annotator
+                language="Glsl"
+                implementationClass="com.tttsaurus.ksml.language.embed_lang.annotator.GlslExpressionAnnotator"/>
+
+        <annotator
                 language="KsmlInGlsl"
                 implementationClass="com.tttsaurus.ksml.language.embed_lang.annotator.KiGImportAnnotator"/>
 
@@ -59,9 +63,9 @@
                 language="KsmlInGlsl"
                 implementationClass="com.tttsaurus.ksml.language.embed_lang.parser.KiGParserDefinition"/>
 
-        <lang.syntaxHighlighterFactory
-                language="KsmlInGlsl"
-                implementationClass="com.tttsaurus.ksml.language.embed_lang.highlight.KiGSyntaxHighlighterFactory"/>
+<!--        <lang.syntaxHighlighterFactory-->
+<!--                language="KsmlInGlsl"-->
+<!--                implementationClass="com.tttsaurus.ksml.language.embed_lang.highlight.KiGSyntaxHighlighterFactory"/>-->
 
     </extensions>
 </idea-plugin>
