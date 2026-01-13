@@ -10,6 +10,9 @@ public interface KsmlGlVersionDecl extends PsiElement {
   @NotNull
   PsiElement getEol();
 
+  @Nullable
+  PsiElement getIdentifier();
+
   @NotNull
   PsiElement getNumber();
 

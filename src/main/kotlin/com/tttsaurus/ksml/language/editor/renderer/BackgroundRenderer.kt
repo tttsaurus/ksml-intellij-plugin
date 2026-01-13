@@ -31,14 +31,16 @@ class BackgroundRenderer : CustomHighlighterRenderer {
         )
 
         val g2 = g as Graphics2D
-        g2.color = Color(80, 160, 255, 120)
+        val cornerRadius = (0.45f * lineHeight).toInt()
+
+        g2.color = Color(80, 160, 255, 60)
         g2.fillRoundRect(
             rect.x,
             rect.y + 1,
             rect.width,
             rect.height - 2,
-            8,
-            8
+            cornerRadius,
+            cornerRadius
         )
     }
 }

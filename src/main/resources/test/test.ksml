@@ -1,6 +1,6 @@
 @module test_module
 
-@gl_version 460
+@gl_version 460 core
 // asd
 // asdsdsd
 

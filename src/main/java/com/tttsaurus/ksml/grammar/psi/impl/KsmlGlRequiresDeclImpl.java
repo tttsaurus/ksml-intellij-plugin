@@ -34,6 +34,12 @@ public class KsmlGlRequiresDeclImpl extends ASTWrapperPsiElement implements Ksml
   }
 
   @Override
+  @Nullable
+  public PsiElement getIdentifier() {
+    return findChildByType(IDENTIFIER);
+  }
+
+  @Override
   @NotNull
   public PsiElement getNumber() {
     return findNotNullChildByType(NUMBER);

@@ -93,27 +93,45 @@ public class _KsmlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AT GL_REQUIRES NUMBER EOL
+  // AT GL_REQUIRES NUMBER IDENTIFIER? EOL
   public static boolean gl_requires_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gl_requires_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, AT, GL_REQUIRES, NUMBER, EOL);
+    r = consumeTokens(b, 0, AT, GL_REQUIRES, NUMBER);
+    r = r && gl_requires_decl_3(b, l + 1);
+    r = r && consumeToken(b, EOL);
     exit_section_(b, m, GL_REQUIRES_DECL, r);
     return r;
   }
 
+  // IDENTIFIER?
+  private static boolean gl_requires_decl_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gl_requires_decl_3")) return false;
+    consumeToken(b, IDENTIFIER);
+    return true;
+  }
+
   /* ********************************************************** */
-  // AT GL_VERSION NUMBER EOL
+  // AT GL_VERSION NUMBER IDENTIFIER? EOL
   public static boolean gl_version_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gl_version_decl")) return false;
     if (!nextTokenIs(b, AT)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, AT, GL_VERSION, NUMBER, EOL);
+    r = consumeTokens(b, 0, AT, GL_VERSION, NUMBER);
+    r = r && gl_version_decl_3(b, l + 1);
+    r = r && consumeToken(b, EOL);
     exit_section_(b, m, GL_VERSION_DECL, r);
     return r;
+  }
+
+  // IDENTIFIER?
+  private static boolean gl_version_decl_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gl_version_decl_3")) return false;
+    consumeToken(b, IDENTIFIER);
+    return true;
   }
 
   /* ********************************************************** */

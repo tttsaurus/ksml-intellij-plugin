@@ -48,9 +48,9 @@ module_decl ::= AT MODULE IDENTIFIER EOL
 
 requires_decl ::= AT REQUIRES IDENTIFIER EOL
 
-gl_version_decl ::= AT GL_VERSION NUMBER EOL
+gl_version_decl ::= AT GL_VERSION NUMBER IDENTIFIER? EOL
 
-gl_requires_decl ::= AT GL_REQUIRES NUMBER EOL
+gl_requires_decl ::= AT GL_REQUIRES NUMBER IDENTIFIER? EOL
 
 feature_decl ::= AT FEATURE IDENTIFIER EOL
 

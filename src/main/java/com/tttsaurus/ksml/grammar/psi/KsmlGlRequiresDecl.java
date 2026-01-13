@@ -10,6 +10,9 @@ public interface KsmlGlRequiresDecl extends PsiElement {
   @NotNull
   PsiElement getEol();
 
+  @Nullable
+  PsiElement getIdentifier();
+
   @NotNull
   PsiElement getNumber();
 
