@@ -107,6 +107,10 @@ class GlslEditorListener : EditorFactoryListener {
                 PsiDocumentManager.getInstance(project).commitDocument(document)
                 update = true
             }
+            if (hasImportBefore(document.text, event.offset)) {
+                PsiDocumentManager.getInstance(project).commitDocument(document)
+                update = true
+            }
         }
         if (lastList == null) {
             PsiDocumentManager.getInstance(project).commitDocument(document)
@@ -130,6 +134,25 @@ class GlslEditorListener : EditorFactoryListener {
             disposeRenderers(editor)
             installRenderers(editor, renderList)
         }
+    }
+
+    private fun hasImportBefore(text: String, offset: Int): Boolean {
+        if (offset <= 0 || offset > text.length) return false
+
+        var i = offset - 1
+        while (i >= 0 && text[i].isWhitespace()) {
+            i--
+        }
+
+        val keyword = "@import"
+        if (i - keyword.length + 1 < 0) return false
+
+        for (j in keyword.indices.reversed()) {
+            if (text[i] != keyword[j]) return false
+            i--
+        }
+
+        return true
     }
 
     private fun updateRenderList(project: Project, virtualFile: VirtualFile, renderList: MutableList<ModuleRenderInfo>) {

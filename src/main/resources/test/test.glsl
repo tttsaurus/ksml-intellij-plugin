@@ -1,6 +1,6 @@
 // @import test_module
 // @import test_module2
-// @import test_modul
+// @import asd
 
 #version 330 core
 

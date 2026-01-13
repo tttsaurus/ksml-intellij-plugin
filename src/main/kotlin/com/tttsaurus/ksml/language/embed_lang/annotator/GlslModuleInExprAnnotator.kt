@@ -16,13 +16,15 @@ import java.awt.Color
 
 class GlslModuleInExprAnnotator : Annotator {
 
-    private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-        "GLSL_MODULE_REF_HIGHLIGHT",
-        TextAttributes().apply {
-            effectType = EffectType.LINE_UNDERSCORE
-            effectColor = Color(166, 210, 255, 120)
-        }
-    )
+    companion object {
+        private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
+            "GLSL_MODULE_REF_HIGHLIGHT",
+            TextAttributes().apply {
+                effectType = EffectType.LINE_UNDERSCORE
+                effectColor = Color(166, 210, 255, 120)
+            }
+        )
+    }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return
