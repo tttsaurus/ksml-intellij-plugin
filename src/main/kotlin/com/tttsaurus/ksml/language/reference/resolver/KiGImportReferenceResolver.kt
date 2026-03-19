@@ -24,10 +24,11 @@ class KiGImportReferenceResolver(
 ) {
 
     override fun resolve(): PsiElement? {
+        val project = element.project
+        if (project.isDisposed) return null
+
         val name = rangeInElement.substring(element.text).trim()
         if (name.isEmpty()) return null
-
-        val project = element.project
 
         if (DumbService.isDumb(project)) return null
 

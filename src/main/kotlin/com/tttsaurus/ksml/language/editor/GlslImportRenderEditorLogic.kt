@@ -155,7 +155,10 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         val virtualFile = FileDocumentManager.getInstance().getFile(document) ?: return
         if (virtualFile.fileType.defaultExtension != "glsl") return
 
-        PsiDocumentManager.getInstance(project).commitDocument(document)
+        val psiManager = PsiDocumentManager.getInstance(project)
+        if (psiManager.isUncommited(document)) {
+            psiManager.commitDocument(document)
+        }
 
         val lastList = editor.getUserData(LAST_RENDER_LIST_KEY)
         val newRenderList = mutableListOf<ModuleRenderInfo>()
