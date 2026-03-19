@@ -34,8 +34,9 @@ class KiGImportReferenceResolver(
 
         val scope = GlobalSearchScope.projectScope(project)
 
-        val files: Collection<VirtualFile> = FileBasedIndex.getInstance()
-            .getContainingFiles(KsmlModuleIndex.NAME, name, scope)
+        val files = runCatching {
+            FileBasedIndex.getInstance().getContainingFiles(KsmlModuleIndex.NAME, name, scope)
+        }.getOrNull() ?: return null
 
         val vFile = files.firstOrNull() ?: return null
         val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return null

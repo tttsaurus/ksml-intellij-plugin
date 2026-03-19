@@ -40,7 +40,7 @@ class KsmlParserDefinition : ParserDefinition {
         TokenSet.create(KsmlTypes.COMMENT)
 
     override fun getStringLiteralElements(): TokenSet =
-        TokenSet.EMPTY
+        TokenSet.create(KsmlTypes.CODE_BLOCK)
 
     override fun createElement(node: ASTNode): PsiElement {
         return KsmlTypes.Factory.createElement(node)

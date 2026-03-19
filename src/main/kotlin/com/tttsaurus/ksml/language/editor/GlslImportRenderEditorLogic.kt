@@ -118,8 +118,9 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
 
         val scope = GlobalSearchScope.projectScope(project)
 
-        val files: Collection<VirtualFile> = FileBasedIndex.getInstance()
-            .getContainingFiles(KsmlModuleIndex.NAME, moduleName, scope)
+        val files: Collection<VirtualFile> = runCatching {
+            FileBasedIndex.getInstance().getContainingFiles(KsmlModuleIndex.NAME, moduleName, scope)
+        }.getOrNull() ?: return null
 
         val vFile = files.firstOrNull() ?: return null
         val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return null

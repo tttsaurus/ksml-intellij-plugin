@@ -29,6 +29,12 @@ public class KsmlKsmlAnnotationImpl extends ASTWrapperPsiElement implements Ksml
 
   @Override
   @Nullable
+  public KsmlCodeDecl getCodeDecl() {
+    return findChildByClass(KsmlCodeDecl.class);
+  }
+
+  @Override
+  @Nullable
   public KsmlExportDecl getExportDecl() {
     return findChildByClass(KsmlExportDecl.class);
   }
