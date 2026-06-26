@@ -1,6 +1,5 @@
 package com.tttsaurus.ksml.language.inject
 
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.InjectedLanguagePlaces
 import com.intellij.psi.LanguageInjector
@@ -10,12 +9,6 @@ import com.tttsaurus.ksml.language.GlslLanguage
 import com.tttsaurus.ksml.language.KsmlLanguage
 
 class GlslInKsmlInjector : LanguageInjector {
-
-    private val LOGGER : Logger = Logger.getInstance(GlslInKsmlInjector::class.java)
-
-    init {
-        LOGGER.info("GlslInKsmlInjector Created")
-    }
 
     override fun getLanguagesToInject(host: PsiLanguageInjectionHost, places: InjectedLanguagePlaces) {
         val codeDecl = host as? KsmlCodeDecl ?: return

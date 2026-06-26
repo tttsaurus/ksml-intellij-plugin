@@ -8,14 +8,16 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.ui.JBColor
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.language.embed_lang.KiGTypes
 import java.awt.Color
 
+@Suppress("Deprecation")
 private val IMPORT_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
     "KIG_IMPORT_HIGHLIGHT",
     TextAttributes().apply {
-        foregroundColor = Color(255, 139, 70)
+        foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
     }
 )
 

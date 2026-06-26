@@ -4,7 +4,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
 import com.intellij.lexer.Lexer
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
@@ -17,12 +16,6 @@ import com.tttsaurus.ksml.language.KsmlFileElementType
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
 
 class KsmlParserDefinition : ParserDefinition {
-
-    private val LOGGER : Logger = Logger.getInstance(KsmlParserDefinition::class.java)
-
-    init {
-        LOGGER.info("KsmlParserDefinition Created")
-    }
 
     override fun createLexer(p0: Project): Lexer =
         KsmlLexerAdapter()

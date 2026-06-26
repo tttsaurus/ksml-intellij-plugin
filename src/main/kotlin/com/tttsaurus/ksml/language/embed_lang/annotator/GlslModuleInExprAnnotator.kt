@@ -12,14 +12,16 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
+import com.intellij.ui.JBColor
 import java.awt.Color
 
+@Suppress("Deprecation")
 private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-    "GLSL_MODULE_REF_HIGHLIGHT",
+    "KIG_MODULE_REF_HIGHLIGHT",
     TextAttributes().apply {
-        foregroundColor = Color(255, 139, 70)
+        foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
         effectType = EffectType.LINE_UNDERSCORE
-        effectColor = Color(166, 210, 255, 120)
+        effectColor = JBColor(Color(166, 210, 255, 120), Color(166, 210, 255, 120))
     }
 )
 

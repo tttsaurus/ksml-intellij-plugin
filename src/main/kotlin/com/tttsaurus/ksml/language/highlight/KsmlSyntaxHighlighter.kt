@@ -1,7 +1,6 @@
 package com.tttsaurus.ksml.language.highlight
 
 import com.intellij.lexer.Lexer
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
@@ -10,12 +9,6 @@ import com.tttsaurus.ksml.grammar.psi.KsmlTypes
 import com.tttsaurus.ksml.language.parser.KsmlLexerAdapter
 
 class KsmlSyntaxHighlighter : SyntaxHighlighter {
-
-    private val LOGGER : Logger = Logger.getInstance(KsmlSyntaxHighlighter::class.java)
-
-    init {
-        LOGGER.info("KsmlSyntaxHighlighter Created")
-    }
 
     override fun getHighlightingLexer(): Lexer =
         KsmlLexerAdapter()

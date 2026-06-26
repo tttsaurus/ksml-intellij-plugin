@@ -2,7 +2,7 @@ package com.tttsaurus.ksml.language.editor
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.DocumentEvent
@@ -20,16 +20,10 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
-import com.tttsaurus.ksml.language.index.KsmlModuleIndex
+import com.tttsaurus.ksml.language.index.NAME
 import kotlin.math.max
 
 abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
-    protected val LOGGER: Logger =
-        Logger.getInstance(GlslImportRenderEditorLogic::class.java)
-
-    init {
-        LOGGER.info("GlslImportRenderEditorLogic Created")
-    }
 
     private val LAST_RENDER_LIST_KEY: Key<MutableList<ModuleRenderInfo>> =
         Key.create("LAST_RENDER_LIST")
@@ -119,7 +113,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         val scope = GlobalSearchScope.projectScope(project)
 
         val files: Collection<VirtualFile> = runCatching {
-            FileBasedIndex.getInstance().getContainingFiles(KsmlModuleIndex.NAME, moduleName, scope)
+            FileBasedIndex.getInstance().getContainingFiles(NAME, moduleName, scope)
         }.getOrNull() ?: return null
 
         val vFile = files.firstOrNull() ?: return null
@@ -192,7 +186,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
                 if (editor.isDisposed) return@invokeLater
 
                 ApplicationManager.getApplication().runWriteAction {
-                    LOGGER.info("GlslImportRenderEditorLogic: update renderers")
+                    thisLogger().info("GlslImportRenderEditorLogic: update renderers")
                     applyRenderersWriteSafe(editor)
                 }
             },
