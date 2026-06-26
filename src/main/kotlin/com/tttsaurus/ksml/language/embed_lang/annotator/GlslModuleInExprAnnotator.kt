@@ -14,21 +14,18 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import java.awt.Color
 
-class GlslModuleInExprAnnotator : Annotator {
-
-    companion object {
-        private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-            "GLSL_MODULE_REF_HIGHLIGHT",
-            TextAttributes().apply {
-                foregroundColor = Color(255, 139, 70)
-                effectType = EffectType.LINE_UNDERSCORE
-                effectColor = Color(166, 210, 255, 120)
-            }
-        )
-
-        private val IMPORT_REGEX =
-            Regex("""//\s*@import\s+([a-zA-Z_][a-zA-Z0-9_]*)""")
+private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
+    "GLSL_MODULE_REF_HIGHLIGHT",
+    TextAttributes().apply {
+        foregroundColor = Color(255, 139, 70)
+        effectType = EffectType.LINE_UNDERSCORE
+        effectColor = Color(166, 210, 255, 120)
     }
+)
+
+private val IMPORT_REGEX = Regex("""//\s*@import\s+([a-zA-Z_][a-zA-Z0-9_]*)""")
+
+class GlslModuleInExprAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return

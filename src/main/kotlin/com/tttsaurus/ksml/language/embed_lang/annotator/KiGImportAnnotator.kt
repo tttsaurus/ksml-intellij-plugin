@@ -12,16 +12,14 @@ import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.language.embed_lang.KiGTypes
 import java.awt.Color
 
-class KiGImportAnnotator : Annotator {
-
-    companion object {
-        private val IMPORT_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-            "KIG_IMPORT_HIGHLIGHT",
-            TextAttributes().apply {
-                foregroundColor = Color(255, 139, 70)
-            }
-        )
+private val IMPORT_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
+    "KIG_IMPORT_HIGHLIGHT",
+    TextAttributes().apply {
+        foregroundColor = Color(255, 139, 70)
     }
+)
+
+class KiGImportAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return
