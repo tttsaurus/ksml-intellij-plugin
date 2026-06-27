@@ -48,6 +48,26 @@ public class _KsmlParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // AT CODE CODE_BLOCK EOL?
+  public static boolean code_decl(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "code_decl")) return false;
+    if (!nextTokenIs(b, AT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AT, CODE, CODE_BLOCK);
+    r = r && code_decl_3(b, l + 1);
+    exit_section_(b, m, CODE_DECL, r);
+    return r;
+  }
+
+  // EOL?
+  private static boolean code_decl_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "code_decl_3")) return false;
+    consumeToken(b, EOL);
+    return true;
+  }
+
+  /* ********************************************************** */
   // AT EXPORT IDENTIFIER? EOL
   public static boolean export_decl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "export_decl")) return false;
@@ -158,6 +178,7 @@ public class _KsmlParser implements PsiParser, LightPsiParser {
   //                   | gl_requires_decl
   //                   | export_decl
   //                   | feature_decl
+  //                   | code_decl
   public static boolean ksml_annotation(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ksml_annotation")) return false;
     if (!nextTokenIs(b, AT)) return false;
@@ -169,6 +190,7 @@ public class _KsmlParser implements PsiParser, LightPsiParser {
     if (!r) r = gl_requires_decl(b, l + 1);
     if (!r) r = export_decl(b, l + 1);
     if (!r) r = feature_decl(b, l + 1);
+    if (!r) r = code_decl(b, l + 1);
     exit_section_(b, m, KSML_ANNOTATION, r);
     return r;
   }

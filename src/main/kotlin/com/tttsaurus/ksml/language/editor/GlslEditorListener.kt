@@ -1,5 +1,6 @@
 package com.tttsaurus.ksml.language.editor
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.Editor
@@ -12,10 +13,17 @@ import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.ui.JBColor
 import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
 import java.awt.Color
+
+private val REF_ATTRIBUTE = TextAttributes().apply {
+    foregroundColor = JBColor(Color(80, 160, 255), Color(80, 160, 255))
+    effectType = EffectType.LINE_UNDERSCORE
+    effectColor = JBColor(Color(80, 160, 255), Color(80, 160, 255))
+}
 
 class GlslEditorListener : GlslImportRenderEditorLogic() {
 
@@ -42,7 +50,7 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
 
         editor.putUserData(GLSL_DOCUMENT_LISTENER_KEY, listener)
         editor.document.addDocumentListener(listener)
-        LOGGER.info("GlslEditorListener: document listener installed")
+        thisLogger().info("GlslEditorListener: document listener installed")
 
         updateRenderers(editor, null)
     }
@@ -54,19 +62,11 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
             editor.document.removeDocumentListener(listener)
         }
         editor.putUserData(GLSL_DOCUMENT_LISTENER_KEY, null)
-        LOGGER.info("GlslEditorListener: document listener diposed")
+        thisLogger().info("GlslEditorListener: document listener disposed")
 
         disposeRenderers(editor)
 
-        LOGGER.info("GlslEditorListener: renderers disposed")
-    }
-
-    companion object {
-        private val REF_ATTRIBUTE = TextAttributes().apply {
-            foregroundColor = Color(80, 160, 255)
-            effectType = EffectType.LINE_UNDERSCORE
-            effectColor = Color(80, 160, 255)
-        }
+        thisLogger().info("GlslEditorListener: renderers disposed")
     }
 
     override fun installRenderers(editor: Editor, renderList: MutableList<ModuleRenderInfo>) {

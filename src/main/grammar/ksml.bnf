@@ -9,6 +9,9 @@
   elementTypeClass="com.tttsaurus.ksml.language.KsmlElementType"
   tokenTypeClass="com.tttsaurus.ksml.language.KsmlTokenType"
 
+  mixin("code_decl")="com.tttsaurus.ksml.language.parser.KsmlCodeDeclMixin"
+  implements("code_decl")="com.intellij.psi.PsiLanguageInjectionHost"
+
   tokens = [
     AT='@'
 
@@ -18,9 +21,11 @@
     GL_VERSION='gl_version'
     GL_REQUIRES='gl_requires'
     FEATURE='feature'
+    CODE='code'
 
     IDENTIFIER='regexp:[A-Za-z_][A-Za-z_0-9]*'
     NUMBER='regexp:[0-9]+'
+    CODE_BLOCK='regexp:"""[\s\S]*?"""'
 
     EOL = 'regexp:\r?\n'
     WHITE_SPACE='regexp:[ \t]+'
@@ -43,6 +48,7 @@ ksml_annotation ::= module_decl
                   | gl_requires_decl
                   | export_decl
                   | feature_decl
+                  | code_decl
 
 module_decl ::= AT MODULE IDENTIFIER EOL
 
@@ -55,3 +61,5 @@ gl_requires_decl ::= AT GL_REQUIRES NUMBER IDENTIFIER? EOL
 feature_decl ::= AT FEATURE IDENTIFIER EOL
 
 export_decl ::= AT EXPORT IDENTIFIER? EOL
+
+code_decl ::= AT CODE CODE_BLOCK EOL?

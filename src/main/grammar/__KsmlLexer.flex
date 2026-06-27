@@ -27,6 +27,7 @@ WHITE_SPACE=\s+
 
 IDENTIFIER=[A-Za-z_][A-Za-z_0-9]*
 NUMBER=[0-9]+
+CODE_BLOCK=\"\"\"[\s\S]*?\"\"\"
 EOL=\r?\n
 WHITE_SPACE=[ \t]+
 COMMENT="//"[^\n]*|"/"\*([^*]|\*+[^*/])*\*+"/"
@@ -42,9 +43,11 @@ COMMENT="//"[^\n]*|"/"\*([^*]|\*+[^*/])*\*+"/"
   "gl_version"        { return GL_VERSION; }
   "gl_requires"       { return GL_REQUIRES; }
   "feature"           { return FEATURE; }
+  "code"              { return CODE; }
 
   {IDENTIFIER}        { return IDENTIFIER; }
   {NUMBER}            { return NUMBER; }
+  {CODE_BLOCK}        { return CODE_BLOCK; }
   {EOL}               { return EOL; }
   {WHITE_SPACE}       { return WHITE_SPACE; }
   {COMMENT}           { return COMMENT; }
