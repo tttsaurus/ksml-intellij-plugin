@@ -1,5 +1,6 @@
 package com.tttsaurus.ksml.language.editor
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.editor.Inlay
@@ -14,10 +15,12 @@ import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.ui.JBColor
+import com.intellij.util.concurrency.EdtExecutorService
 import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
 import java.awt.Color
+import java.util.concurrent.TimeUnit
 
 private val REF_ATTRIBUTE = TextAttributes().apply {
     foregroundColor = JBColor(Color(80, 160, 255), Color(80, 160, 255))
@@ -52,7 +55,14 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
         editor.document.addDocumentListener(listener)
         thisLogger().info("GlslEditorListener: document listener installed")
 
-        updateRenderers(editor, null)
+        EdtExecutorService.getScheduledExecutorInstance()
+            .schedule({
+                ApplicationManager.getApplication().invokeLater {
+                    if (!editor.isDisposed) {
+                        updateRenderers(editor, null, true)
+                    }
+                }
+            }, 500, TimeUnit.MILLISECONDS)
     }
 
     override fun editorReleased(event: EditorFactoryEvent) {

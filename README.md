@@ -11,7 +11,7 @@
 - Install plugin `GLSL` by Roi Mordechay in your sandbox IDE
 - `./gradlew build` (saves jars to `build/libs`)
 
-**Update Parser & Lexer**:
+**Update Parser & Lexer**
 - Modify `src/main/grammar/ksml.bnf` to update BNF
 - Update parser code `src/main/java/...`:<br>
   Right Click `ksml.bnf` ⟶ Open Menu ⟶ `Generate Parser Code`

@@ -23,6 +23,14 @@ import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
 import com.tttsaurus.ksml.language.index.NAME
 import kotlin.math.max
 
+data class ModuleRenderInfo(
+    val moduleExists: Boolean,
+    val moduleName: String,
+    val moduleHint: String,
+    val hintOffset: Int,
+    val importRange: IntRange
+)
+
 abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
 
     private val LAST_RENDER_LIST_KEY: Key<MutableList<ModuleRenderInfo>> =
@@ -51,7 +59,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         return true
     }
 
-    private fun needsUpdate(document: Document, project: Project, lastList: MutableList<ModuleRenderInfo>?, event: DocumentEvent?): Boolean {
+    private fun needsUpdate(document: Document, lastList: MutableList<ModuleRenderInfo>?, event: DocumentEvent?): Boolean {
         var update = false
 
         if (event != null && lastList != null) {
@@ -170,14 +178,12 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         }
     }
 
-    protected fun updateRenderers(editor: Editor, event: DocumentEvent?) {
-        val project = editor.project ?: return
+    protected fun updateRenderers(editor: Editor, event: DocumentEvent?, force: Boolean = false) {
         val document = editor.document
 
         // early escape
-        if (!needsUpdate(
+        if (!force && !needsUpdate(
                 document,
-                project,
                 editor.getUserData(LAST_RENDER_LIST_KEY),
                 event)) return
 
@@ -194,11 +200,3 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         )
     }
 }
-
-data class ModuleRenderInfo(
-    val moduleExists: Boolean,
-    val moduleName: String,
-    val moduleHint: String,
-    val hintOffset: Int,
-    val importRange: IntRange
-)
