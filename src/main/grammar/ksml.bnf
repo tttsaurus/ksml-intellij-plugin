@@ -25,7 +25,7 @@
 
     IDENTIFIER='regexp:[A-Za-z_][A-Za-z_0-9]*'
     NUMBER='regexp:[0-9]+'
-    CODE_BLOCK='regexp:"""[\s\S]*?"""'
+    CODE_BLOCK='regexp:"""([^"]|("[^"])|(""[^"]))*"""'
 
     EOL = 'regexp:\r?\n'
     WHITE_SPACE='regexp:[ \t]+'

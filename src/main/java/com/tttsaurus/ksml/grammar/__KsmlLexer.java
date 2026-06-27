@@ -135,7 +135,7 @@ public class __KsmlLexer implements FlexLexer {
     "\0\u0294\0\u02b2\0\u02d0\0\u02ee\0\u030c\0\u032a\0\u0348\0\u0366"+
     "\0\u0384\0\u03a2\0\36\0\322\0\u03c0\0\u03de\0\u03fc\0\u041a"+
     "\0\u0438\0\u0456\0\u0474\0\u0492\0\u04b0\0\u04ce\0\u04ec\0\u050a"+
-    "\0\u0528\0\u0474\0\322\0\u0546\0\u0564\0\u0582\0\322\0\u05a0"+
+    "\0\u0528\0\36\0\322\0\u0546\0\u0564\0\u0582\0\322\0\u05a0"+
     "\0\322\0\u05be\0\u05dc\0\u05fa\0\u0618\0\u0636\0\322\0\u0654"+
     "\0\u0672\0\u0690\0\322\0\322";
 
@@ -243,7 +243,8 @@ public class __KsmlLexer implements FlexLexer {
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
     "\1\0\1\11\1\1\1\11\4\1\1\11\7\1\2\0"+
-    "\7\1\2\0\6\1\1\0\1\11\7\1\1\0\31\1";
+    "\7\1\2\0\6\1\1\0\1\11\7\1\1\0\6\1"+
+    "\1\11\22\1";
 
   private static int [] zzUnpackAttribute() {
     int [] result = new int[68];

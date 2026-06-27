@@ -27,7 +27,7 @@ WHITE_SPACE=\s+
 
 IDENTIFIER=[A-Za-z_][A-Za-z_0-9]*
 NUMBER=[0-9]+
-CODE_BLOCK=\"\"\"[\s\S]*?\"\"\"
+CODE_BLOCK=\"\"\"([^\"]|(\"[^\"])|(\"\"[^\"]))*\"\"\"
 EOL=\r?\n
 WHITE_SPACE=[ \t]+
 COMMENT="//"[^\n]*|"/"\*([^*]|\*+[^*/])*\*+"/"
