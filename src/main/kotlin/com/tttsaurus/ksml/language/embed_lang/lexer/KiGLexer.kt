@@ -1,14 +1,11 @@
 package com.tttsaurus.ksml.language.embed_lang.lexer
 
 import com.intellij.lexer.LexerBase
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.tttsaurus.ksml.language.embed_lang.KiGTypes
 
 class KiGLexer : LexerBase() {
-
-    private val LOGGER : Logger = Logger.getInstance(KiGLexer::class.java)
 
     private lateinit var buffer: CharSequence
     private var start = 0

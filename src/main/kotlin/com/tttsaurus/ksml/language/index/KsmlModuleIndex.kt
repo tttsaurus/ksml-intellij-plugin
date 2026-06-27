@@ -1,19 +1,17 @@
 package com.tttsaurus.ksml.language.index
 
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.indexing.*
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.intellij.util.io.KeyDescriptor
 import com.intellij.util.io.VoidDataExternalizer
 import java.util.regex.Pattern
 
+val NAME: ID<String, Void> = ID.create("ksml.module.index")
+
+private val MODULE_PATTERN: Pattern =
+    Pattern.compile("""(?m)^\s*@module\s+([A-Za-z_][A-Za-z0-9_]*)\b""")
+
 class KsmlModuleIndex : FileBasedIndexExtension<String, Void>() {
-
-    private val LOGGER : Logger = Logger.getInstance(KsmlModuleIndex::class.java)
-
-    init {
-        LOGGER.info("KsmlModuleIndex Created")
-    }
 
     override fun getName(): ID<String, Void> = NAME
 
@@ -47,12 +45,5 @@ class KsmlModuleIndex : FileBasedIndexExtension<String, Void>() {
 
         @Suppress("UNCHECKED_CAST")
         map as Map<String, Void>
-    }
-
-    companion object {
-        val NAME: ID<String, Void> = ID.create("ksml.module.index")
-
-        private val MODULE_PATTERN: Pattern =
-            Pattern.compile("""(?m)^\s*@module\s+([A-Za-z_][A-Za-z0-9_]*)\b""")
     }
 }

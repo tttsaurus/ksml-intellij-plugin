@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.ui.JBColor
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -44,7 +45,7 @@ class BadgeRenderer(
         val metrics = g2.fontMetrics
         val cornerRadius = (0.45f * metrics.height).toInt()
 
-        g2.color = Color(255, 136, 64, 200)
+        g2.color = JBColor(Color(255, 136, 64, 200), Color(255, 136, 64, 200))
         g2.fillRoundRect(
             targetRegion.x + OUTER_PADDING_X,
             targetRegion.y + 2,
@@ -58,7 +59,7 @@ class BadgeRenderer(
                 (targetRegion.height - metrics.height) / 2 +
                 metrics.ascent
 
-        g2.color = Color.WHITE
+        g2.color = JBColor(Color.WHITE, Color.WHITE)
         g2.drawString(
             text,
             targetRegion.x + OUTER_PADDING_X + INNER_PADDING_X,

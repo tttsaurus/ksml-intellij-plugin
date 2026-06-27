@@ -2,7 +2,6 @@ package com.tttsaurus.ksml.language.reference.resolver
 
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReferenceBase
@@ -11,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlModuleDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
-import com.tttsaurus.ksml.language.index.KsmlModuleIndex
+import com.tttsaurus.ksml.language.index.NAME
 
 class KiGImportReferenceResolver(
     element: PsiElement,
@@ -24,17 +23,19 @@ class KiGImportReferenceResolver(
 ) {
 
     override fun resolve(): PsiElement? {
+        val project = element.project
+        if (project.isDisposed) return null
+
         val name = rangeInElement.substring(element.text).trim()
         if (name.isEmpty()) return null
-
-        val project = element.project
 
         if (DumbService.isDumb(project)) return null
 
         val scope = GlobalSearchScope.projectScope(project)
 
-        val files: Collection<VirtualFile> = FileBasedIndex.getInstance()
-            .getContainingFiles(KsmlModuleIndex.NAME, name, scope)
+        val files = runCatching {
+            FileBasedIndex.getInstance().getContainingFiles(NAME, name, scope)
+        }.getOrNull() ?: return null
 
         val vFile = files.firstOrNull() ?: return null
         val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return null
