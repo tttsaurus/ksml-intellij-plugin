@@ -62,7 +62,16 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
                         updateRenderers(editor, null, true)
                     }
                 }
-            }, 500, TimeUnit.MILLISECONDS)
+            }, 100, TimeUnit.MILLISECONDS)
+
+        EdtExecutorService.getScheduledExecutorInstance()
+            .schedule({
+                ApplicationManager.getApplication().invokeLater {
+                    if (!editor.isDisposed) {
+                        updateRenderers(editor, null, true)
+                    }
+                }
+            }, 3, TimeUnit.SECONDS)
     }
 
     override fun editorReleased(event: EditorFactoryEvent) {

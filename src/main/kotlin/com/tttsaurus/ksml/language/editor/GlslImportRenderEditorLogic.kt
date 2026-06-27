@@ -1,13 +1,12 @@
 package com.tttsaurus.ksml.language.editor
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
-import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -18,9 +17,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
 import com.tttsaurus.ksml.language.index.NAME
+import java.util.concurrent.Callable
 import kotlin.math.max
 
 data class ModuleRenderInfo(
@@ -77,9 +78,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         return update
     }
 
-    private fun updateRenderList(project: Project, virtualFile: VirtualFile, renderList: MutableList<ModuleRenderInfo>) {
-        val psiFile = PsiManager.getInstance(project).findFile(virtualFile) ?: return
-
+    private fun updateRenderList(project: Project, psiFile: PsiFile, renderList: MutableList<ModuleRenderInfo>) {
         val comments = PsiTreeUtil.findChildrenOfType(psiFile, PsiComment::class.java)
             .filter { it.text.contains("@import") }
 
@@ -152,51 +151,61 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         return "GL$version$profile"
     }
 
-    private fun applyRenderersWriteSafe(editor: Editor) {
-        val project = editor.project ?: return
-        val document = editor.document
-        val virtualFile = FileDocumentManager.getInstance().getFile(document) ?: return
-        if (virtualFile.fileType.defaultExtension != "glsl") return
-
+    private fun commitDocument(project: Project, document: Document) {
         val psiManager = PsiDocumentManager.getInstance(project)
         if (psiManager.isUncommited(document)) {
             psiManager.commitDocument(document)
         }
+    }
 
-        val lastList = editor.getUserData(LAST_RENDER_LIST_KEY)
-        val newRenderList = mutableListOf<ModuleRenderInfo>()
+    private fun buildRenderList(project: Project, document: Document): MutableList<ModuleRenderInfo> {
+        val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document)
+            ?: return mutableListOf()
+        val renderList = mutableListOf<ModuleRenderInfo>()
+        updateRenderList(project, psiFile, renderList)
+        return renderList
+    }
 
-        updateRenderList(project, virtualFile, newRenderList)
+    private fun applyRenderList(editor: Editor, renderList: MutableList<ModuleRenderInfo>) {
+        val last = editor.getUserData(LAST_RENDER_LIST_KEY)
 
-        if (lastList == newRenderList) return
+        if (last == renderList) return
 
-        editor.putUserData(LAST_RENDER_LIST_KEY, newRenderList)
+        editor.putUserData(LAST_RENDER_LIST_KEY, renderList)
 
         disposeRenderers(editor)
-        if (newRenderList.isNotEmpty()) {
-            installRenderers(editor, newRenderList)
+
+        if (renderList.isNotEmpty()) {
+            installRenderers(editor, renderList)
         }
     }
 
     protected fun updateRenderers(editor: Editor, event: DocumentEvent?, force: Boolean = false) {
+        val project = editor.project ?: return
         val document = editor.document
 
         // early escape
         if (!force && !needsUpdate(
                 document,
                 editor.getUserData(LAST_RENDER_LIST_KEY),
-                event)) return
+                event
+            )
+        ) return
 
-        ApplicationManager.getApplication().invokeLater(
-            {
-                if (editor.isDisposed) return@invokeLater
+        ReadAction
+            .nonBlocking(Callable<MutableList<ModuleRenderInfo>> {
+                if (editor.isDisposed) return@Callable mutableListOf()
 
-                ApplicationManager.getApplication().runWriteAction {
-                    thisLogger().info("GlslImportRenderEditorLogic: update renderers")
-                    applyRenderersWriteSafe(editor)
-                }
-            },
-            ModalityState.defaultModalityState()
-        )
+                commitDocument(project, document)
+                buildRenderList(project, document)
+            })
+            .expireWhen { editor.isDisposed }
+            .finishOnUiThread(ModalityState.defaultModalityState()) { renderList ->
+                if (editor.isDisposed) return@finishOnUiThread
+
+                thisLogger().info("GlslImportRenderEditorLogic: update renderers")
+                applyRenderList(editor, renderList)
+            }
+            .submit(AppExecutorUtil.getAppExecutorService())
     }
 }
