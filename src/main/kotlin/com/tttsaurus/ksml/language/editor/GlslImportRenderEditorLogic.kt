@@ -1,5 +1,6 @@
 package com.tttsaurus.ksml.language.editor
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.thisLogger
@@ -151,7 +152,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         return "GL$version$profile"
     }
 
-    private fun commitDocument(project: Project, document: Document) {
+    private fun commitDocumentIfNeeded(project: Project, document: Document) {
         val psiManager = PsiDocumentManager.getInstance(project)
         if (psiManager.isUncommited(document)) {
             psiManager.commitDocument(document)
@@ -192,20 +193,22 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
             )
         ) return
 
-        ReadAction
-            .nonBlocking(Callable<MutableList<ModuleRenderInfo>> {
-                if (editor.isDisposed) return@Callable mutableListOf()
+        ApplicationManager.getApplication().invokeLater {
+            commitDocumentIfNeeded(project, document)
+            ReadAction
+                .nonBlocking(Callable<MutableList<ModuleRenderInfo>> {
+                    if (editor.isDisposed) return@Callable mutableListOf()
 
-                commitDocument(project, document)
-                buildRenderList(project, document)
-            })
-            .expireWhen { editor.isDisposed }
-            .finishOnUiThread(ModalityState.defaultModalityState()) { renderList ->
-                if (editor.isDisposed) return@finishOnUiThread
+                    buildRenderList(project, document)
+                })
+                .expireWhen { editor.isDisposed }
+                .finishOnUiThread(ModalityState.defaultModalityState()) { renderList ->
+                    if (editor.isDisposed) return@finishOnUiThread
 
-                thisLogger().info("GlslImportRenderEditorLogic: update renderers")
-                applyRenderList(editor, renderList)
-            }
-            .submit(AppExecutorUtil.getAppExecutorService())
+                    thisLogger().info("GlslImportRenderEditorLogic: update renderers")
+                    applyRenderList(editor, renderList)
+                }
+                .submit(AppExecutorUtil.getAppExecutorService())
+        }
     }
 }

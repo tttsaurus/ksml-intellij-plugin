@@ -9,7 +9,7 @@ import com.intellij.util.PsiErrorElementUtil
 import com.tttsaurus.ksml.services.MyProjectService
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
-class MyPluginTest : BasePlatformTestCase() {
+class DefaultExampleTest : BasePlatformTestCase() {
 
     fun testXMLFile() {
         val psiFile = myFixture.configureByText(XmlFileType.INSTANCE, "<foo>bar</foo>")
