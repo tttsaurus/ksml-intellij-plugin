@@ -63,9 +63,5 @@
                 language="KsmlInGlsl"
                 implementationClass="com.tttsaurus.ksml.language.embed_lang.parser.KiGParserDefinition"/>
 
-<!--        <lang.syntaxHighlighterFactory-->
-<!--                language="KsmlInGlsl"-->
-<!--                implementationClass="com.tttsaurus.ksml.language.embed_lang.highlight.KiGSyntaxHighlighterFactory"/>-->
-
     </extensions>
 </idea-plugin>

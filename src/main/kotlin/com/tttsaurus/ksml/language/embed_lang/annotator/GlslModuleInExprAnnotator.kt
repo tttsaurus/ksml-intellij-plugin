@@ -17,7 +17,7 @@ import java.awt.Color
 
 @Suppress("Deprecation")
 private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-    "KIG_MODULE_REF_HIGHLIGHT",
+    "GLSL_MODULE_REF_HIGHLIGHT",
     TextAttributes().apply {
         foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
         effectType = EffectType.LINE_UNDERSCORE
