@@ -4,14 +4,16 @@ package com.tttsaurus.ksml.grammar.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
+import com.tttsaurus.ksml.language.psi.KsmlCodeDeclInterface;
 
-public interface KsmlCodeDecl extends PsiLanguageInjectionHost {
+public interface KsmlCodeDecl extends KsmlCodeDeclInterface {
 
   @NotNull
   PsiElement getCodeBlock();
 
   @Nullable
   PsiElement getEol();
+
+  @Nullable String getFunctionName();
 
 }

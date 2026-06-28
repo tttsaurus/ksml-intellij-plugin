@@ -7,11 +7,12 @@ import com.intellij.lang.ASTNode;
 import com.tttsaurus.ksml.language.KsmlElementType;
 import com.tttsaurus.ksml.language.KsmlTokenType;
 import com.tttsaurus.ksml.grammar.psi.impl.*;
+import com.tttsaurus.ksml.language.stub.KsmlCodeDeclElementType;
 
 public interface KsmlTypes {
 
   IElementType CODE_COMMENT = new KsmlElementType("CODE_COMMENT");
-  IElementType CODE_DECL = new KsmlElementType("CODE_DECL");
+  IElementType CODE_DECL = KsmlCodeDeclElementType.INSTANCE;
   IElementType EXPORT_DECL = new KsmlElementType("EXPORT_DECL");
   IElementType FEATURE_DECL = new KsmlElementType("FEATURE_DECL");
   IElementType GL_REQUIRES_DECL = new KsmlElementType("GL_REQUIRES_DECL");

@@ -63,5 +63,7 @@
                 language="KsmlInGlsl"
                 implementationClass="com.tttsaurus.ksml.language.embed_lang.parser.KiGParserDefinition"/>
 
+        <stubIndex implementation="com.tttsaurus.ksml.language.index.KsmlFunctionIndex"/>
+
     </extensions>
 </idea-plugin>

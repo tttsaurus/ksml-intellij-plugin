@@ -21,7 +21,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
-import com.tttsaurus.ksml.language.index.NAME
+import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
 import java.util.concurrent.Callable
 import kotlin.math.max
 
@@ -121,7 +121,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         val scope = GlobalSearchScope.projectScope(project)
 
         val files: Collection<VirtualFile> = runCatching {
-            FileBasedIndex.getInstance().getContainingFiles(NAME, moduleName, scope)
+            FileBasedIndex.getInstance().getContainingFiles(MODULE_INDEX_NAME, moduleName, scope)
         }.getOrNull() ?: return null
 
         val vFile = files.firstOrNull() ?: return null

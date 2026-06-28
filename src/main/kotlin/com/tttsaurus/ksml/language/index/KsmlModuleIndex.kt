@@ -6,14 +6,14 @@ import com.intellij.util.io.KeyDescriptor
 import com.intellij.util.io.VoidDataExternalizer
 import java.util.regex.Pattern
 
-val NAME: ID<String, Void> = ID.create("ksml.module.index")
+val MODULE_INDEX_NAME: ID<String, Void> = ID.create("ksml.module.index")
 
 private val MODULE_PATTERN: Pattern =
     Pattern.compile("""(?m)^\s*@module\s+([A-Za-z_][A-Za-z0-9_]*)\b""")
 
 class KsmlModuleIndex : FileBasedIndexExtension<String, Void>() {
 
-    override fun getName(): ID<String, Void> = NAME
+    override fun getName(): ID<String, Void> = MODULE_INDEX_NAME
 
     override fun getVersion(): Int = 1
 

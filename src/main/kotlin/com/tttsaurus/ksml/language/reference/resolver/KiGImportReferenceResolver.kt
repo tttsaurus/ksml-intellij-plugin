@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlModuleDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
-import com.tttsaurus.ksml.language.index.NAME
+import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
 
 class KiGImportReferenceResolver(
     element: PsiElement,
@@ -34,7 +34,7 @@ class KiGImportReferenceResolver(
         val scope = GlobalSearchScope.projectScope(project)
 
         val files = runCatching {
-            FileBasedIndex.getInstance().getContainingFiles(NAME, name, scope)
+            FileBasedIndex.getInstance().getContainingFiles(MODULE_INDEX_NAME, name, scope)
         }.getOrNull() ?: return null
 
         val vFile = files.firstOrNull() ?: return null

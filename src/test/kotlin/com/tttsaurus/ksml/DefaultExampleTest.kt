@@ -8,8 +8,10 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
 import com.tttsaurus.ksml.services.MyProjectService
 
-@TestDataPath("\$CONTENT_ROOT/src/test/testData")
+@TestDataPath($$"$CONTENT_ROOT/src/test/testData")
 class DefaultExampleTest : BasePlatformTestCase() {
+
+    override fun getTestDataPath() = "src/test/testData/rename"
 
     fun testXMLFile() {
         val psiFile = myFixture.configureByText(XmlFileType.INSTANCE, "<foo>bar</foo>")
@@ -34,6 +36,4 @@ class DefaultExampleTest : BasePlatformTestCase() {
 
         assertNotSame(projectService.getRandomNumber(), projectService.getRandomNumber())
     }
-
-    override fun getTestDataPath() = "src/test/testData/rename"
 }

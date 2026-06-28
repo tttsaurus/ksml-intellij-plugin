@@ -12,8 +12,8 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import com.tttsaurus.ksml.language.KsmlFile
-import com.tttsaurus.ksml.language.KsmlFileElementType
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
+import com.tttsaurus.ksml.language.stub.KsmlFileStubElementType
 
 class KsmlParserDefinition : ParserDefinition {
 
@@ -24,7 +24,7 @@ class KsmlParserDefinition : ParserDefinition {
         KsmlParserAdapter()
 
     override fun getFileNodeType(): IFileElementType =
-        KsmlFileElementType.INSTANCE
+        KsmlFileStubElementType
 
     override fun getWhitespaceTokens(): TokenSet =
         TokenSet.create(TokenType.WHITE_SPACE)

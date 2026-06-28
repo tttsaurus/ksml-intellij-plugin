@@ -8,13 +8,19 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
-import com.tttsaurus.ksml.language.parser.KsmlCodeDeclMixin;
+import com.tttsaurus.ksml.language.psi.KsmlCodeDeclMixin;
 import com.tttsaurus.ksml.grammar.psi.*;
+import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub;
+import com.intellij.psi.stubs.IStubElementType;
 
 public class KsmlCodeDeclImpl extends KsmlCodeDeclMixin implements KsmlCodeDecl {
 
   public KsmlCodeDeclImpl(@NotNull ASTNode node) {
     super(node);
+  }
+
+  public KsmlCodeDeclImpl(@NotNull KsmlCodeDeclStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull KsmlVisitor visitor) {

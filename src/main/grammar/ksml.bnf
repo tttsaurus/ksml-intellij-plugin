@@ -9,8 +9,8 @@
   elementTypeClass="com.tttsaurus.ksml.language.KsmlElementType"
   tokenTypeClass="com.tttsaurus.ksml.language.KsmlTokenType"
 
-  mixin("code_decl")="com.tttsaurus.ksml.language.parser.KsmlCodeDeclMixin"
-  implements("code_decl")="com.intellij.psi.PsiLanguageInjectionHost"
+  mixin("code_decl")="com.tttsaurus.ksml.language.psi.KsmlCodeDeclMixin"
+  implements("code_decl")="com.tttsaurus.ksml.language.psi.KsmlCodeDeclInterface"
 
   tokens = [
     AT='@'
@@ -63,3 +63,6 @@ feature_decl ::= AT FEATURE IDENTIFIER EOL
 export_decl ::= AT EXPORT IDENTIFIER? EOL
 
 code_decl ::= AT CODE CODE_BLOCK EOL?
+{
+  methods=[getFunctionName]
+}

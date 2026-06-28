@@ -4,7 +4,7 @@ package com.tttsaurus.ksml.grammar.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
+import com.tttsaurus.ksml.language.psi.KsmlCodeDeclInterface;
 
 public class KsmlVisitor extends PsiElementVisitor {
 
@@ -13,7 +13,7 @@ public class KsmlVisitor extends PsiElementVisitor {
   }
 
   public void visitCodeDecl(@NotNull KsmlCodeDecl o) {
-    visitPsiLanguageInjectionHost(o);
+    visitCodeDeclInterface(o);
   }
 
   public void visitExportDecl(@NotNull KsmlExportDecl o) {
@@ -48,8 +48,8 @@ public class KsmlVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitPsiLanguageInjectionHost(@NotNull PsiLanguageInjectionHost o) {
-    visitElement(o);
+  public void visitCodeDeclInterface(@NotNull KsmlCodeDeclInterface o) {
+    visitPsiElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {
