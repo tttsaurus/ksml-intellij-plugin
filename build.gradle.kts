@@ -201,7 +201,7 @@ abstract class PatchGrammarKitTask : DefaultTask() {
             }
 
             fileKsmlTypes.writeText(text)
-            logger.lifecycle("Patched KsmlTypes.java")
+            logger.lifecycle("Patched KsmlTypes.java: " + fileKsmlTypes.absolutePath)
         }
 
         // patch KsmlCodeDeclImpl.java
@@ -251,7 +251,7 @@ $ctor
             }
 
             fileKsmlCodeDeclImpl.writeText(text)
-            logger.lifecycle("Patched KsmlCodeDeclImpl.java")
+            logger.lifecycle("Patched KsmlCodeDeclImpl.java: " + fileKsmlCodeDeclImpl.absolutePath)
         }
     }
 }
