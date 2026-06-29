@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import com.tttsaurus.ksml.language.KsmlElementType;
 import com.tttsaurus.ksml.language.KsmlTokenType;
-import com.tttsaurus.ksml.grammar.psi.impl.*;
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclElementType;
+import com.tttsaurus.ksml.grammar.psi.impl.*;
 
 public interface KsmlTypes {
 

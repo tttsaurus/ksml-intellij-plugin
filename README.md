@@ -3,12 +3,12 @@
 ## Dev Env / Build
 
 - Import the build script and download deps
-- Install plugin `Grammar-Kit` by JetBrains
-- Install plugin `Plugin DevKit` by JetBrains
+- Install the plugin `Grammar-Kit` **_2023.3.2_** by JetBrains
+- Install the plugin `Plugin DevKit` by JetBrains
 
 **Dev Tips**
 - `./gradlew runIde` to start a sandbox IDE instance
-- Install plugin `GLSL` by Roi Mordechay in your sandbox IDE
+- Install the plugin `GLSL` by Roi Mordechay in your sandbox IDE
 - `./gradlew build` (saves jars to `build/libs`)
 
 **Update Parser & Lexer**
