@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.tttsaurus.ksml.language.psi.KsmlModuleDeclMixin;
 import com.tttsaurus.ksml.grammar.psi.*;
 
-public class KsmlModuleDeclImpl extends ASTWrapperPsiElement implements KsmlModuleDecl {
+public class KsmlModuleDeclImpl extends KsmlModuleDeclMixin implements KsmlModuleDecl {
 
   public KsmlModuleDeclImpl(@NotNull ASTNode node) {
     super(node);

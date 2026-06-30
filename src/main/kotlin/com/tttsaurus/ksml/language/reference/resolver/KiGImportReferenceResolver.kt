@@ -9,7 +9,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlModuleDecl
-import com.tttsaurus.ksml.grammar.psi.KsmlTypes
 import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
 
 class KiGImportReferenceResolver(
@@ -46,11 +45,6 @@ class KiGImportReferenceResolver(
         val decls = PsiTreeUtil.findChildrenOfType(psiFile, KsmlModuleDecl::class.java)
         val targetDecl = decls.firstOrNull { it.text.contains(name) } ?: return psiFile
 
-        val ident = PsiTreeUtil.findChildrenOfType(targetDecl, PsiElement::class.java)
-            .firstOrNull {
-                it.node?.elementType == KsmlTypes.IDENTIFIER && it.text == name
-            }
-
-        return ident ?: targetDecl
+        return targetDecl
     }
 }
