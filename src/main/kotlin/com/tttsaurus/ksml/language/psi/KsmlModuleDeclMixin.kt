@@ -8,6 +8,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
 import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.KsmlIcons
 
 abstract class KsmlModuleDeclMixin : ASTWrapperPsiElement {
 
@@ -43,7 +44,7 @@ abstract class KsmlModuleDeclMixin : ASTWrapperPsiElement {
 
             override fun getLocationString() = subTitle.toString()
 
-            override fun getIcon(unused: Boolean) = null
+            override fun getIcon(unused: Boolean) = KsmlIcons.FILE
         }
     }
 }
