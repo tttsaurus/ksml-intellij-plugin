@@ -6,13 +6,19 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
+import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadata
+import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadataParser
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub
-import com.tttsaurus.ksml.language.stub.KsmlFunctionNameExtractor
+import com.tttsaurus.ksml.language.stub.KsmlFunctionSignExtractor
 
 abstract class KsmlCodeDeclMixin :
     StubBasedPsiElementBase<KsmlCodeDeclStub>,
-    PsiLanguageInjectionHost {
+    PsiLanguageInjectionHost,
+    KsmlCodeDecl {
 
     constructor(node: ASTNode) : super(node)
 
@@ -37,12 +43,20 @@ abstract class KsmlCodeDeclMixin :
             }
         }
 
-    fun getFunctionName(): String? {
+    override fun getFunctionName(): String? {
         stub?.functionName?.let { return it }
 
         val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK)
             ?: return null
 
-        return KsmlFunctionNameExtractor.extractFromCodeBlockTokenText(codeBlock.text)
+        return KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(codeBlock.text)
     }
+
+    override fun getMetadata(): KsmlCodeDeclMetadata =
+        CachedValuesManager.getCachedValue(this) {
+            CachedValueProvider.Result.create(
+                KsmlCodeDeclMetadataParser.parse(this),
+                this
+            )
+        }
 }

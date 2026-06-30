@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.tttsaurus.ksml.grammar.psi.KsmlTypes.*;
 import com.tttsaurus.ksml.language.psi.KsmlCodeDeclMixin;
 import com.tttsaurus.ksml.grammar.psi.*;
+import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadata;
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub;
 import com.intellij.psi.stubs.IStubElementType;
 
