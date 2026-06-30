@@ -13,6 +13,7 @@ import com.tttsaurus.ksml.grammar.psi.KsmlTypes
 import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
 
 class KiGImportReferenceResolver(
+    private val index: Int,
     element: PsiElement,
     rangeInElement: TextRange,
     soft: Boolean
@@ -31,13 +32,15 @@ class KiGImportReferenceResolver(
 
         if (DumbService.isDumb(project)) return null
 
-        val scope = GlobalSearchScope.projectScope(project)
-
         val files = runCatching {
-            FileBasedIndex.getInstance().getContainingFiles(MODULE_INDEX_NAME, name, scope)
+            FileBasedIndex.getInstance().getContainingFiles(
+                MODULE_INDEX_NAME,
+                name,
+                GlobalSearchScope.projectScope(project)
+            )
         }.getOrNull() ?: return null
 
-        val vFile = files.firstOrNull() ?: return null
+        val vFile = files.elementAtOrNull(index) ?: return null
         val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return null
 
         val decls = PsiTreeUtil.findChildrenOfType(psiFile, KsmlModuleDecl::class.java)
@@ -48,10 +51,6 @@ class KiGImportReferenceResolver(
                 it.node?.elementType == KsmlTypes.IDENTIFIER && it.text == name
             }
 
-        if (ident == null) {
-            return targetDecl
-        } else {
-            return ident
-        }
+        return ident ?: targetDecl
     }
 }
