@@ -1,5 +1,7 @@
 # Kirino Shader Meta Language Support
 
+<img width="1278" height="855" alt="1782887162351339916" src="https://github.com/user-attachments/assets/4c5207ef-ab94-45f8-975a-69365c998152" />
+
 ## Dev Env / Build
 
 - Import the build script and download deps
