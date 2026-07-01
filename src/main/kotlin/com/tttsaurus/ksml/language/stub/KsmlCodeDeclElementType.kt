@@ -9,6 +9,8 @@ import com.tttsaurus.ksml.grammar.psi.impl.KsmlCodeDeclImpl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.KsmlLanguage
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
+import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadata
+import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadataParser
 
 object KsmlCodeDeclElementType :
     IStubElementType<KsmlCodeDeclStub, KsmlCodeDecl>("CODE_DECL", KsmlLanguage.INSTANCE) {
@@ -21,7 +23,7 @@ object KsmlCodeDeclElementType :
 
     override fun createStub(psi: KsmlCodeDecl, parentStub: StubElement<*>?): KsmlCodeDeclStub {
         val ksmlFile = psi.containingFile as KsmlFile
-        val metadata = psi.metadata
+        val metadata = extractFunctionMetadata(psi.node, ksmlFile.text)
         val functionName = extractFunctionName(psi.node)
         val params = extractParamTypes(psi.node)
 
@@ -112,5 +114,11 @@ object KsmlCodeDeclElementType :
     private fun extractParamTypes(node: ASTNode): List<String> {
         val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK) ?: return emptyList()
         return KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(codeBlock.text)
+    }
+
+    private fun extractFunctionMetadata(node: ASTNode, fileContent: String): KsmlCodeDeclMetadata {
+        val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK)
+            ?: return KsmlCodeDeclMetadata(null, null, false, null)
+        return KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, fileContent)
     }
 }

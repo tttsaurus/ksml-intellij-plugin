@@ -1,68 +1,56 @@
 package com.tttsaurus.ksml.language.metadata
 
-import com.tttsaurus.ksml.grammar.psi.*
-
 object KsmlCodeDeclMetadataParser {
 
-    private val stopDeclTypes = setOf(
-        KsmlCodeDecl::class.java,
-        KsmlModuleDecl::class.java,
-        KsmlGlVersionDecl::class.java,
-        KsmlRequiresDecl::class.java
+    private val glRequiresRegex =
+        Regex("""^\s*@gl_requires\s+(\d+)(?:\s+(\S+))?\s*$""")
+
+    private val featureRegex =
+        Regex("""^\s*@feature\s+(\S+)\s*$""")
+
+    private val exportRegex =
+        Regex("""^\s*@export\s*$""")
+
+    private val stopRegexes = listOf(
+        Regex("""^\s*@code\b"""),
+        Regex("""^\s*@module\b"""),
+        Regex("""^\s*@gl_version\b"""),
+        Regex("""^\s*@requires\b""")
     )
 
-    fun parse(psi: KsmlCodeDecl): KsmlCodeDeclMetadata {
-        var glInfoSet = false
+    fun parse(codeDeclStartOffset: Int, fileContent: String): KsmlCodeDeclMetadata {
         var funcGlVersion: Int? = null
         var funcGlVersionIdent: String? = null
-
-        var featureInfoSet = false
         var featureRequired: String? = null
-
-        var exportInfoSet = false
         var isExport = false
 
-        var item = psi.parent
-        while (item !is KsmlItem) {
-            item = psi.parent
-        }
+        val before = fileContent.substring(0, codeDeclStartOffset)
+        val lines = before.lines()
 
-        while (true) {
-            item = item.prevSibling ?: break
-            if (item !is KsmlItem) continue
+        for (line in lines.asReversed()) {
+            if (stopRegexes.any { it.matches(line) }) {
+                break
+            }
 
-            val annotation = item.firstChild ?: continue
-            if (annotation !is KsmlKsmlAnnotation) continue
-
-            val decl = item.firstChild ?: continue
-
-            when (decl) {
-                is KsmlGlRequiresDecl -> {
-                    if (!glInfoSet) {
-                        glInfoSet = true
-                        funcGlVersion = decl.number.text.toIntOrNull()
-                        funcGlVersionIdent = decl.identifier?.text
-                    }
+            if (funcGlVersion == null) {
+                glRequiresRegex.matchEntire(line)?.let {
+                    funcGlVersion = it.groupValues[1].toIntOrNull()
+                    funcGlVersionIdent = it.groupValues.getOrNull(2)?.takeIf(String::isNotBlank)
+                    continue
                 }
+            }
 
-                is KsmlFeatureDecl -> {
-                    if (!featureInfoSet) {
-                        featureInfoSet = true
-                        featureRequired = decl.identifier.text
-                    }
+            if (featureRequired == null) {
+                featureRegex.matchEntire(line)?.let {
+                    featureRequired = it.groupValues[1]
+                    continue
                 }
+            }
 
-                is KsmlExportDecl -> {
-                    if (!exportInfoSet) {
-                        exportInfoSet = true
-                        isExport = true
-                    }
-                }
-
-                else -> {
-                    if (stopDeclTypes.any { it.isInstance(decl) }) {
-                        break
-                    }
+            if (!isExport) {
+                if (exportRegex.matches(line)) {
+                    isExport = true
+                    continue
                 }
             }
         }

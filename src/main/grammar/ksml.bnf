@@ -66,5 +66,5 @@ export_decl ::= AT EXPORT IDENTIFIER? EOL
 
 code_decl ::= AT CODE CODE_BLOCK EOL?
 {
-  methods=[getFunctionName; getMetadata]
+  methods=[getFunctionName]
 }

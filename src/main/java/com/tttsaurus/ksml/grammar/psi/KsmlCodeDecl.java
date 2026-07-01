@@ -5,7 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.tttsaurus.ksml.language.psi.KsmlCodeDeclInterface;
-import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadata;
 
 public interface KsmlCodeDecl extends KsmlCodeDeclInterface {
 
@@ -16,7 +15,5 @@ public interface KsmlCodeDecl extends KsmlCodeDeclInterface {
   PsiElement getEol();
 
   @Nullable String getFunctionName();
-
-  @NotNull KsmlCodeDeclMetadata getMetadata();
 
 }

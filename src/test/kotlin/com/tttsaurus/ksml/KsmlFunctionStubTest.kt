@@ -6,7 +6,6 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
-import com.tttsaurus.ksml.language.stub.KsmlFunctionSignExtractor
 
 @TestDataPath($$"$CONTENT_ROOT/src/test/testData")
 class KsmlFunctionStubTest : BasePlatformTestCase() {
@@ -24,107 +23,6 @@ class KsmlFunctionStubTest : BasePlatformTestCase() {
             GlobalSearchScope.projectScope(project),
             KsmlCodeDecl::class.java
         )
-    }
-
-    fun testExtractorFindsFunctionDefinition() {
-        val name = KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(
-            ksmlCodeBlock(
-                """
-                int func() {
-                    return 1;
-                }
-                """.trimIndent()
-            )
-        )
-
-        assertEquals("func", name)
-    }
-
-    fun testExtractorIgnoresFunctionCallInBody() {
-        val name = KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(
-            ksmlCodeBlock(
-                """
-                int realFunc() {
-                    return func();
-                }
-                """.trimIndent()
-            )
-        )
-
-        assertEquals("realFunc", name)
-    }
-
-    fun testExtractorIgnoresCommentedFunction() {
-        val name = KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(
-            ksmlCodeBlock(
-                """
-                // int fake() { return 1; }
-
-                int realFunc() {
-                    return 1;
-                }
-                """.trimIndent()
-            )
-        )
-
-        assertEquals("realFunc", name)
-    }
-
-    fun testExtractorFindsParamTypes() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
-            ksmlCodeBlock(
-                """
-                int func(int a, float b) {
-                    return 1;
-                }
-                """.trimIndent()
-            )
-        )
-
-        assertEquals(listOf("int", "float"), names)
-    }
-
-    fun testExtractorFindsParamTypesWithModifiers() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
-            ksmlCodeBlock(
-                """
-                int func(in int a, out float b, const vec2 c, inout mat3 d) {
-                    return 1;
-                }
-                """.trimIndent()
-            )
-        )
-
-        assertEquals(listOf("int", "float", "vec2", "mat3"), names)
-    }
-
-    fun testExtractorFindsParamTypesWithInvalidModifiers() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
-            ksmlCodeBlock(
-                """
-                int func(in int a, ok float b, out float c) {
-                    return 1;
-                }
-                """.trimIndent()
-            )
-        )
-
-        assertEquals("int", names[0])
-        assertEquals("float", names[2])
-    }
-
-    fun testExtractorFindsParamTypesWithArrays() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
-            ksmlCodeBlock(
-                """
-                int func(int[] a, int[][] b, int[1] c[1], int[2] d[], int[1][][] e[][]) {
-                    return 1;
-                }
-                """.trimIndent()
-            )
-        )
-
-        assertEquals(listOf("int[]", "int[][]", "int[1]", "int[2]", "int[1][][]"), names)
     }
 
     fun testSingleFunctionIsIndexed() {

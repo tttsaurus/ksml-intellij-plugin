@@ -18,13 +18,15 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
         if (node.elementType.toString() != "VARIABLE_IDENTIFIER") return PsiReference.EMPTY_ARRAY
 
         val text = element.text
-
         if (!Regex("[A-Za-z_][A-Za-z0-9_]*").matches(text))
             return PsiReference.EMPTY_ARRAY
 
         val parentText = element.parent?.text ?: ""
-
         if (!parentText.contains('(') && !parentText.contains(')'))
+            return PsiReference.EMPTY_ARRAY
+
+        val ppp = element.parent?.parent?.parent ?: return PsiReference.EMPTY_ARRAY
+        if (!ppp.text.contains('.'))
             return PsiReference.EMPTY_ARRAY
 
         return arrayOf(

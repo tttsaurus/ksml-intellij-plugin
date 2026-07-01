@@ -6,12 +6,8 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.stubs.IStubElementType
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
-import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadata
-import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadataParser
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub
 import com.tttsaurus.ksml.language.stub.KsmlFunctionSignExtractor
 
@@ -51,12 +47,4 @@ abstract class KsmlCodeDeclMixin :
 
         return KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(codeBlock.text)
     }
-
-    override fun getMetadata(): KsmlCodeDeclMetadata =
-        CachedValuesManager.getCachedValue(this) {
-            CachedValueProvider.Result.create(
-                KsmlCodeDeclMetadataParser.parse(this),
-                this
-            )
-        }
 }
