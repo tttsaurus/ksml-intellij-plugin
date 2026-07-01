@@ -3,23 +3,12 @@ package com.tttsaurus.ksml.language.embed_lang.annotator
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.ui.JBColor
 import com.tttsaurus.ksml.KsmlBundle
+import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.embed_lang.KiGTypes
-import java.awt.Color
-
-@Suppress("Deprecation")
-private val IMPORT_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-    "KIG_IMPORT_HIGHLIGHT",
-    TextAttributes().apply {
-        foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
-    }
-)
 
 class KiGImportAnnotator : Annotator {
 
@@ -54,7 +43,7 @@ class KiGImportAnnotator : Annotator {
 
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(element.textRange)
-            .textAttributes(IMPORT_HIGHLIGHT)
+            .textAttributes(VisualPrefabs.MODULE_IMPORT_HIGHLIGHT)
             .create()
     }
 

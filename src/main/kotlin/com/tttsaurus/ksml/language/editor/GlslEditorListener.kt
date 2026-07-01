@@ -8,25 +8,16 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.event.EditorFactoryEvent
-import com.intellij.openapi.editor.markup.EffectType
 import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.ui.JBColor
 import com.intellij.util.concurrency.EdtExecutorService
+import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
-import java.awt.Color
 import java.util.concurrent.TimeUnit
-
-private val REF_ATTRIBUTE = TextAttributes().apply {
-    foregroundColor = JBColor(Color(80, 160, 255), Color(80, 160, 255))
-    effectType = EffectType.LINE_UNDERSCORE
-    effectColor = JBColor(Color(80, 160, 255), Color(80, 160, 255))
-}
 
 class GlslEditorListener : GlslImportRenderEditorLogic() {
 
@@ -112,7 +103,7 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
                 renderInfo.importRange.first,
                 renderInfo.importRange.last,
                 HighlighterLayer.ADDITIONAL_SYNTAX,
-                if (renderInfo.moduleExists) REF_ATTRIBUTE else null,
+                if (renderInfo.moduleExists) VisualPrefabs.IMPORTED_MODULE_ATTRIBUTE else null,
                 HighlighterTargetArea.EXACT_RANGE,
                 BackgroundRenderer()
             )

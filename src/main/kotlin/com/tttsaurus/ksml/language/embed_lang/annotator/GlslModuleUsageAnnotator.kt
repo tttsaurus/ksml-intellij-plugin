@@ -4,25 +4,12 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.lang.injection.InjectedLanguageManager
-import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.ui.JBColor
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.utils.GlslFileModuleImports
-import java.awt.Color
-import java.awt.Font
-
-@Suppress("Deprecation")
-private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-    "GLSL_MODULE_REF_HIGHLIGHT",
-    TextAttributes().apply {
-        foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
-        fontType = Font.ITALIC
-    }
-)
 
 class GlslModuleUsageAnnotator : Annotator {
 
@@ -77,7 +64,7 @@ class GlslModuleUsageAnnotator : Annotator {
                             element.textRange.startOffset + qualifier.length
                         )
                     )
-                    .textAttributes(MODULE_REF_HIGHLIGHT)
+                    .textAttributes(VisualPrefabs.MODULE_USAGE_HIGHLIGHT)
                     .create()
             }
         }

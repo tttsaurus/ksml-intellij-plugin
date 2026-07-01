@@ -3,29 +3,16 @@ package com.tttsaurus.ksml.language.embed_lang.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
-import com.intellij.ui.JBColor
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
+import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
-import java.awt.Color
-import java.awt.Font
-
-@Suppress("Deprecation")
-private val MODULE_FUNC_CALL_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-    "GLSL_MODULE_REF_HIGHLIGHT",
-    TextAttributes().apply {
-        foregroundColor = JBColor(Color(123, 163, 62), Color(123, 163, 62))
-        fontType = Font.ITALIC
-    }
-)
 
 class GlslModuleFuncCallAnnotator : Annotator {
 
@@ -51,7 +38,7 @@ class GlslModuleFuncCallAnnotator : Annotator {
         ) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element.textRange)
-                .textAttributes(MODULE_FUNC_CALL_HIGHLIGHT)
+                .textAttributes(VisualPrefabs.MODULE_FUNC_CALL_HIGHLIGHT)
                 .create()
         } else {
             holder.newAnnotation(
