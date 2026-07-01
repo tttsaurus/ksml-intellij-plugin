@@ -3,12 +3,14 @@ package com.tttsaurus.ksml.language.embed_lang.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.ui.JBColor
 import com.tttsaurus.ksml.KsmlBundle
+import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.utils.GlslFileModuleImports
 import java.awt.Color
 import java.awt.Font
@@ -32,35 +34,52 @@ class GlslModuleUsageAnnotator : Annotator {
         if (!text.contains(".")) return
 
         if (text.allIndicesOf(".").all { index ->
-            (index >= 1 && index <= text.length - 2) &&
-                    (text[index - 1].isDigit() && text[index + 1].isDigit())
-        }) { return }
+                (index >= 1 && index <= text.length - 2) &&
+                        (text[index - 1].isDigit() && text[index + 1].isDigit())
+            }) {
+            return
+        }
 
         val qualifier = text.substringBefore('.', missingDelimiterValue = "")
         if (qualifier.isEmpty()) return
         if (!qualifier.matches(Regex("[a-zA-Z_][a-zA-Z0-9_]*"))) return
 
         val file = element.containingFile ?: return
-        val importedModules = GlslFileModuleImports.getImportedModules(file)
 
-        if (qualifier !in importedModules) {
-            holder.newAnnotation(
-                HighlightSeverity.ERROR,
-                KsmlBundle.message("KsmlInGlsl.moduleNotImported")
-            )
-                .range(TextRange(
-                    element.textRange.startOffset,
-                    element.textRange.startOffset + qualifier.length
-                ))
-                .create()
+        val langInjectionManager = InjectedLanguageManager.getInstance(element.project)
+        if (langInjectionManager.isInjectedFragment(file)) {
+            val host = langInjectionManager.getInjectionHost(file) ?: return
+            val hostFile = host.containingFile
+            if (hostFile !is KsmlFile) return
+
+            // todo
+            println("module usage inside ksml glsl injected code block")
+
         } else {
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                .range(TextRange(
-                    element.textRange.startOffset,
-                    element.textRange.startOffset + qualifier.length
-                ))
-                .textAttributes(MODULE_REF_HIGHLIGHT)
-                .create()
+            val importedModules = GlslFileModuleImports.getImportedModules(file)
+            if (qualifier !in importedModules) {
+                holder.newAnnotation(
+                    HighlightSeverity.ERROR,
+                    KsmlBundle.message("KsmlInGlsl.moduleNotImported")
+                )
+                    .range(
+                        TextRange(
+                            element.textRange.startOffset,
+                            element.textRange.startOffset + qualifier.length
+                        )
+                    )
+                    .create()
+            } else {
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .range(
+                        TextRange(
+                            element.textRange.startOffset,
+                            element.textRange.startOffset + qualifier.length
+                        )
+                    )
+                    .textAttributes(MODULE_REF_HIGHLIGHT)
+                    .create()
+            }
         }
     }
 
