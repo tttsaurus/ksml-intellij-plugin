@@ -68,25 +68,25 @@ abstract class KsmlCodeDeclMixin :
 
     override fun getFuncGlVersion(): Int? {
         stub?.moduleGlVersion?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
         return metadata.funcGlVersion
     }
 
     override fun getFuncGlVersionIdent(): String? {
         stub?.moduleGlVersionIdent?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
         return metadata.funcGlVersionIdent
     }
 
     override fun getIsExport(): Boolean {
         stub?.isExport?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
         return metadata.isExport
     }
 
     override fun getFeatureRequired(): String? {
         stub?.featureRequired?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
         return metadata.featureRequired
     }
 
