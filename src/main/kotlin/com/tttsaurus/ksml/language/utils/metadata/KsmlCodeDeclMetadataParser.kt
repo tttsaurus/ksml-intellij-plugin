@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.metadata
+package com.tttsaurus.ksml.language.utils.metadata
 
 object KsmlCodeDeclMetadataParser {
 

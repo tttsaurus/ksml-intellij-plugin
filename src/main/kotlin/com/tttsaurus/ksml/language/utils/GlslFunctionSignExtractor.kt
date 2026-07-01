@@ -1,6 +1,9 @@
-package com.tttsaurus.ksml.language.stub
+package com.tttsaurus.ksml.language.utils
 
-object KsmlFunctionSignExtractor {
+/**
+ * It'll ignore contents like `@code """ """` and extract GLSL function signature info.
+ */
+object GlslFunctionSignExtractor {
 
     private val tripleQuoteRegex = Regex("\"\"\"([\\s\\S]*?)\"\"\"")
 
@@ -37,7 +40,7 @@ object KsmlFunctionSignExtractor {
             .replace(lineCommentRegex, "")
     }
 
-    fun extractFromCodeBlockTokenText(text: String): String? {
+    fun extractFuncNameFromCodeBlockTokenText(text: String): String? {
         val code = extractCode(text)
         return functionRegex
             .find(code)

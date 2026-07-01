@@ -66,5 +66,15 @@ export_decl ::= AT EXPORT IDENTIFIER? EOL
 
 code_decl ::= AT CODE CODE_BLOCK EOL?
 {
-  methods=[getFunctionName]
+  methods=[
+    getFunctionName;
+    getModuleName;
+    getModuleFileName;
+    getModuleGlVersion;
+    getModuleGlVersionIdent;
+    getFuncGlVersion;
+    getFuncGlVersionIdent;
+    getIsExport;
+    getFeatureRequired;
+    getParams]
 }

@@ -1,13 +1,22 @@
 package com.tttsaurus.ksml.language.reference.provider
 
+import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.ProcessingContext
+import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
+import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 import com.tttsaurus.ksml.language.reference.resolver.KiGFunctionReferenceResolver
 
 class KiGFunctionReferenceProvider : PsiReferenceProvider() {
+
+    private val moduleCallRegex =
+        Regex("""^\s*([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*$""")
 
     override fun getReferencesByElement(
         element: PsiElement,
@@ -26,15 +35,50 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
             return PsiReference.EMPTY_ARRAY
 
         val ppp = element.parent?.parent?.parent ?: return PsiReference.EMPTY_ARRAY
-        if (!ppp.text.contains('.'))
-            return PsiReference.EMPTY_ARRAY
+        val match = moduleCallRegex.matchEntire(ppp.text) ?: return PsiReference.EMPTY_ARRAY
+        val moduleName = match.groupValues[1]
+        val functionName = match.groupValues[2]
 
-        return arrayOf(
-            KiGFunctionReferenceResolver(
-                element,
-                TextRange(0, text.length),
-                false
+        val count = countOccurrences(functionName, element.project)
+        if (count <= 0) {
+            return arrayOf(
+                KiGFunctionReferenceResolver(
+                    0,
+                    moduleName,
+                    element,
+                    TextRange(0, text.length),
+                    false
+                )
             )
+        } else {
+            val refs = ArrayList<PsiReference>()
+            for (i in 0 until count) {
+                refs += KiGFunctionReferenceResolver(
+                    i,
+                    moduleName,
+                    element,
+                    TextRange(0, text.length),
+                    false
+                )
+            }
+            return refs.toTypedArray()
+        }
+    }
+
+    private fun countOccurrences(functionName: String, project: Project): Int {
+        if (project.isDisposed) return 0
+        if (DumbService.isDumb(project)) return 0
+
+        if (functionName.isEmpty()) return 0
+
+        val decls = StubIndex.getElements(
+            FUNCTION_INDEX_KEY,
+            functionName,
+            project,
+            GlobalSearchScope.projectScope(project),
+            KsmlCodeDecl::class.java
         )
+
+        return decls.size
     }
 }

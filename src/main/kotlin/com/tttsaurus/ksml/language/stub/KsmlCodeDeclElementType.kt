@@ -9,8 +9,9 @@ import com.tttsaurus.ksml.grammar.psi.impl.KsmlCodeDeclImpl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.KsmlLanguage
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
-import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadata
-import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadataParser
+import com.tttsaurus.ksml.language.utils.GlslFunctionSignExtractor
+import com.tttsaurus.ksml.language.utils.metadata.KsmlCodeDeclMetadata
+import com.tttsaurus.ksml.language.utils.metadata.KsmlCodeDeclMetadataParser
 
 object KsmlCodeDeclElementType :
     IStubElementType<KsmlCodeDeclStub, KsmlCodeDecl>("CODE_DECL", KsmlLanguage.INSTANCE) {
@@ -108,12 +109,12 @@ object KsmlCodeDeclElementType :
 
     private fun extractFunctionName(node: ASTNode): String? {
         val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK) ?: return null
-        return KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(codeBlock.text)
+        return GlslFunctionSignExtractor.extractFuncNameFromCodeBlockTokenText(codeBlock.text)
     }
 
     private fun extractParamTypes(node: ASTNode): List<String> {
         val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK) ?: return emptyList()
-        return KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(codeBlock.text)
+        return GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(codeBlock.text)
     }
 
     private fun extractFunctionMetadata(node: ASTNode, fileContent: String): KsmlCodeDeclMetadata {

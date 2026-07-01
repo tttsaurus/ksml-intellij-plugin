@@ -16,4 +16,22 @@ public interface KsmlCodeDecl extends KsmlCodeDeclInterface {
 
   @Nullable String getFunctionName();
 
+  @Nullable String getModuleName();
+
+  @Nullable String getModuleFileName();
+
+  @Nullable Integer getModuleGlVersion();
+
+  @Nullable String getModuleGlVersionIdent();
+
+  @Nullable Integer getFuncGlVersion();
+
+  @Nullable String getFuncGlVersionIdent();
+
+  boolean getIsExport();
+
+  @Nullable String getFeatureRequired();
+
+  @Nullable List<@NotNull String> getParams();
+
 }

@@ -3,7 +3,7 @@ package com.tttsaurus.ksml
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.tttsaurus.ksml.language.KsmlFile
-import com.tttsaurus.ksml.language.metadata.KsmlCodeDeclMetadataParser
+import com.tttsaurus.ksml.language.utils.metadata.KsmlCodeDeclMetadataParser
 
 @TestDataPath($$"$CONTENT_ROOT/src/test/testData")
 class KsmlCodeDeclMetadataTest : BasePlatformTestCase() {

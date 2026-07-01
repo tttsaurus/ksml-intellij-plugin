@@ -6,10 +6,12 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.util.startOffset
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
-import com.tttsaurus.ksml.grammar.psi.KsmlTypes
+import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.utils.metadata.KsmlCodeDeclMetadataParser
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub
-import com.tttsaurus.ksml.language.stub.KsmlFunctionSignExtractor
+import com.tttsaurus.ksml.language.utils.GlslFunctionSignExtractor
 
 abstract class KsmlCodeDeclMixin :
     StubBasedPsiElementBase<KsmlCodeDeclStub>,
@@ -41,10 +43,55 @@ abstract class KsmlCodeDeclMixin :
 
     override fun getFunctionName(): String? {
         stub?.functionName?.let { return it }
+        return GlslFunctionSignExtractor.extractFuncNameFromCodeBlockTokenText(codeBlock.text)
+    }
 
-        val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK)
-            ?: return null
+    override fun getModuleName(): String? {
+        stub?.moduleName?.let { return it }
+        return (containingFile as KsmlFile).moduleName
+    }
 
-        return KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(codeBlock.text)
+    override fun getModuleFileName(): String? {
+        stub?.moduleFileName?.let { return it }
+        return (containingFile as KsmlFile).moduleFileName
+    }
+
+    override fun getModuleGlVersion(): Int? {
+        stub?.moduleGlVersion?.let { return it }
+        return (containingFile as KsmlFile).moduleGlVersion
+    }
+
+    override fun getModuleGlVersionIdent(): String? {
+        stub?.moduleGlVersionIdent?.let { return it }
+        return (containingFile as KsmlFile).moduleGlVersionIdent
+    }
+
+    override fun getFuncGlVersion(): Int? {
+        stub?.moduleGlVersion?.let { return it }
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        return metadata.funcGlVersion
+    }
+
+    override fun getFuncGlVersionIdent(): String? {
+        stub?.moduleGlVersionIdent?.let { return it }
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        return metadata.funcGlVersionIdent
+    }
+
+    override fun getIsExport(): Boolean {
+        stub?.isExport?.let { return it }
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        return metadata.isExport
+    }
+
+    override fun getFeatureRequired(): String? {
+        stub?.featureRequired?.let { return it }
+        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.startOffset, containingFile.text)
+        return metadata.featureRequired
+    }
+
+    override fun getParams(): List<String>? {
+        stub?.params?.let { return it }
+        return GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(codeBlock.text)
     }
 }

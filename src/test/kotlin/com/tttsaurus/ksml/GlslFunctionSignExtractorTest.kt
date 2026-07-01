@@ -2,10 +2,10 @@ package com.tttsaurus.ksml
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.tttsaurus.ksml.language.stub.KsmlFunctionSignExtractor
+import com.tttsaurus.ksml.language.utils.GlslFunctionSignExtractor
 
 @TestDataPath($$"$CONTENT_ROOT/src/test/testData")
-class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
+class GlslFunctionSignExtractorTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String = "src/test/testData"
 
@@ -13,7 +13,7 @@ class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
         "@code \"\"\"$glsl\n\"\"\"\n"
 
     fun testExtractorFindsFunctionDefinition() {
-        val name = KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(
+        val name = GlslFunctionSignExtractor.extractFuncNameFromCodeBlockTokenText(
             ksmlCodeBlock(
                 """
                 int func() {
@@ -27,7 +27,7 @@ class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
     }
 
     fun testExtractorIgnoresFunctionCallInBody() {
-        val name = KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(
+        val name = GlslFunctionSignExtractor.extractFuncNameFromCodeBlockTokenText(
             ksmlCodeBlock(
                 """
                 int realFunc() {
@@ -41,7 +41,7 @@ class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
     }
 
     fun testExtractorIgnoresCommentedFunction() {
-        val name = KsmlFunctionSignExtractor.extractFromCodeBlockTokenText(
+        val name = GlslFunctionSignExtractor.extractFuncNameFromCodeBlockTokenText(
             ksmlCodeBlock(
                 """
                 // int fake() { return 1; }
@@ -57,7 +57,7 @@ class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
     }
 
     fun testExtractorFindsParamTypes() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
+        val names = GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
             ksmlCodeBlock(
                 """
                 int func(int a, float b) {
@@ -71,7 +71,7 @@ class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
     }
 
     fun testExtractorFindsParamTypesWithQualifiers() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
+        val names = GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
             ksmlCodeBlock(
                 """
                 int func(in int a, out float b, const vec2 c, inout mat3 d) {
@@ -85,7 +85,7 @@ class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
     }
 
     fun testExtractorFindsParamTypesWithInvalidQualifiers() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
+        val names = GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
             ksmlCodeBlock(
                 """
                 int func(in int a, ok float b, out float c) {
@@ -100,7 +100,7 @@ class KsmlFunctionSignExtractorTest : BasePlatformTestCase() {
     }
 
     fun testExtractorFindsParamTypesWithArrays() {
-        val names = KsmlFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
+        val names = GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(
             ksmlCodeBlock(
                 """
                 int func(int[] a, int[][] b, int[1] c[1], int[2] d[], int[1][][] e[][]) {

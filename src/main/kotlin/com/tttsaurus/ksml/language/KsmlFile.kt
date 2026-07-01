@@ -5,8 +5,8 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.tttsaurus.ksml.language.metadata.KsmlModuleMetadata
-import com.tttsaurus.ksml.language.metadata.KsmlModuleMetadataParser
+import com.tttsaurus.ksml.language.utils.metadata.KsmlModuleMetadata
+import com.tttsaurus.ksml.language.utils.metadata.KsmlModuleMetadataParser
 import javax.swing.Icon
 
 class KsmlFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, KsmlLanguage.INSTANCE) {
