@@ -44,7 +44,13 @@ class GlslModuleUsageAnnotator : Annotator {
 
         } else {
             val importedModules = GlslFileModuleImports.getImportedModules(file)
-            if (qualifier !in importedModules) {
+            val moduleNames = mutableSetOf<String>()
+
+            importedModules.forEach {
+                moduleNames.add(it.moduleName)
+            }
+
+            if (qualifier !in moduleNames) {
                 holder.newAnnotation(
                     HighlightSeverity.ERROR,
                     KsmlBundle.message("KsmlInGlsl.moduleNotImported")
