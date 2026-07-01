@@ -27,7 +27,7 @@ private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
 
 private val IMPORT_REGEX = Regex("""//\s*@import\s+([a-zA-Z_][a-zA-Z0-9_]*)""")
 
-class GlslModuleInExprAnnotator : Annotator {
+class GlslModuleUsageAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return

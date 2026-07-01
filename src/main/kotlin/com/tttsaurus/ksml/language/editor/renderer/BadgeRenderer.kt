@@ -14,7 +14,7 @@ class BadgeRenderer(
     private val text: String
 ) : EditorCustomElementRenderer {
 
-    private val OUTER_PADDING_X = 4
+    private val OUTER_PADDING_X = 6
     private val INNER_PADDING_X = 6
 
     override fun calcWidthInPixels(inlay: Inlay<*>): Int {

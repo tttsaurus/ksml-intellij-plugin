@@ -12,11 +12,9 @@ import com.intellij.util.ProcessingContext
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 import com.tttsaurus.ksml.language.reference.resolver.KiGFunctionReferenceResolver
+import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
 
 class KiGFunctionReferenceProvider : PsiReferenceProvider() {
-
-    private val moduleCallRegex =
-        Regex("""^\s*([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*$""")
 
     override fun getReferencesByElement(
         element: PsiElement,
@@ -35,9 +33,9 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
             return PsiReference.EMPTY_ARRAY
 
         val ppp = element.parent?.parent?.parent ?: return PsiReference.EMPTY_ARRAY
-        val match = moduleCallRegex.matchEntire(ppp.text) ?: return PsiReference.EMPTY_ARRAY
-        val moduleName = match.groupValues[1]
-        val functionName = match.groupValues[2]
+        val moduleCall = GlslModuleCallParser.parse(ppp.text) ?: return PsiReference.EMPTY_ARRAY
+        val moduleName = moduleCall.moduleName
+        val functionName = moduleCall.functionName
 
         val count = countOccurrences(functionName, element.project)
         if (count <= 0) {
@@ -45,6 +43,7 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
                 KiGFunctionReferenceResolver(
                     0,
                     moduleName,
+                    moduleCall.arguments,
                     element,
                     TextRange(0, text.length),
                     false
@@ -56,6 +55,7 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
                 refs += KiGFunctionReferenceResolver(
                     i,
                     moduleName,
+                    moduleCall.arguments,
                     element,
                     TextRange(0, text.length),
                     false

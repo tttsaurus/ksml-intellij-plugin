@@ -3,6 +3,10 @@
 <!-- Plugin description -->
 This is the IntelliJ support of Kirino Shader Meta Language (KSML) for GLSL.
 
+KSML is a runtime-agnostic engineering layer for GLSL. 
+Unlike engine-specific shader systems, it's non-invasive and also provides 
+modules, namespaces, and first-class IDE support.
+
 **GLSL**
 ![showcase](screenshot1.png)
 

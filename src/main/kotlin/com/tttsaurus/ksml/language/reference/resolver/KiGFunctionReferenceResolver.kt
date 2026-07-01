@@ -12,6 +12,7 @@ import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 class KiGFunctionReferenceResolver(
     private val index: Int,
     private val moduleName: String,
+    private val moduleCallArgs: List<String>,
     element: PsiElement,
     range: TextRange,
     soft: Boolean
@@ -38,6 +39,11 @@ class KiGFunctionReferenceResolver(
         )
 
         val decl = decls.elementAtOrNull(index) ?: return null
-        return if (decl.moduleName == moduleName) decl else null
+        if (decl.moduleName == moduleName) {
+            if (decl.params?.size == moduleCallArgs.size) {
+                return decl
+            }
+        }
+        return null
     }
 }
