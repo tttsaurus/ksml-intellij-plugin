@@ -8,14 +8,17 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.ui.JBColor
+import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.language.utils.GlslFileModuleImports
 import java.awt.Color
+import java.awt.Font
 
 @Suppress("Deprecation")
 private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
     "GLSL_MODULE_REF_HIGHLIGHT",
     TextAttributes().apply {
         foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
+        fontType = Font.ITALIC
     }
 )
 
@@ -40,15 +43,25 @@ class GlslModuleUsageAnnotator : Annotator {
         val file = element.containingFile ?: return
         val importedModules = GlslFileModuleImports.getImportedModules(file)
 
-        if (qualifier !in importedModules) return
-
-        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-            .range(TextRange(
-                element.textRange.startOffset,
-                element.textRange.startOffset + qualifier.length
-            ))
-            .textAttributes(MODULE_REF_HIGHLIGHT)
-            .create()
+        if (qualifier !in importedModules) {
+            holder.newAnnotation(
+                HighlightSeverity.ERROR,
+                KsmlBundle.message("KsmlInGlsl.moduleNotImported")
+            )
+                .range(TextRange(
+                    element.textRange.startOffset,
+                    element.textRange.startOffset + qualifier.length
+                ))
+                .create()
+        } else {
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                .range(TextRange(
+                    element.textRange.startOffset,
+                    element.textRange.startOffset + qualifier.length
+                ))
+                .textAttributes(MODULE_REF_HIGHLIGHT)
+                .create()
+        }
     }
 
     private fun String.allIndicesOf(sub: String): List<Int> {
