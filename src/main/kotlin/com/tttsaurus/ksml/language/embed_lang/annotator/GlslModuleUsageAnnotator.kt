@@ -4,15 +4,11 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.editor.markup.EffectType
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.ui.JBColor
+import com.tttsaurus.ksml.language.utils.GlslFileModuleImports
 import java.awt.Color
 
 @Suppress("Deprecation")
@@ -20,12 +16,8 @@ private val MODULE_REF_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
     "GLSL_MODULE_REF_HIGHLIGHT",
     TextAttributes().apply {
         foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
-        effectType = EffectType.LINE_UNDERSCORE
-        effectColor = JBColor(Color(166, 210, 255, 120), Color(166, 210, 255, 120))
     }
 )
-
-private val IMPORT_REGEX = Regex("""//\s*@import\s+([a-zA-Z_][a-zA-Z0-9_]*)""")
 
 class GlslModuleUsageAnnotator : Annotator {
 
@@ -46,7 +38,7 @@ class GlslModuleUsageAnnotator : Annotator {
         if (!qualifier.matches(Regex("[a-zA-Z_][a-zA-Z0-9_]*"))) return
 
         val file = element.containingFile ?: return
-        val importedModules = file.getImportedModulesCached()
+        val importedModules = GlslFileModuleImports.getImportedModules(file)
 
         if (qualifier !in importedModules) return
 
@@ -69,24 +61,5 @@ class GlslModuleUsageAnnotator : Annotator {
         }
 
         return result
-    }
-
-    private fun PsiFile.getImportedModulesCached(): Set<String> {
-        val project = project
-
-        return CachedValuesManager.getManager(project)
-            .getCachedValue(this) {
-
-                val text = text
-                val imports = IMPORT_REGEX
-                    .findAll(text)
-                    .map { it.groupValues[1] }
-                    .toSet()
-
-                CachedValueProvider.Result.create(
-                    imports,
-                    PsiModificationTracker.MODIFICATION_COUNT
-                )
-            }
     }
 }
