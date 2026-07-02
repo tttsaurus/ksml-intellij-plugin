@@ -10,7 +10,7 @@ import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.KsmlLanguage
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 import com.tttsaurus.ksml.language.utils.GlslFunctionSignExtractor
-import com.tttsaurus.ksml.language.utils.metadata.KsmlCodeDeclMetadataParser
+import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
 
 object KsmlCodeDeclElementType :
     IStubElementType<KsmlCodeDeclStub, KsmlCodeDecl>("CODE_DECL", KsmlLanguage.INSTANCE) {

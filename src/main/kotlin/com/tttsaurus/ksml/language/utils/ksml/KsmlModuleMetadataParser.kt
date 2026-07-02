@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.utils.metadata
+package com.tttsaurus.ksml.language.utils.ksml
 
 import com.tttsaurus.ksml.language.KsmlFile
 
