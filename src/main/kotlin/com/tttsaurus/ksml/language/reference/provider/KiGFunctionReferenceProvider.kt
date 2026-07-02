@@ -46,7 +46,7 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
                     moduleCall.arguments,
                     element,
                     TextRange(0, text.length),
-                    false
+                    true
                 )
             )
         } else {
@@ -58,7 +58,7 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
                     moduleCall.arguments,
                     element,
                     TextRange(0, text.length),
-                    false
+                    true
                 )
             }
             return refs.toTypedArray()

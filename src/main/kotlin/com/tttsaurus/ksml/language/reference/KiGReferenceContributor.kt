@@ -8,6 +8,7 @@ import com.intellij.psi.PsiReferenceRegistrar
 import com.tttsaurus.ksml.language.GlslLanguage
 import com.tttsaurus.ksml.language.reference.provider.KiGFunctionReferenceProvider
 import com.tttsaurus.ksml.language.reference.provider.KiGImportReferenceProvider
+import com.tttsaurus.ksml.language.reference.provider.KiGImportedModuleReferenceProvider
 
 class KiGReferenceContributor : PsiReferenceContributor() {
 
@@ -23,6 +24,12 @@ class KiGReferenceContributor : PsiReferenceContributor() {
                 .psiElement(PsiElement::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
             KiGFunctionReferenceProvider()
+        )
+        registrar.registerReferenceProvider(
+            PlatformPatterns
+                .psiElement(PsiElement::class.java)
+                .withLanguage(GlslLanguage.GLSL_LANGUAGE),
+            KiGImportedModuleReferenceProvider()
         )
     }
 }

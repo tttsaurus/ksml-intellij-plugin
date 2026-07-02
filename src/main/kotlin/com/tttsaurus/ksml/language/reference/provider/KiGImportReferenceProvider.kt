@@ -18,7 +18,7 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
     override fun getReferencesByElement(
         element: PsiElement,
         context: ProcessingContext
-    ): Array<out PsiReference?> {
+    ): Array<out PsiReference> {
 
         val comment = element as? PsiComment
             ?: return PsiReference.EMPTY_ARRAY
