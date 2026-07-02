@@ -11,11 +11,13 @@ import javax.swing.Icon
 
 class KsmlFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, KsmlLanguage.INSTANCE) {
 
+    val modificationTracker = KsmlFileModificationTracker()
+
     private val metadata: KsmlModuleMetadata
         get() = CachedValuesManager.getCachedValue(this) {
             CachedValueProvider.Result.create(
                 KsmlModuleMetadataParser.parse(this),
-                this
+                this, modificationTracker
             )
         }
 

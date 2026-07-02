@@ -12,7 +12,9 @@ import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
+import com.tttsaurus.ksml.language.utils.GlslFileGlVersion
 import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
+import com.tttsaurus.ksml.language.utils.GlslProfileInferencer
 
 class GlslModuleFuncCallAnnotator : Annotator {
 
@@ -29,17 +31,58 @@ class GlslModuleFuncCallAnnotator : Annotator {
         val ppp = element.parent?.parent?.parent ?: return
         val moduleCall = GlslModuleCallParser.parse(ppp.text) ?: return
 
-        if (functionExists(
-                moduleCall.moduleName,
-                moduleCall.functionName,
-                moduleCall.arguments,
-                element.project
-            )
-        ) {
+        val def = findFunctionDef(
+            moduleCall.moduleName,
+            moduleCall.functionName,
+            moduleCall.arguments,
+            element.project
+        )
+
+        if (!def.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element.textRange)
                 .textAttributes(VisualPrefabs.MODULE_FUNC_CALL_HIGHLIGHT)
                 .create()
+            if (def.size > 1) {
+                holder.newAnnotation(
+                    HighlightSeverity.WARNING,
+                    KsmlBundle.message("KsmlInGlsl.functionDefUnclear")
+                )
+                    .range(element.textRange)
+                    .create()
+            } else {
+                val fileVersion = GlslFileGlVersion.getGlVersion(element.containingFile) ?: return
+                val matchingDef = def[0]
+
+                var requiresGlVersion: Int? = null
+                var requiresGlVersionIdent: String? = null
+                if (matchingDef.funcGlVersion != null) {
+                    requiresGlVersion = matchingDef.funcGlVersion
+                    requiresGlVersionIdent = matchingDef.funcGlVersionIdent
+                } else if (matchingDef.moduleGlVersion != null) {
+                    requiresGlVersion = matchingDef.moduleGlVersion
+                    requiresGlVersionIdent = matchingDef.moduleGlVersionIdent
+                }
+
+                if (requiresGlVersion != null) {
+                    val compare = GlslProfileInferencer.compareProfiles(
+                        fileVersion.version,
+                        fileVersion.ident,
+                        requiresGlVersion,
+                        requiresGlVersionIdent
+                    )
+                    if (compare < 0) {
+                        val target = "GL$requiresGlVersion${GlslProfileInferencer.getProfileDescSymbol(requiresGlVersionIdent)}"
+                        val got = "GL${fileVersion.version}${GlslProfileInferencer.getProfileDescSymbol(fileVersion.ident)}"
+                        holder.newAnnotation(
+                            HighlightSeverity.ERROR,
+                            KsmlBundle.message("KsmlInGlsl.functionCallGlRequirementNotMet", target, got)
+                        )
+                            .range(element.textRange)
+                            .create()
+                    }
+                }
+            }
         } else {
             holder.newAnnotation(
                 HighlightSeverity.ERROR,
@@ -50,17 +93,17 @@ class GlslModuleFuncCallAnnotator : Annotator {
         }
     }
 
-    private fun functionExists(
+    private fun findFunctionDef(
         moduleName: String,
         functionName: String,
         funcCallArgs: List<String>,
         project: Project
-    ): Boolean {
+    ): List<KsmlCodeDecl> {
 
-        if (project.isDisposed) return false
-        if (DumbService.isDumb(project)) return false
+        if (project.isDisposed) return emptyList()
+        if (DumbService.isDumb(project)) return emptyList()
 
-        if (functionName.isEmpty()) return false
+        if (functionName.isEmpty()) return emptyList()
 
         val decls = StubIndex.getElements(
             FUNCTION_INDEX_KEY,
@@ -70,14 +113,16 @@ class GlslModuleFuncCallAnnotator : Annotator {
             KsmlCodeDecl::class.java
         )
 
+        val result = mutableListOf<KsmlCodeDecl>()
+
         decls.forEach {
             if (it.moduleName == moduleName) {
                 if (it.params?.size == funcCallArgs.size) {
-                    return true
+                    result += it
                 }
             }
         }
 
-        return false
+        return result
     }
 }

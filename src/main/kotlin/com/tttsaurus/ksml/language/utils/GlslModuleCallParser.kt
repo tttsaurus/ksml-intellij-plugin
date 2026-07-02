@@ -11,6 +11,9 @@ object GlslModuleCallParser {
     private val moduleCallRegex =
         Regex("""^\s*([A-Za-z_]\w*)\.([A-Za-z_]\w*)\s*\(([\s\S]*)\)\s*$""")
 
+    /**
+     * A module call in the form of `module.func()` is expected.
+     */
     fun parse(text: String): ModuleCall? {
         val match = moduleCallRegex.matchEntire(text)
             ?: return null

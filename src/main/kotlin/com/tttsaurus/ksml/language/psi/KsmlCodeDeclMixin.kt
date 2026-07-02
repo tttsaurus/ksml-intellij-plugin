@@ -42,55 +42,65 @@ abstract class KsmlCodeDeclMixin :
 
     override fun getFunctionName(): String? {
         stub?.functionName?.let { return it }
+        // functionName shouldn't be null. parse manually
         return GlslFunctionSignExtractor.extractFuncNameFromCodeBlockTokenText(codeBlock.text)
     }
 
     override fun getModuleName(): String? {
         stub?.moduleName?.let { return it }
+        // moduleName shouldn't be null. access from the file
         return (containingFile as KsmlFile).moduleName
     }
 
     override fun getModuleFileName(): String? {
         stub?.moduleFileName?.let { return it }
+        // moduleFileName shouldn't be null. access from the file
         return (containingFile as KsmlFile).moduleFileName
     }
 
     override fun getModuleGlVersion(): Int? {
         stub?.moduleGlVersion?.let { return it }
+        // moduleGlVersion shouldn't be null. access from the file
         return (containingFile as KsmlFile).moduleGlVersion
     }
 
     override fun getModuleGlVersionIdent(): String? {
-        stub?.moduleGlVersionIdent?.let { return it }
+        // moduleGlVersionIdent can be null
+        stub?.let { return it.moduleGlVersionIdent }
         return (containingFile as KsmlFile).moduleGlVersionIdent
     }
 
     override fun getFuncGlVersion(): Int? {
-        stub?.moduleGlVersion?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
+        // funcGlVersion can be null
+        stub?.let { return it.funcGlVersion }
+        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.funcGlVersion
     }
 
     override fun getFuncGlVersionIdent(): String? {
-        stub?.moduleGlVersionIdent?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
+        // funcGlVersionIdent can be null
+        stub?.let { return it.funcGlVersionIdent }
+        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.funcGlVersionIdent
     }
 
     override fun getIsExport(): Boolean {
         stub?.isExport?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
+        // isExport must not be null. parse manually
+        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.isExport
     }
 
     override fun getFeatureRequired(): String? {
-        stub?.featureRequired?.let { return it }
-        val metadata = KsmlCodeDeclMetadataParser.parse(codeBlock.node.startOffset, containingFile.text)
+        // featureRequired can be null
+        stub?.let { return it.featureRequired }
+        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.featureRequired
     }
 
     override fun getParams(): List<String>? {
-        stub?.params?.let { return it }
+        // params can be null
+        stub?.let { return it.params }
         return GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(codeBlock.text)
     }
 }

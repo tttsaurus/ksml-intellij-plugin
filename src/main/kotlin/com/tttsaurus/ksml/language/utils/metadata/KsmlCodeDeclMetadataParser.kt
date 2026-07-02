@@ -12,12 +12,15 @@ object KsmlCodeDeclMetadataParser {
         Regex("""^\s*@export\s*$""")
 
     private val stopRegexes = listOf(
-        Regex("""^\s*@code\b"""),
-        Regex("""^\s*@module\b"""),
-        Regex("""^\s*@gl_version\b"""),
-        Regex("""^\s*@requires\b""")
+        Regex("""^\s*@code\b.*$"""),
+        Regex("""^\s*@module\b.*$"""),
+        Regex("""^\s*@gl_version\b.*$"""),
+        Regex("""^\s*@requires\b.*$""")
     )
 
+    /**
+     * Start offset input must be the head of the whole code decl `@code """ """`.
+     */
     fun parse(codeDeclStartOffset: Int, fileContent: String): KsmlCodeDeclMetadata {
         var funcGlVersion: Int? = null
         var funcGlVersionIdent: String? = null
@@ -32,34 +35,29 @@ object KsmlCodeDeclMetadataParser {
                 break
             }
 
-            if (funcGlVersion == null) {
-                glRequiresRegex.matchEntire(line)?.let {
-                    funcGlVersion = it.groupValues[1].toIntOrNull()
-                    funcGlVersionIdent = it.groupValues.getOrNull(2)?.takeIf(String::isNotBlank)
-                    continue
-                }
+            val glMatch = glRequiresRegex.matchEntire(line)
+            if (funcGlVersion == null && glMatch != null) {
+                funcGlVersion = glMatch.groupValues[1].toIntOrNull()
+                funcGlVersionIdent = glMatch.groupValues.getOrNull(2)?.takeIf { it.isNotBlank() }
+                continue
             }
 
-            if (featureRequired == null) {
-                featureRegex.matchEntire(line)?.let {
-                    featureRequired = it.groupValues[1]
-                    continue
-                }
+            val featureMatch = featureRegex.matchEntire(line)
+            if (featureRequired == null && featureMatch != null) {
+                featureRequired = featureMatch.groupValues[1]
+                continue
             }
 
-            if (!isExport) {
-                if (exportRegex.matches(line)) {
-                    isExport = true
-                    continue
-                }
+            if (!isExport && exportRegex.matches(line)) {
+                isExport = true
             }
         }
 
         return KsmlCodeDeclMetadata(
-            funcGlVersion,
-            funcGlVersionIdent,
-            isExport,
-            featureRequired
+            funcGlVersion = funcGlVersion,
+            funcGlVersionIdent = funcGlVersionIdent,
+            isExport = isExport,
+            featureRequired = featureRequired
         )
     }
 }

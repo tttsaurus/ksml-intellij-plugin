@@ -22,6 +22,7 @@ import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
 import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
+import com.tttsaurus.ksml.language.utils.GlslProfileInferencer
 import java.util.concurrent.Callable
 import kotlin.math.max
 
@@ -143,11 +144,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         val match = regex.find(text) ?: return unknown
 
         val version = match.groupValues[1].toInt()
-        val profile = when (match.groupValues.getOrNull(2)) {
-            "core" -> "C"
-            "compat", "compatibility" -> ""
-            else -> ""
-        }
+        val profile = GlslProfileInferencer.getProfileDescSymbol(match.groupValues.getOrNull(2))
 
         return "GL$version$profile"
     }
