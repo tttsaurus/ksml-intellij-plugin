@@ -14,9 +14,9 @@ import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
-import com.tttsaurus.ksml.language.utils.GlslFileGlVersion
-import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
-import com.tttsaurus.ksml.language.utils.GlslProfileInferencer
+import com.tttsaurus.ksml.language.utils.glsl.GlslFileGlVersion
+import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
+import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
 import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
 import com.tttsaurus.ksml.language.utils.ksml.KsmlModuleMetadataParser
 

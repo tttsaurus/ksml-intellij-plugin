@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.utils
+package com.tttsaurus.ksml.language.utils.glsl
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile

@@ -13,7 +13,7 @@ import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
 import com.tttsaurus.ksml.language.reference.resolver.KiGImportedModuleReferenceResolver
-import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
+import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
 
 class KiGImportedModuleReferenceProvider : PsiReferenceProvider() {
 

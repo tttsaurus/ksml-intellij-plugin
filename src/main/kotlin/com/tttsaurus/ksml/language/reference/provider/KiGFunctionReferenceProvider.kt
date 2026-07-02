@@ -12,7 +12,7 @@ import com.intellij.util.ProcessingContext
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 import com.tttsaurus.ksml.language.reference.resolver.KiGFunctionReferenceResolver
-import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
+import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
 
 class KiGFunctionReferenceProvider : PsiReferenceProvider() {
 

@@ -1,4 +1,4 @@
-package com.tttsaurus.ksml.language.utils
+package com.tttsaurus.ksml.language.utils.glsl
 
 object GlslFunctionSignExtractor {
 
@@ -13,7 +13,7 @@ object GlslFunctionSignExtractor {
         ^
         \s*
         (?:const\s+)?
-        [A-Za-z_][A-Za-z0-9_]*
+        ([A-Za-z_][A-Za-z0-9_]*(?:\s*\[\s*\d*\s*])*)
         \s+
         ([A-Za-z_][A-Za-z0-9_]*)
         \s*
@@ -40,12 +40,23 @@ object GlslFunctionSignExtractor {
     /**
      * A code block is expected (a code block is in the form of `""" """`; `@code """ """` is acceptable too).
      */
-    fun extractFuncNameFromCodeBlockTokenText(text: String): String? {
+    fun extractReturnTypeFromCodeBlockTokenText(text: String): String? {
         val code = extractCode(text)
         return functionRegex
             .find(code)
             ?.groupValues
             ?.getOrNull(1)
+    }
+
+    /**
+     * A code block is expected (a code block is in the form of `""" """`; `@code """ """` is acceptable too).
+     */
+    fun extractFuncNameFromCodeBlockTokenText(text: String): String? {
+        val code = extractCode(text)
+        return functionRegex
+            .find(code)
+            ?.groupValues
+            ?.getOrNull(2)
     }
 
     /**
@@ -57,7 +68,7 @@ object GlslFunctionSignExtractor {
         val params = functionRegex
             .find(code)
             ?.groupValues
-            ?.getOrNull(2)
+            ?.getOrNull(3)
             ?.trim()
             ?: return emptyList()
 

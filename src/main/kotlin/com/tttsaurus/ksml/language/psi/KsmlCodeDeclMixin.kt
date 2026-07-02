@@ -10,7 +10,7 @@ import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub
-import com.tttsaurus.ksml.language.utils.GlslFunctionSignExtractor
+import com.tttsaurus.ksml.language.utils.glsl.GlslFunctionSignExtractor
 
 abstract class KsmlCodeDeclMixin :
     StubBasedPsiElementBase<KsmlCodeDeclStub>,

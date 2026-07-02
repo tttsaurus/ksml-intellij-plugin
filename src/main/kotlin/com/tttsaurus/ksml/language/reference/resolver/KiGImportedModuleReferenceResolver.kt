@@ -13,7 +13,7 @@ import com.tttsaurus.ksml.grammar.psi.KsmlModuleDecl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.embed_lang.psi.KiGIdentDecl
 import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
-import com.tttsaurus.ksml.language.utils.GlslFileModuleImports
+import com.tttsaurus.ksml.language.utils.glsl.GlslFileModuleImports
 
 class KiGImportedModuleReferenceResolver(
     private val index: Int,

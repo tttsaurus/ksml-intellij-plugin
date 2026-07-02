@@ -1,4 +1,6 @@
-package com.tttsaurus.ksml.language.utils
+package com.tttsaurus.ksml.language.utils.glsl
+
+import kotlin.text.iterator
 
 object GlslModuleCallParser {
 

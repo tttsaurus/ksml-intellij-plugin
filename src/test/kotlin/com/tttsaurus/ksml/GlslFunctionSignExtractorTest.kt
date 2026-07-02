@@ -2,7 +2,7 @@ package com.tttsaurus.ksml
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.tttsaurus.ksml.language.utils.GlslFunctionSignExtractor
+import com.tttsaurus.ksml.language.utils.glsl.GlslFunctionSignExtractor
 
 @TestDataPath($$"$CONTENT_ROOT/src/test/testData")
 class GlslFunctionSignExtractorTest : BasePlatformTestCase() {
@@ -111,5 +111,47 @@ class GlslFunctionSignExtractorTest : BasePlatformTestCase() {
         )
 
         assertEquals(listOf("int[]", "int[][]", "int[1]", "int[2]", "int[1][][]"), names)
+    }
+
+    fun testExtractorFindsReturnType() {
+        val name = GlslFunctionSignExtractor.extractReturnTypeFromCodeBlockTokenText(
+            ksmlCodeBlock(
+                """
+                int func(int[] a, int[][] b, int[1] c[1], int[2] d[], int[1][][] e[][]) {
+                    return 1;
+                }
+                """.trimIndent()
+            )
+        )
+
+        assertEquals("int", name)
+    }
+
+    fun testExtractorFindsReturnTypeWithArray() {
+        val name = GlslFunctionSignExtractor.extractReturnTypeFromCodeBlockTokenText(
+            ksmlCodeBlock(
+                """
+                int[] func(int[] a, int[][] b, int[1] c[1], int[2] d[], int[1][][] e[][]) {
+                    return 1;
+                }
+                """.trimIndent()
+            )
+        )
+
+        assertEquals("int[]", name)
+    }
+
+    fun testExtractorFindsReturnTypeWithArrays() {
+        val name = GlslFunctionSignExtractor.extractReturnTypeFromCodeBlockTokenText(
+            ksmlCodeBlock(
+                """
+                int[5][] func(int[] a, int[][] b, int[1] c[1], int[2] d[], int[1][][] e[][]) {
+                    return 1;
+                }
+                """.trimIndent()
+            )
+        )
+
+        assertEquals("int[5][]", name)
     }
 }

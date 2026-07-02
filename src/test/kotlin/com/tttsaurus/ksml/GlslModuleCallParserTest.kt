@@ -2,7 +2,7 @@ package com.tttsaurus.ksml
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
+import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
 
 @TestDataPath($$"$CONTENT_ROOT/src/test/testData")
 class GlslModuleCallParserTest : BasePlatformTestCase() {

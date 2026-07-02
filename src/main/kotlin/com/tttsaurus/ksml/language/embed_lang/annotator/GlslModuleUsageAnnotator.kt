@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.VisualPrefabs
-import com.tttsaurus.ksml.language.utils.GlslFileModuleImports
+import com.tttsaurus.ksml.language.utils.glsl.GlslFileModuleImports
 import com.tttsaurus.ksml.language.utils.StringExtensions.allIndicesOf
 
 class GlslModuleUsageAnnotator : Annotator {
