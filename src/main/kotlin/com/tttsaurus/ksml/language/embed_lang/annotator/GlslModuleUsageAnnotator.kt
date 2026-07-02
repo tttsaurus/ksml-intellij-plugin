@@ -28,52 +28,53 @@ class GlslModuleUsageAnnotator : Annotator {
             return
         }
 
-        val qualifier = text.substringBefore('.', missingDelimiterValue = "")
-        if (qualifier.isEmpty()) return
-        if (!qualifier.matches(Regex("[a-zA-Z_][a-zA-Z0-9_]*"))) return
+        val moduleName = text.substringBefore('.', missingDelimiterValue = "")
+        if (moduleName.isEmpty()) return
+        if (!moduleName.matches(Regex("[a-zA-Z_][a-zA-Z0-9_]*"))) return
+
+        val moduleNames = mutableSetOf<String>()
 
         val file = element.containingFile ?: return
-
         val langInjectionManager = InjectedLanguageManager.getInstance(element.project)
         if (langInjectionManager.isInjectedFragment(file)) {
             val host = langInjectionManager.getInjectionHost(file) ?: return
-            val hostFile = host.containingFile
+            val hostFile = host.containingFile ?: return
             if (hostFile !is KsmlFile) return
 
-            // todo
-            println("module usage inside ksml glsl injected code block")
-
-        } else {
-            val importedModules = GlslFileModuleImports.getImportedModules(file)
-            val moduleNames = mutableSetOf<String>()
-
-            importedModules.forEach {
+            hostFile.requiredModules.forEach {
                 moduleNames.add(it.moduleName)
             }
-
-            if (qualifier !in moduleNames) {
-                holder.newAnnotation(
-                    HighlightSeverity.ERROR,
-                    KsmlBundle.message("KsmlInGlsl.moduleNotImported")
-                )
-                    .range(
-                        TextRange(
-                            element.textRange.startOffset,
-                            element.textRange.startOffset + qualifier.length
-                        )
-                    )
-                    .create()
-            } else {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .range(
-                        TextRange(
-                            element.textRange.startOffset,
-                            element.textRange.startOffset + qualifier.length
-                        )
-                    )
-                    .textAttributes(VisualPrefabs.MODULE_USAGE_HIGHLIGHT)
-                    .create()
+            if (hostFile.moduleName != null) {
+                moduleNames.add(hostFile.moduleName!!)
             }
+        } else {
+            GlslFileModuleImports.getImportedModules(file).forEach {
+                moduleNames.add(it.moduleName)
+            }
+        }
+
+        if (moduleName !in moduleNames) {
+            holder.newAnnotation(
+                HighlightSeverity.ERROR,
+                KsmlBundle.message("KsmlInGlsl.moduleNotImported")
+            )
+                .range(
+                    TextRange(
+                        element.textRange.startOffset,
+                        element.textRange.startOffset + moduleName.length
+                    )
+                )
+                .create()
+        } else {
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                .range(
+                    TextRange(
+                        element.textRange.startOffset,
+                        element.textRange.startOffset + moduleName.length
+                    )
+                )
+                .textAttributes(VisualPrefabs.MODULE_USAGE_HIGHLIGHT)
+                .create()
         }
     }
 }

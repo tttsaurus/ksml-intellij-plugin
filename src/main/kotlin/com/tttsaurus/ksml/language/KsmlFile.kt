@@ -5,6 +5,8 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.tttsaurus.ksml.language.utils.ksml.KsmlFileRequiredModule
+import com.tttsaurus.ksml.language.utils.ksml.KsmlFileRequiredModuleParser
 import com.tttsaurus.ksml.language.utils.ksml.KsmlModuleMetadata
 import com.tttsaurus.ksml.language.utils.ksml.KsmlModuleMetadataParser
 import javax.swing.Icon
@@ -32,6 +34,14 @@ class KsmlFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, KsmlL
 
     val moduleGlVersionIdent
         get() = metadata.glVersionIdent
+
+    val requiredModules: List<KsmlFileRequiredModule>
+        get() = CachedValuesManager.getCachedValue(this) {
+            CachedValueProvider.Result.create(
+                KsmlFileRequiredModuleParser.parse(this),
+                this, modificationTracker
+            )
+        }
 
     override fun toString(): String = viewProvider.virtualFile.name
 

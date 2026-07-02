@@ -3,6 +3,7 @@ package com.tttsaurus.ksml.language.embed_lang.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -54,7 +55,29 @@ class GlslModuleFuncCallAnnotator : Annotator {
                     .range(element.textRange)
                     .create()
             } else {
-                val fileVersion = GlslFileGlVersion.getGlVersion(element.containingFile) ?: return
+                // gl version check branch
+
+                var fileGlVersion: Int? = null
+                var fileGlVersionIdent: String? = null
+
+                val file = element.containingFile ?: return
+                val langInjectionManager = InjectedLanguageManager.getInstance(element.project)
+                if (langInjectionManager.isInjectedFragment(file)) {
+                    val host = langInjectionManager.getInjectionHost(file) ?: return
+                    val hostFile = host.containingFile ?: return
+                    if (hostFile !is KsmlFile) return
+
+                    val metadata = KsmlModuleMetadataParser.parse(hostFile)
+                    fileGlVersion = metadata.glVersion
+                    fileGlVersionIdent = metadata.glVersionIdent
+                } else {
+                    val ver = GlslFileGlVersion.getGlVersion(element.containingFile) ?: return
+                    fileGlVersion = ver.version
+                    fileGlVersionIdent = ver.ident
+                }
+
+                if (fileGlVersion == null) return
+
                 val matchingDef = def[0]
                 val ksmlFile = matchingDef.containingFile as KsmlFile
 
@@ -73,14 +96,14 @@ class GlslModuleFuncCallAnnotator : Annotator {
 
                 if (requiredGlVersion != null) {
                     val compare = GlslProfileInferencer.compareProfiles(
-                        fileVersion.version,
-                        fileVersion.ident,
+                        fileGlVersion,
+                        fileGlVersionIdent,
                         requiredGlVersion,
                         requiredGlVersionIdent
                     )
                     if (compare < 0) {
                         val target = "GL$requiredGlVersion${GlslProfileInferencer.getProfileDescSymbol(requiredGlVersionIdent)}"
-                        val got = "GL${fileVersion.version}${GlslProfileInferencer.getProfileDescSymbol(fileVersion.ident)}"
+                        val got = "GL$fileGlVersion${GlslProfileInferencer.getProfileDescSymbol(fileGlVersionIdent)}"
                         holder.newAnnotation(
                             HighlightSeverity.ERROR,
                             KsmlBundle.message("KsmlInGlsl.functionCallGlRequirementNotMet", target, got)
