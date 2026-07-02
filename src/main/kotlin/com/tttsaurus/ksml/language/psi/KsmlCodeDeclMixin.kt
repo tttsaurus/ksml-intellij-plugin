@@ -2,15 +2,18 @@ package com.tttsaurus.ksml.language.psi
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.stubs.IStubElementType
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.KsmlIcons
 import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub
 import com.tttsaurus.ksml.language.utils.glsl.GlslFunctionSignExtractor
+import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
 
 abstract class KsmlCodeDeclMixin :
     StubBasedPsiElementBase<KsmlCodeDeclStub>,
@@ -108,5 +111,45 @@ abstract class KsmlCodeDeclMixin :
         stub?.returnType?.let { return it }
         // returnType shouldn't be null. parse manually
         return GlslFunctionSignExtractor.extractReturnTypeFromCodeBlockTokenText(codeBlock.text)
+    }
+
+    override fun getPresentation(): ItemPresentation? {
+        val moduleGlVersion = moduleGlVersion
+        val functionGlVersion = funcGlVersion
+
+        var glVersion: String? = null
+        if (functionGlVersion != null) {
+            glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(funcGlVersionIdent)}"
+        } else if (moduleGlVersion != null) {
+            glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(moduleGlVersionIdent)}"
+        }
+
+        val title = StringBuilder()
+        title.append("${returnType ?: "UNKNOWN_TYPE"} ${functionName ?: "UNKNOWN_FUNCTION"}")
+        title.append("(")
+        val params = params
+        if (params != null) {
+            for ((i, element) in params.withIndex()) {
+                title.append(element)
+                if (i < params.size - 1) {
+                    title.append(", ")
+                }
+            }
+        }
+        title.append(")")
+
+        val subTitle = StringBuilder()
+        if (glVersion != null) {
+            subTitle.append(glVersion).append(" | ")
+        }
+        subTitle.append("from ${moduleName ?: "UNKNOWN_MODULE"} / ${moduleFileName ?: "UNKNOWN_FILE"}")
+
+        return object : ItemPresentation {
+            override fun getPresentableText() = title.toString()
+
+            override fun getLocationString() = subTitle.toString()
+
+            override fun getIcon(unused: Boolean) = KsmlIcons.FILE
+        }
     }
 }

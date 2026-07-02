@@ -35,6 +35,15 @@ object VisualPrefabs {
         }
     )
 
+    @Suppress("Deprecation")
+    val FUNCTION_CALL_UNCLEAR_DEF = TextAttributesKey.createTextAttributesKey(
+        "FUNCTION_CALL_UNCLEAR_DEF",
+        TextAttributes().apply {
+            backgroundColor = JBColor(Color(255, 245, 157, 100), Color(107, 90, 0, 100))
+            effectType = EffectType.ROUNDED_BOX
+        }
+    )
+
     val IMPORTED_MODULE_ATTRIBUTE = TextAttributes().apply {
         foregroundColor = JBColor(Color(80, 160, 255), Color(80, 160, 255))
         effectType = EffectType.LINE_UNDERSCORE

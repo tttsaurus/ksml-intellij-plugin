@@ -49,9 +49,10 @@ class GlslModuleFuncCallAnnotator : Annotator {
                 .create()
             if (def.size > 1) {
                 holder.newAnnotation(
-                    HighlightSeverity.WARNING,
+                    HighlightSeverity.WEAK_WARNING,
                     KsmlBundle.message("KsmlInGlsl.functionDefUnclear")
                 )
+                    .textAttributes(VisualPrefabs.FUNCTION_CALL_UNCLEAR_DEF)
                     .range(element.textRange)
                     .create()
             } else {
