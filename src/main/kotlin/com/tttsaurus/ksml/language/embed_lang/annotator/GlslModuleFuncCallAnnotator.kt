@@ -10,11 +10,14 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
+import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 import com.tttsaurus.ksml.language.utils.GlslFileGlVersion
 import com.tttsaurus.ksml.language.utils.GlslModuleCallParser
 import com.tttsaurus.ksml.language.utils.GlslProfileInferencer
+import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
+import com.tttsaurus.ksml.language.utils.ksml.KsmlModuleMetadataParser
 
 class GlslModuleFuncCallAnnotator : Annotator {
 
@@ -53,26 +56,30 @@ class GlslModuleFuncCallAnnotator : Annotator {
             } else {
                 val fileVersion = GlslFileGlVersion.getGlVersion(element.containingFile) ?: return
                 val matchingDef = def[0]
+                val ksmlFile = matchingDef.containingFile as KsmlFile
 
-                var requiresGlVersion: Int? = null
-                var requiresGlVersionIdent: String? = null
-                if (matchingDef.funcGlVersion != null) {
-                    requiresGlVersion = matchingDef.funcGlVersion
-                    requiresGlVersionIdent = matchingDef.funcGlVersionIdent
-                } else if (matchingDef.moduleGlVersion != null) {
-                    requiresGlVersion = matchingDef.moduleGlVersion
-                    requiresGlVersionIdent = matchingDef.moduleGlVersionIdent
+                val moduleMetadata = KsmlModuleMetadataParser.parse(ksmlFile)
+                val codeDeclMetadata = KsmlCodeDeclMetadataParser.parse(matchingDef.node.startOffset, ksmlFile.text)
+
+                var requiredGlVersion: Int? = null
+                var requiredGlVersionIdent: String? = null
+                if (codeDeclMetadata.funcGlVersion != null) {
+                    requiredGlVersion = codeDeclMetadata.funcGlVersion
+                    requiredGlVersionIdent = codeDeclMetadata.funcGlVersionIdent
+                } else if (moduleMetadata.glVersion != null) {
+                    requiredGlVersion = moduleMetadata.glVersion
+                    requiredGlVersionIdent = moduleMetadata.glVersionIdent
                 }
 
-                if (requiresGlVersion != null) {
+                if (requiredGlVersion != null) {
                     val compare = GlslProfileInferencer.compareProfiles(
                         fileVersion.version,
                         fileVersion.ident,
-                        requiresGlVersion,
-                        requiresGlVersionIdent
+                        requiredGlVersion,
+                        requiredGlVersionIdent
                     )
                     if (compare < 0) {
-                        val target = "GL$requiresGlVersion${GlslProfileInferencer.getProfileDescSymbol(requiresGlVersionIdent)}"
+                        val target = "GL$requiredGlVersion${GlslProfileInferencer.getProfileDescSymbol(requiredGlVersionIdent)}"
                         val got = "GL${fileVersion.version}${GlslProfileInferencer.getProfileDescSymbol(fileVersion.ident)}"
                         holder.newAnnotation(
                             HighlightSeverity.ERROR,
