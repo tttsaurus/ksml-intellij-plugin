@@ -76,5 +76,7 @@ code_decl ::= AT CODE CODE_BLOCK EOL?
     getFuncGlVersionIdent;
     getIsExport;
     getFeatureRequired;
-    getParams]
+    getParams;
+    getReturnType
+  ]
 }

@@ -103,4 +103,10 @@ abstract class KsmlCodeDeclMixin :
         stub?.let { return it.params }
         return GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(codeBlock.text)
     }
+
+    override fun getReturnType(): String? {
+        stub?.returnType?.let { return it }
+        // returnType shouldn't be null. parse manually
+        return GlslFunctionSignExtractor.extractReturnTypeFromCodeBlockTokenText(codeBlock.text)
+    }
 }

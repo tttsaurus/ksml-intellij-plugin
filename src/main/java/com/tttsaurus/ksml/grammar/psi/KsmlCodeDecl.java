@@ -34,4 +34,6 @@ public interface KsmlCodeDecl extends KsmlCodeDeclInterface {
 
   @Nullable List<@NotNull String> getParams();
 
+  @Nullable String getReturnType();
+
 }

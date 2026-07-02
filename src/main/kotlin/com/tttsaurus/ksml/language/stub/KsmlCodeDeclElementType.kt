@@ -26,6 +26,7 @@ object KsmlCodeDeclElementType :
         val metadata = KsmlCodeDeclMetadataParser.parse(psi.node.startOffset, ksmlFile.text)
         val functionName = extractFunctionName(psi.node)
         val params = extractParamTypes(psi.node)
+        val returnType = extractReturnType(psi.node)
 
         return KsmlCodeDeclStubImpl(
             parentStub, this,
@@ -38,7 +39,8 @@ object KsmlCodeDeclElementType :
             metadata.funcGlVersionIdent,
             metadata.isExport,
             metadata.featureRequired,
-            params
+            params,
+            returnType
         )
     }
 
@@ -64,6 +66,7 @@ object KsmlCodeDeclElementType :
                 dataStream.writeName(param)
             }
         }
+        dataStream.writeName(stub.returnType)
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): KsmlCodeDeclStub {
@@ -85,6 +88,7 @@ object KsmlCodeDeclElementType :
                 params.add(param)
             }
         }
+        val returnType = StringRef.toString(dataStream.readName())
 
         return KsmlCodeDeclStubImpl(
             parentStub, this,
@@ -97,7 +101,8 @@ object KsmlCodeDeclElementType :
             funcGlVersionIdent,
             isExport,
             featureRequired,
-            params
+            params,
+            returnType
         )
     }
 
@@ -114,5 +119,10 @@ object KsmlCodeDeclElementType :
     private fun extractParamTypes(node: ASTNode): List<String> {
         val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK) ?: return emptyList()
         return GlslFunctionSignExtractor.extractParamTypesFromCodeBlockTokenText(codeBlock.text)
+    }
+
+    private fun extractReturnType(node: ASTNode): String? {
+        val codeBlock = node.findChildByType(KsmlTypes.CODE_BLOCK) ?: return null
+        return GlslFunctionSignExtractor.extractReturnTypeFromCodeBlockTokenText(codeBlock.text)
     }
 }

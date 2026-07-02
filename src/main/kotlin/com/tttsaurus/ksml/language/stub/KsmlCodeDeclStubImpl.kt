@@ -17,5 +17,6 @@ class KsmlCodeDeclStubImpl(
     override val funcGlVersionIdent: String?,
     override val isExport: Boolean,
     override val featureRequired: String?,
-    override val params: List<String>?
+    override val params: List<String>?,
+    override val returnType: String?
 ) : StubBase<KsmlCodeDecl>(parent, elementType), KsmlCodeDeclStub

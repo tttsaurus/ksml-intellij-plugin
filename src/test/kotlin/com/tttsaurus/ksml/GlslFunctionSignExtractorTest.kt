@@ -154,4 +154,18 @@ class GlslFunctionSignExtractorTest : BasePlatformTestCase() {
 
         assertEquals("int[5][]", name)
     }
+
+    fun testExtractorFindsConstReturnTypeWithArrays() {
+        val name = GlslFunctionSignExtractor.extractReturnTypeFromCodeBlockTokenText(
+            ksmlCodeBlock(
+                """
+                const int[][] func(int[] a, int[][] b, int[1] c[1], int[2] d[], int[1][][] e[][]) {
+                    return 1;
+                }
+                """.trimIndent()
+            )
+        )
+
+        assertEquals("int[][]", name)
+    }
 }

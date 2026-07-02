@@ -14,4 +14,5 @@ interface KsmlCodeDeclStub : StubElement<KsmlCodeDecl> {
     val isExport: Boolean
     val featureRequired: String?
     val params: List<String>?
+    val returnType: String?
 }

@@ -22,7 +22,7 @@ class KsmlFunctionStubMetadataTest : BasePlatformTestCase() {
         )
     }
 
-    fun testFunctionGlVersion() {
+    fun testFunctionMetadataFromStub() {
         myFixture.addFileToProject(
             "stub/test.ksml",
             """
@@ -56,5 +56,9 @@ class KsmlFunctionStubMetadataTest : BasePlatformTestCase() {
         assertEquals(null, codeDecl.funcGlVersionIdent)
         assertEquals(false, codeDecl.isExport)
         assertEquals("PBR", codeDecl.featureRequired)
+
+        assertEquals("int", codeDecl.returnType)
+        assertEquals("func", codeDecl.functionName)
+        assertEquals(emptyList<String>(), codeDecl.params)
     }
 }
