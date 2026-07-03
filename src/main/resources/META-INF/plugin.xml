@@ -85,5 +85,13 @@
                 language="KSML"
                 implementationClass="com.tttsaurus.ksml.language.editor.KsmlCommenter"/>
 
+        <lang.foldingBuilder
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.language.editor.KsmlFoldingBuilder"/>
+
+        <typedHandler implementation="com.tttsaurus.ksml.language.editor.KsmlTypedHandlerDelegate"/>
+
+        <enterHandlerDelegate implementation="com.tttsaurus.ksml.language.editor.KsmlEnterHandlerDelegate"/>
+
     </extensions>
 </idea-plugin>

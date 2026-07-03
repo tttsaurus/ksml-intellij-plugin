@@ -57,7 +57,10 @@ class GlslModuleFuncCallAnnotator : Annotator {
                 // is exported check
 
                 val matchingDef = def[0]
-                if (!matchingDef.isExport) {
+                val file = element.containingFile ?: return
+                val langInjectionManager = InjectedLanguageManager.getInstance(element.project)
+
+                if (!matchingDef.isExport && !langInjectionManager.isInjectedFragment(file)) {
                     holder.newAnnotation(
                         HighlightSeverity.ERROR,
                         KsmlBundle.message("KsmlInGlsl.functionNotExported")
@@ -71,8 +74,6 @@ class GlslModuleFuncCallAnnotator : Annotator {
                 var fileGlVersion: Int? = null
                 var fileGlVersionIdent: String? = null
 
-                val file = element.containingFile ?: return
-                val langInjectionManager = InjectedLanguageManager.getInstance(element.project)
                 if (langInjectionManager.isInjectedFragment(file)) {
                     val host = langInjectionManager.getInjectionHost(file) ?: return
                     val hostFile = host.containingFile ?: return
