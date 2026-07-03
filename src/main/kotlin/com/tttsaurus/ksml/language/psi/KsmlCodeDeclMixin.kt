@@ -5,7 +5,9 @@ import com.intellij.lang.ASTNode
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLanguageInjectionHost
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.stubs.IStubElementType
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
@@ -18,6 +20,7 @@ import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
 abstract class KsmlCodeDeclMixin :
     StubBasedPsiElementBase<KsmlCodeDeclStub>,
     PsiLanguageInjectionHost,
+    PsiNamedElement,
     KsmlCodeDecl {
 
     constructor(node: ASTNode) : super(node)
@@ -42,6 +45,15 @@ abstract class KsmlCodeDeclMixin :
                 return minOf(offset, rangeInsideHost.endOffset)
             }
         }
+
+    override fun getName(): String? {
+        return functionName
+    }
+
+    // todo: rename
+    override fun setName(name: String): PsiElement? {
+        return null
+    }
 
     override fun getFunctionName(): String? {
         stub?.functionName?.let { return it }

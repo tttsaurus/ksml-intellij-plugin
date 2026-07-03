@@ -96,5 +96,11 @@
 
         <enterHandlerDelegate implementation="com.tttsaurus.ksml.language.editor.KsmlEnterHandlerDelegate"/>
 
+        <lang.findUsagesProvider
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.language.navigation.usage.KsmlFindUsagesProvider"/>
+
+        <referencesSearch implementation="com.tttsaurus.ksml.language.navigation.KsmlCodeDeclReferenceSearcher"/>
+
     </extensions>
 </idea-plugin>

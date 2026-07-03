@@ -1,6 +1,7 @@
 package com.tttsaurus.ksml.language.editor
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.editor.Inlay
@@ -113,18 +114,22 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
     // does nothing if the user data is null
     override fun disposeRenderers(editor: Editor) {
         editor.getUserData(GLSL_INLAYS_KEY)?.let { list ->
-            for (i in list.size - 1 downTo 0) {
-                EditorListenerHelper.disposeInlay(list[i])
+            ReadAction.run<RuntimeException> {
+                for (i in list.size - 1 downTo 0) {
+                    EditorListenerHelper.disposeInlay(list[i])
+                }
+                list.clear()
             }
-            list.clear()
         }
         editor.putUserData(GLSL_INLAYS_KEY, null)
 
         editor.getUserData(GLSL_BACKGROUNDS_KEY)?.let { list ->
-            for (i in list.indices.reversed()) {
-                EditorListenerHelper.disposeBackground(editor, list[i])
+            ReadAction.run<RuntimeException> {
+                for (i in list.indices.reversed()) {
+                    EditorListenerHelper.disposeBackground(editor, list[i])
+                }
+                list.clear()
             }
-            list.clear()
         }
         editor.putUserData(GLSL_BACKGROUNDS_KEY, null)
     }

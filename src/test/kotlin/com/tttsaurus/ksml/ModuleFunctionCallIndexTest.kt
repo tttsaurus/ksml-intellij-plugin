@@ -2,7 +2,7 @@ package com.tttsaurus.ksml
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
+import com.tttsaurus.ksml.language.navigation.usage.FunctionUsageEntrypoint
 
 @TestDataPath($$"$CONTENT_ROOT/src/test/testData")
 class ModuleFunctionCallIndexTest : BasePlatformTestCase() {
@@ -36,19 +36,12 @@ class ModuleFunctionCallIndexTest : BasePlatformTestCase() {
             """.trimIndent()
         )
 
-        val map = SymbolIndexEntrypoint.getMatchingFunctionCalls(
+        val usages = FunctionUsageEntrypoint.getFunctionUsages(
             project,
             "mymodule",
             "call"
         )
 
-        var counter = 0
-        for (entry in map) {
-            for (item in entry.value) {
-                counter++
-            }
-        }
-
-        assertEquals(2, counter)
+        assertEquals(2, usages.size)
     }
 }
