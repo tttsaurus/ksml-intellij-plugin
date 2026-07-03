@@ -5,6 +5,8 @@ import com.intellij.openapi.fileTypes.FileType
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclLocationData
+import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclLocationDataParser
 import com.tttsaurus.ksml.language.utils.ksml.KsmlFileRequiredModule
 import com.tttsaurus.ksml.language.utils.ksml.KsmlFileRequiredModuleParser
 import com.tttsaurus.ksml.language.utils.ksml.KsmlModuleMetadata
@@ -39,6 +41,14 @@ class KsmlFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, KsmlL
         get() = CachedValuesManager.getCachedValue(this) {
             CachedValueProvider.Result.create(
                 KsmlFileRequiredModuleParser.parse(this),
+                this, modificationTracker
+            )
+        }
+
+    val codeDeclLocations: List<KsmlCodeDeclLocationData>
+        get() = CachedValuesManager.getCachedValue(this) {
+            CachedValueProvider.Result.create(
+                KsmlCodeDeclLocationDataParser.parse(this),
                 this, modificationTracker
             )
         }

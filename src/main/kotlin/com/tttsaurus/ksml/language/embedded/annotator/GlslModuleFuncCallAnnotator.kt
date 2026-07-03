@@ -9,14 +9,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
-import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.VisualPrefabs
-import com.tttsaurus.ksml.language.utils.glsl.GlslFileGlVersion
+import com.tttsaurus.ksml.language.utils.ModuleFunctionCallGlVersionChecker
 import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
-import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
-import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
-import com.tttsaurus.ksml.language.utils.ksml.KsmlModuleMetadataParser
 
 class GlslModuleFuncCallAnnotator : Annotator {
 
@@ -33,19 +29,37 @@ class GlslModuleFuncCallAnnotator : Annotator {
         val ppp = element.parent?.parent?.parent ?: return
         val moduleCall = GlslModuleCallParser.parse(ppp.text) ?: return
 
-        val def = findFunctionDef(
+        val strictDefs = findFunctionDef(
             moduleCall.moduleName,
             moduleCall.functionName,
             moduleCall.arguments,
-            element.project
+            element.project,
+            true
         )
 
-        if (!def.isEmpty()) {
+        val looseDefs = findFunctionDef(
+            moduleCall.moduleName,
+            moduleCall.functionName,
+            moduleCall.arguments,
+            element.project,
+            false
+        )
+
+        if (looseDefs.isEmpty()) {
+            holder.newAnnotation(
+                HighlightSeverity.ERROR,
+                KsmlBundle.message("KsmlInGlsl.functionDefNotFound")
+            )
+                .range(element.textRange)
+                .create()
+        }
+
+        if (!strictDefs.isEmpty()) {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element.textRange)
                 .textAttributes(VisualPrefabs.MODULE_FUNC_CALL_HIGHLIGHT)
                 .create()
-            if (def.size > 1) {
+            if (strictDefs.size > 1) {
                 holder.newAnnotation(
                     HighlightSeverity.WEAK_WARNING,
                     KsmlBundle.message("KsmlInGlsl.functionDefUnclear")
@@ -56,11 +70,13 @@ class GlslModuleFuncCallAnnotator : Annotator {
             } else {
                 // is exported check
 
-                val matchingDef = def[0]
+                val matchingDef = strictDefs[0]
                 val file = element.containingFile ?: return
-                val langInjectionManager = InjectedLanguageManager.getInstance(element.project)
 
-                if (!matchingDef.isExport && !langInjectionManager.isInjectedFragment(file)) {
+                if (!matchingDef.isExport && !InjectedLanguageManager
+                        .getInstance(element.project)
+                        .isInjectedFragment(file)
+                ) {
                     holder.newAnnotation(
                         HighlightSeverity.ERROR,
                         KsmlBundle.message("KsmlInGlsl.functionNotExported")
@@ -71,66 +87,25 @@ class GlslModuleFuncCallAnnotator : Annotator {
 
                 // gl version check
 
-                var fileGlVersion: Int? = null
-                var fileGlVersionIdent: String? = null
+                val result = ModuleFunctionCallGlVersionChecker.doesFileHaveRequiredGlVersion(
+                    element.project,
+                    file,
+                    matchingDef
+                )
 
-                if (langInjectionManager.isInjectedFragment(file)) {
-                    val host = langInjectionManager.getInjectionHost(file) ?: return
-                    val hostFile = host.containingFile ?: return
-                    if (hostFile !is KsmlFile) return
-
-                    val metadata = KsmlModuleMetadataParser.parse(hostFile)
-                    fileGlVersion = metadata.glVersion
-                    fileGlVersionIdent = metadata.glVersionIdent
-                } else {
-                    val ver = GlslFileGlVersion.getGlVersion(element.containingFile) ?: return
-                    fileGlVersion = ver.version
-                    fileGlVersionIdent = ver.ident
-                }
-
-                if (fileGlVersion == null) return
-
-                val ksmlFile = matchingDef.containingFile as KsmlFile
-
-                val moduleMetadata = KsmlModuleMetadataParser.parse(ksmlFile)
-                val codeDeclMetadata = KsmlCodeDeclMetadataParser.parse(matchingDef.node.startOffset, ksmlFile.text)
-
-                var requiredGlVersion: Int? = null
-                var requiredGlVersionIdent: String? = null
-                if (codeDeclMetadata.funcGlVersion != null) {
-                    requiredGlVersion = codeDeclMetadata.funcGlVersion
-                    requiredGlVersionIdent = codeDeclMetadata.funcGlVersionIdent
-                } else if (moduleMetadata.glVersion != null) {
-                    requiredGlVersion = moduleMetadata.glVersion
-                    requiredGlVersionIdent = moduleMetadata.glVersionIdent
-                }
-
-                if (requiredGlVersion != null) {
-                    val compare = GlslProfileInferencer.compareProfiles(
-                        fileGlVersion,
-                        fileGlVersionIdent,
-                        requiredGlVersion,
-                        requiredGlVersionIdent
-                    )
-                    if (compare < 0) {
-                        val target = "GL$requiredGlVersion${GlslProfileInferencer.getProfileDescSymbol(requiredGlVersionIdent)}"
-                        val got = "GL$fileGlVersion${GlslProfileInferencer.getProfileDescSymbol(fileGlVersionIdent)}"
-                        holder.newAnnotation(
-                            HighlightSeverity.ERROR,
-                            KsmlBundle.message("KsmlInGlsl.functionCallGlRequirementNotMet", target, got)
+                if (!result.first) {
+                    holder.newAnnotation(
+                        HighlightSeverity.ERROR,
+                        KsmlBundle.message(
+                            "KsmlInGlsl.functionCallGlRequirementNotMet",
+                            result.second?.requiredGlVersionString ?: "UNKNOWN_GL_VERSION",
+                            result.second?.envGlVersionString ?: "UNKNOWN_GL_VERSION"
                         )
-                            .range(element.textRange)
-                            .create()
-                    }
+                    )
+                        .range(element.textRange)
+                        .create()
                 }
             }
-        } else {
-            holder.newAnnotation(
-                HighlightSeverity.ERROR,
-                KsmlBundle.message("KsmlInGlsl.functionDefNotFound")
-            )
-                .range(element.textRange)
-                .create()
         }
     }
 
@@ -138,7 +113,8 @@ class GlslModuleFuncCallAnnotator : Annotator {
         moduleName: String,
         functionName: String,
         funcCallArgs: List<String>,
-        project: Project
+        project: Project,
+        matchArgs: Boolean,
     ): List<KsmlCodeDecl> {
 
         if (project.isDisposed) return emptyList()
@@ -152,7 +128,7 @@ class GlslModuleFuncCallAnnotator : Annotator {
 
         decls.forEach {
             if (it.moduleName == moduleName) {
-                if (it.params?.size == funcCallArgs.size) {
+                if (!matchArgs || it.params?.size == funcCallArgs.size) {
                     result += it
                 }
             }

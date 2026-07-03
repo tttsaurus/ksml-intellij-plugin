@@ -13,4 +13,8 @@ object StringExtensions {
 
         return result
     }
+
+    fun String.fuzzyMatch(target: String): Boolean {
+        return target.contains(this)
+    }
 }

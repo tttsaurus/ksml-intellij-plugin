@@ -1,14 +1,14 @@
 package com.tttsaurus.ksml.language.utils.ksml
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiFile
+import com.tttsaurus.ksml.language.KsmlFile
 
 object KsmlFileRequiredModuleParser {
 
     private val requiresRegex =
         Regex("""(?m)^\s*@requires\s+([a-zA-Z_][a-zA-Z0-9_]*)\b""")
 
-    fun parse(file: PsiFile): List<KsmlFileRequiredModule> {
+    fun parse(file: KsmlFile): List<KsmlFileRequiredModule> {
         val text = file.text
 
         val modules = requiresRegex
