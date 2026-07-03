@@ -1,11 +1,9 @@
 package com.tttsaurus.ksml
 
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.stubs.StubIndex
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
-import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 
 @TestDataPath($$"$CONTENT_ROOT/src/test/testData")
 class KsmlFunctionStubTest : BasePlatformTestCase() {
@@ -16,13 +14,7 @@ class KsmlFunctionStubTest : BasePlatformTestCase() {
         "@code \"\"\"$glsl\n\"\"\"\n"
 
     private fun findFunction(name: String): Collection<KsmlCodeDecl> {
-        return StubIndex.getElements(
-            FUNCTION_INDEX_KEY,
-            name,
-            project,
-            GlobalSearchScope.projectScope(project),
-            KsmlCodeDecl::class.java
-        )
+        return SymbolIndexEntrypoint.getMatchingCodeDecls(project, name)
     }
 
     fun testSingleFunctionIsIndexed() {

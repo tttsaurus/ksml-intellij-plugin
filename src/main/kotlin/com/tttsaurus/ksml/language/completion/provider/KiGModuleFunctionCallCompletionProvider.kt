@@ -3,10 +3,8 @@ package com.tttsaurus.ksml.language.completion.provider
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
-import com.intellij.util.indexing.FileBasedIndex
-import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 
 class KiGModuleFunctionCallCompletionProvider : CompletionProvider<CompletionParameters>() {
 
@@ -28,13 +26,7 @@ class KiGModuleFunctionCallCompletionProvider : CompletionProvider<CompletionPar
         val moduleName = findModuleName(chars.substring(0, params.offset), startOffset - 2) ?: return
         if (moduleName.first().isDigit()) return
 
-        val files = runCatching {
-            FileBasedIndex.getInstance().getContainingFiles(
-                MODULE_INDEX_NAME,
-                moduleName,
-                GlobalSearchScope.projectScope(project)
-            )
-        }.getOrNull() ?: return
+        val files = SymbolIndexEntrypoint.getMatchingFiles(project, moduleName)
 
         println("debug file size: ${files.size}")
 

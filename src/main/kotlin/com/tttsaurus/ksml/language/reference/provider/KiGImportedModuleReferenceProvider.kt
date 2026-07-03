@@ -7,11 +7,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.ProcessingContext
-import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.language.KsmlFile
-import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.reference.resolver.KiGImportedModuleReferenceResolver
 import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
 
@@ -72,13 +70,7 @@ class KiGImportedModuleReferenceProvider : PsiReferenceProvider() {
             if (DumbService.isDumb(project)) return 0
             if (moduleName.isEmpty()) return 0
 
-            val files = runCatching {
-                FileBasedIndex.getInstance().getContainingFiles(
-                    MODULE_INDEX_NAME,
-                    moduleName,
-                    GlobalSearchScope.projectScope(project)
-                )
-            }.getOrNull() ?: return 0
+            val files = SymbolIndexEntrypoint.getMatchingFiles(project, moduleName)
 
             return files.size
         }

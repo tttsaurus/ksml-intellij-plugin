@@ -11,17 +11,14 @@ import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.concurrency.AppExecutorUtil
-import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
-import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
 import java.util.concurrent.Callable
 import kotlin.math.max
@@ -119,11 +116,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
     private fun fetchModulePsiFile(project: Project, moduleName: String): PsiFile? {
         if (DumbService.isDumb(project)) return null
 
-        val scope = GlobalSearchScope.projectScope(project)
-
-        val files: Collection<VirtualFile> = runCatching {
-            FileBasedIndex.getInstance().getContainingFiles(MODULE_INDEX_NAME, moduleName, scope)
-        }.getOrNull() ?: return null
+        val files = SymbolIndexEntrypoint.getMatchingFiles(project, moduleName)
 
         if (files.size > 1) return null
 

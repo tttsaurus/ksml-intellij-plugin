@@ -6,13 +6,11 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.util.indexing.FileBasedIndex
 import com.tttsaurus.ksml.grammar.psi.KsmlModuleDecl
 import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.embed_lang.psi.KiGIdentDecl
-import com.tttsaurus.ksml.language.index.MODULE_INDEX_NAME
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileModuleImports
 
 class KiGImportedModuleReferenceResolver(
@@ -41,13 +39,7 @@ class KiGImportedModuleReferenceResolver(
             if (DumbService.isDumb(project)) return null
             if (moduleName.isEmpty()) return null
 
-            val files = runCatching {
-                FileBasedIndex.getInstance().getContainingFiles(
-                    MODULE_INDEX_NAME,
-                    moduleName,
-                    GlobalSearchScope.projectScope(project)
-                )
-            }.getOrNull() ?: return null
+            val files = SymbolIndexEntrypoint.getMatchingFiles(project, moduleName)
 
             val vFile = files.elementAtOrNull(index) ?: return null
             val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return null

@@ -4,10 +4,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.stubs.StubIndex
-import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
-import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 
 class KiGFunctionReferenceResolver(
     private val index: Int,
@@ -30,13 +27,7 @@ class KiGFunctionReferenceResolver(
 
         val functionName = rangeInElement.substring(element.text)
 
-        val decls = StubIndex.getElements(
-            FUNCTION_INDEX_KEY,
-            functionName,
-            project,
-            GlobalSearchScope.projectScope(project),
-            KsmlCodeDecl::class.java
-        )
+        val decls = SymbolIndexEntrypoint.getMatchingCodeDecls(project, functionName)
 
         val decl = decls.elementAtOrNull(index) ?: return null
         if (decl.moduleName == moduleName) {

@@ -6,11 +6,8 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.stubs.StubIndex
 import com.intellij.util.ProcessingContext
-import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
-import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.reference.resolver.KiGFunctionReferenceResolver
 import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
 
@@ -71,13 +68,7 @@ class KiGFunctionReferenceProvider : PsiReferenceProvider() {
 
         if (functionName.isEmpty()) return 0
 
-        val decls = StubIndex.getElements(
-            FUNCTION_INDEX_KEY,
-            functionName,
-            project,
-            GlobalSearchScope.projectScope(project),
-            KsmlCodeDecl::class.java
-        )
+        val decls = SymbolIndexEntrypoint.getMatchingCodeDecls(project, functionName)
 
         return decls.size
     }

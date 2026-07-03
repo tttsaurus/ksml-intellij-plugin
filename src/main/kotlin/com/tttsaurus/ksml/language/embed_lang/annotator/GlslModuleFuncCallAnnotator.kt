@@ -7,13 +7,11 @@ import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.stubs.StubIndex
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.VisualPrefabs
-import com.tttsaurus.ksml.language.index.FUNCTION_INDEX_KEY
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileGlVersion
 import com.tttsaurus.ksml.language.utils.glsl.GlslModuleCallParser
 import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
@@ -147,13 +145,7 @@ class GlslModuleFuncCallAnnotator : Annotator {
 
         if (functionName.isEmpty()) return emptyList()
 
-        val decls = StubIndex.getElements(
-            FUNCTION_INDEX_KEY,
-            functionName,
-            project,
-            GlobalSearchScope.projectScope(project),
-            KsmlCodeDecl::class.java
-        )
+        val decls = SymbolIndexEntrypoint.getMatchingCodeDecls(project, functionName)
 
         val result = mutableListOf<KsmlCodeDecl>()
 
