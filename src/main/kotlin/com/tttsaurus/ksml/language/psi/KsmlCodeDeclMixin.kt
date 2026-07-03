@@ -143,7 +143,7 @@ abstract class KsmlCodeDeclMixin :
             subTitle.append(glVersion).append(" | ")
         }
         subTitle.append(if (isExport) "exported" else "internal").append(" | ")
-        subTitle.append("from ${moduleName ?: "UNKNOWN_MODULE"} / ${moduleFileName ?: "UNKNOWN_FILE"}")
+        subTitle.append("from ${moduleName ?: "UNKNOWN_MODULE"} | ${moduleFileName ?: "UNKNOWN_FILE"}")
 
         return object : ItemPresentation {
             override fun getPresentableText() = title.toString()

@@ -40,6 +40,9 @@
         <fileBasedIndex
                 implementation="com.tttsaurus.ksml.language.index.KsmlModuleIndex"/>
 
+        <fileBasedIndex
+                implementation="com.tttsaurus.ksml.language.index.modulecall.ModuleFunctionCallIndex"/>
+
         <annotator
                 language="KSML"
                 implementationClass="com.tttsaurus.ksml.language.analysis.annotator.KsmlMetaDirectiveAnnotator"/>
