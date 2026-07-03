@@ -56,7 +56,19 @@ class GlslModuleFuncCallAnnotator : Annotator {
                     .range(element.textRange)
                     .create()
             } else {
-                // gl version check branch
+                // is exported check
+
+                val matchingDef = def[0]
+                if (!matchingDef.isExport) {
+                    holder.newAnnotation(
+                        HighlightSeverity.ERROR,
+                        KsmlBundle.message("KsmlInGlsl.functionNotExported")
+                    )
+                        .range(element.textRange)
+                        .create()
+                }
+
+                // gl version check
 
                 var fileGlVersion: Int? = null
                 var fileGlVersionIdent: String? = null
@@ -79,7 +91,6 @@ class GlslModuleFuncCallAnnotator : Annotator {
 
                 if (fileGlVersion == null) return
 
-                val matchingDef = def[0]
                 val ksmlFile = matchingDef.containingFile as KsmlFile
 
                 val moduleMetadata = KsmlModuleMetadataParser.parse(ksmlFile)

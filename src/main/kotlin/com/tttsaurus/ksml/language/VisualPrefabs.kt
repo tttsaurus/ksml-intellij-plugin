@@ -11,7 +11,7 @@ object VisualPrefabs {
 
     @Suppress("Deprecation")
     val MODULE_FUNC_CALL_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-        "GLSL_MODULE_REF_HIGHLIGHT",
+        "GLSL_MODULE_FUNC_CALL_HIGHLIGHT",
         TextAttributes().apply {
             foregroundColor = JBColor(Color(123, 163, 62), Color(123, 163, 62))
             fontType = Font.ITALIC
@@ -20,7 +20,7 @@ object VisualPrefabs {
 
     @Suppress("Deprecation")
     val MODULE_USAGE_HIGHLIGHT = TextAttributesKey.createTextAttributesKey(
-        "GLSL_MODULE_REF_HIGHLIGHT",
+        "GLSL_MODULE_USAGE_HIGHLIGHT",
         TextAttributes().apply {
             foregroundColor = JBColor(Color(255, 139, 70), Color(255, 139, 70))
             fontType = Font.ITALIC

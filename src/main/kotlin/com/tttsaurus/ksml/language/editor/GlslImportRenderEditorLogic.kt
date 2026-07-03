@@ -125,6 +125,8 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
             FileBasedIndex.getInstance().getContainingFiles(MODULE_INDEX_NAME, moduleName, scope)
         }.getOrNull() ?: return null
 
+        if (files.size > 1) return null
+
         val vFile = files.firstOrNull() ?: return null
         val psiFile = PsiManager.getInstance(project).findFile(vFile) ?: return null
 

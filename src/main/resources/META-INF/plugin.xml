@@ -23,6 +23,12 @@
                 extensions="ksml"
                 implementationClass="com.tttsaurus.ksml.language.KsmlFileTypeDef"/>
 
+        <fileType
+                name="KsmlInGlsl"
+                language="KsmlInGlsl"
+                extensions="ksmlinglsl"
+                implementationClass="com.tttsaurus.ksml.language.embed_lang.KiGFileTypeDef"/>
+
         <lang.parserDefinition
                 language="KSML"
                 implementationClass="com.tttsaurus.ksml.language.parser.KsmlParserDefinition"/>
@@ -70,6 +76,10 @@
         <stubIndex implementation="com.tttsaurus.ksml.language.index.KsmlFunctionIndex"/>
 
         <stubElementTypeHolder class="com.tttsaurus.ksml.language.stub.KsmlStubElementTypes"/>
-        
+
+        <completion.contributor
+                language="Glsl"
+                implementationClass="com.tttsaurus.ksml.language.completion.KiGCompletionContributor"/>
+
     </extensions>
 </idea-plugin>
