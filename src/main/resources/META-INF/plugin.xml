@@ -27,7 +27,7 @@
                 name="KsmlInGlsl"
                 language="KsmlInGlsl"
                 extensions="ksmlinglsl"
-                implementationClass="com.tttsaurus.ksml.language.embed_lang.KiGFileTypeDef"/>
+                implementationClass="com.tttsaurus.ksml.language.embedded.KiGFileTypeDef"/>
 
         <lang.parserDefinition
                 language="KSML"
@@ -35,14 +35,14 @@
 
         <lang.syntaxHighlighterFactory
                 language="KSML"
-                implementationClass="com.tttsaurus.ksml.language.highlight.KsmlSyntaxHighlighterFactory"/>
+                implementationClass="com.tttsaurus.ksml.language.analysis.highlight.KsmlSyntaxHighlighterFactory"/>
 
         <fileBasedIndex
                 implementation="com.tttsaurus.ksml.language.index.KsmlModuleIndex"/>
 
         <annotator
                 language="KSML"
-                implementationClass="com.tttsaurus.ksml.language.annotator.KsmlMetaDirectiveAnnotator"/>
+                implementationClass="com.tttsaurus.ksml.language.analysis.annotator.KsmlMetaDirectiveAnnotator"/>
 
         <editorFactoryListener
                 implementation="com.tttsaurus.ksml.language.editor.GlslEditorListener"/>
@@ -55,23 +55,23 @@
 
         <psi.referenceContributor
                 language="Glsl"
-                implementation="com.tttsaurus.ksml.language.reference.KiGReferenceContributor"/>
+                implementation="com.tttsaurus.ksml.language.navigation.reference.KiGReferenceContributor"/>
 
         <annotator
                 language="Glsl"
-                implementationClass="com.tttsaurus.ksml.language.embed_lang.annotator.GlslModuleUsageAnnotator"/>
+                implementationClass="com.tttsaurus.ksml.language.embedded.annotator.GlslModuleUsageAnnotator"/>
 
         <annotator
                 language="Glsl"
-                implementationClass="com.tttsaurus.ksml.language.embed_lang.annotator.GlslModuleFuncCallAnnotator"/>
+                implementationClass="com.tttsaurus.ksml.language.embedded.annotator.GlslModuleFuncCallAnnotator"/>
 
         <annotator
                 language="KsmlInGlsl"
-                implementationClass="com.tttsaurus.ksml.language.embed_lang.annotator.KiGImportAnnotator"/>
+                implementationClass="com.tttsaurus.ksml.language.embedded.annotator.KiGImportAnnotator"/>
 
         <lang.parserDefinition
                 language="KsmlInGlsl"
-                implementationClass="com.tttsaurus.ksml.language.embed_lang.parser.KiGParserDefinition"/>
+                implementationClass="com.tttsaurus.ksml.language.embedded.parser.KiGParserDefinition"/>
 
         <stubIndex implementation="com.tttsaurus.ksml.language.index.KsmlFunctionIndex"/>
 
@@ -79,7 +79,11 @@
 
         <completion.contributor
                 language="Glsl"
-                implementationClass="com.tttsaurus.ksml.language.completion.KiGCompletionContributor"/>
+                implementationClass="com.tttsaurus.ksml.language.navigation.completion.KiGCompletionContributor"/>
+
+        <lang.commenter
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.language.editor.KsmlCommenter"/>
 
     </extensions>
 </idea-plugin>

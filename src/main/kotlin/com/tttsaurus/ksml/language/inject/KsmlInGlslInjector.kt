@@ -6,7 +6,7 @@ import com.intellij.psi.LanguageInjector
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.tttsaurus.ksml.language.GlslLanguage
-import com.tttsaurus.ksml.language.embed_lang.KiGLanguage
+import com.tttsaurus.ksml.language.embedded.KiGLanguage
 
 class KsmlInGlslInjector : LanguageInjector {
 
