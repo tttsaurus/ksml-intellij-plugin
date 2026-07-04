@@ -8,6 +8,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.tttsaurus.ksml.KsmlBundle
 import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileModuleImports
 import com.tttsaurus.ksml.language.utils.StringExtensions.allIndicesOf
@@ -54,17 +55,19 @@ class GlslModuleUsageAnnotator : Annotator {
         }
 
         if (moduleName !in moduleNames) {
-            holder.newAnnotation(
-                HighlightSeverity.ERROR,
-                KsmlBundle.message("KsmlInGlsl.moduleNotImported")
-            )
-                .range(
-                    TextRange(
-                        element.textRange.startOffset,
-                        element.textRange.startOffset + moduleName.length
-                    )
+            if (SymbolIndexEntrypoint.getAllModules(element.project).contains(moduleName)) {
+                holder.newAnnotation(
+                    HighlightSeverity.ERROR,
+                    KsmlBundle.message("KsmlInGlsl.moduleNotImported")
                 )
-                .create()
+                    .range(
+                        TextRange(
+                            element.textRange.startOffset,
+                            element.textRange.startOffset + moduleName.length
+                        )
+                    )
+                    .create()
+            }
         } else {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(
