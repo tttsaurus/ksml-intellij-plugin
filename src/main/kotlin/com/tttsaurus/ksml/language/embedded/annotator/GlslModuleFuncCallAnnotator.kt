@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -29,11 +30,13 @@ class GlslModuleFuncCallAnnotator : Annotator {
         val ppp = element.parent?.parent?.parent ?: return
         val moduleCall = GlslModuleCallParser.parse(ppp.text) ?: return
 
+        val project = element.project
+
         val strictDefs = findFunctionDef(
             moduleCall.moduleName,
             moduleCall.functionName,
             moduleCall.arguments,
-            element.project,
+            project,
             true
         )
 
@@ -41,7 +44,7 @@ class GlslModuleFuncCallAnnotator : Annotator {
             moduleCall.moduleName,
             moduleCall.functionName,
             moduleCall.arguments,
-            element.project,
+            project,
             false
         )
 
@@ -68,13 +71,21 @@ class GlslModuleFuncCallAnnotator : Annotator {
                     .range(element.textRange)
                     .create()
             } else {
+                val editor = FileEditorManager.getInstance(project).selectedTextEditor ?: return
+                val offset = editor.caretModel.offset
+                val parentTextRange = element.parent?.textRange ?: return
+
+                if (offset in parentTextRange) {
+                    return
+                }
+
                 // is exported check
 
                 val matchingDef = strictDefs[0]
                 val file = element.containingFile ?: return
 
                 if (!matchingDef.isExport && !InjectedLanguageManager
-                        .getInstance(element.project)
+                        .getInstance(project)
                         .isInjectedFragment(file)
                 ) {
                     holder.newAnnotation(
@@ -88,7 +99,7 @@ class GlslModuleFuncCallAnnotator : Annotator {
                 // gl version check
 
                 val result = ModuleFunctionCallGlVersionChecker.doesFileHaveRequiredGlVersion(
-                    element.project,
+                    project,
                     file,
                     matchingDef
                 )
