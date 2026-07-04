@@ -19,7 +19,7 @@ import com.tttsaurus.ksml.language.utils.StringExtensions.fuzzyMatchScore
 import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
 import kotlin.collections.withIndex
 
-class KiGModuleFunctionCallCompletionProvider : CompletionProvider<CompletionParameters>() {
+class GlslModuleFunctionCallCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(
         params: CompletionParameters,

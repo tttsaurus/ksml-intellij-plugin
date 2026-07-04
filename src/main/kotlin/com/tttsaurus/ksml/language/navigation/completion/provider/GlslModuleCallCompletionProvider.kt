@@ -10,7 +10,7 @@ import com.tttsaurus.ksml.language.KsmlIcons
 import com.tttsaurus.ksml.language.utils.StringExtensions.fuzzyMatchScore
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileModuleImports
 
-class KiGModuleCallCompletionProvider : CompletionProvider<CompletionParameters>() {
+class GlslModuleCallCompletionProvider : CompletionProvider<CompletionParameters>() {
 
     override fun addCompletions(
         params: CompletionParameters,

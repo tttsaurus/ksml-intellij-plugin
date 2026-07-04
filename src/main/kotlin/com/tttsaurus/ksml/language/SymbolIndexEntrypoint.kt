@@ -16,6 +16,40 @@ object SymbolIndexEntrypoint {
 
     private const val CATCHING: Boolean = true
 
+    fun getAllFunctionNames(project: Project): Collection<String> {
+        return if (CATCHING)
+            getAllFunctionNamesCatching(project)
+        else
+            getAllFunctionNamesNoCatching(project)
+    }
+
+    private fun getAllFunctionNamesCatching(project: Project): Collection<String> {
+        return runCatching {
+            StubIndex.getInstance().getAllKeys(FUNCTION_INDEX_KEY, project)
+        }.getOrNull() ?: emptyList()
+    }
+
+    private fun getAllFunctionNamesNoCatching(project: Project): Collection<String> {
+        return StubIndex.getInstance().getAllKeys(FUNCTION_INDEX_KEY, project)
+    }
+
+    fun getAllModules(project: Project): Collection<String> {
+        return if (CATCHING)
+            getAllModulesCatching(project)
+        else
+            getAllModulesNoCatching(project)
+    }
+
+    private fun getAllModulesCatching(project: Project): Collection<String> {
+        return runCatching {
+            FileBasedIndex.getInstance().getAllKeys(MODULE_INDEX_NAME, project)
+        }.getOrNull() ?: emptyList()
+    }
+
+    private fun getAllModulesNoCatching(project: Project): Collection<String> {
+        return FileBasedIndex.getInstance().getAllKeys(MODULE_INDEX_NAME, project)
+    }
+
     fun getMatchingFunctionCalls(
         project: Project,
         moduleName: String,

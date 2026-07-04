@@ -82,7 +82,11 @@
 
         <completion.contributor
                 language="Glsl"
-                implementationClass="com.tttsaurus.ksml.language.navigation.completion.KiGCompletionContributor"/>
+                implementationClass="com.tttsaurus.ksml.language.navigation.completion.GlslCompletionContributor"/>
+
+        <completion.contributor
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.language.navigation.completion.KsmlCompletionContributor"/>
 
         <lang.commenter
                 language="KSML"

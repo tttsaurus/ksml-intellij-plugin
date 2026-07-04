@@ -5,10 +5,10 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.tttsaurus.ksml.language.GlslLanguage
-import com.tttsaurus.ksml.language.navigation.completion.provider.KiGModuleCallCompletionProvider
-import com.tttsaurus.ksml.language.navigation.completion.provider.KiGModuleFunctionCallCompletionProvider
+import com.tttsaurus.ksml.language.navigation.completion.provider.GlslModuleCallCompletionProvider
+import com.tttsaurus.ksml.language.navigation.completion.provider.GlslModuleFunctionCallCompletionProvider
 
-class KiGCompletionContributor : CompletionContributor() {
+class GlslCompletionContributor : CompletionContributor() {
 
     init {
         extend(
@@ -16,14 +16,14 @@ class KiGCompletionContributor : CompletionContributor() {
             PlatformPatterns
                 .psiElement(PsiElement::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
-            KiGModuleFunctionCallCompletionProvider()
+            GlslModuleFunctionCallCompletionProvider()
         )
         extend(
             CompletionType.BASIC,
             PlatformPatterns
                 .psiElement(PsiElement::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
-            KiGModuleCallCompletionProvider()
+            GlslModuleCallCompletionProvider()
         )
     }
 }
