@@ -15,7 +15,7 @@ object StringExtensions {
     }
 
     /**
-     * Returns 0 to 1000: 1000 for the best match; 0 for the worst match.
+     * Returns -1 to 1000: 1000 for the best match; 0 for the worst match; -1 for the failed match
      */
     fun String.fuzzyMatchScore(target: String): Int {
         val q = lowercase()
@@ -26,6 +26,7 @@ object StringExtensions {
             t.startsWith(q) -> 800
             t.contains(q) -> 600
             isSubsequenceOf(t) -> 400
+            isEmpty() -> 1
             else -> -1
         }
     }

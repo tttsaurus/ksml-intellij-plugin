@@ -31,7 +31,11 @@ class KiGModuleFunctionCallCompletionProvider : CompletionProvider<CompletionPar
         val file = position.containingFile
         val chars = params.editor.document.charsSequence
         val startOffset = position.node.startOffset
+
+        if (params.offset > chars.length) return
         val input = chars.substring(startOffset, params.offset)
+
+        if (file.fileType.defaultExtension != "glsl") return
 
         if (startOffset < 1) return
         if (chars[startOffset - 1] != '.') return

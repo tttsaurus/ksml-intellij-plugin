@@ -62,7 +62,7 @@ abstract class KsmlCodeVisionProviderBase : DaemonBoundCodeVisionProvider {
         return result
     }
 
-    override val defaultAnchor = CodeVisionAnchorKind.Top
+    override val defaultAnchor = CodeVisionAnchorKind.Right
 
     override val relativeOrderings = emptyList<CodeVisionRelativeOrdering>()
 }
