@@ -24,6 +24,7 @@ class ModuleFunctionCallIndex :
 
     override fun getInputFilter() =
         FileBasedIndex.InputFilter { file ->
-            file.extension == "ksml" || file.extension == "glsl"
+            file.fileType.defaultExtension == "ksml" ||
+                    file.fileType.defaultExtension == "glsl"
         }
 }

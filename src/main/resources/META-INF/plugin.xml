@@ -98,7 +98,13 @@
 
         <lang.findUsagesProvider
                 language="KSML"
-                implementationClass="com.tttsaurus.ksml.language.navigation.usage.KsmlFindUsagesProvider"/>
+                implementationClass="com.tttsaurus.ksml.language.navigation.usage.provider.KsmlCodeDeclFindUsagesProvider"/>
+
+        <codeInsight.daemonBoundCodeVisionProvider
+                implementation="com.tttsaurus.ksml.language.navigation.usage.provider.KsmlCodeDeclVisionProvider"/>
+
+        <config.codeVisionGroupSettingProvider
+                implementation="com.tttsaurus.ksml.language.navigation.usage.provider.KsmlCodeDeclVisionGroupSettingProvider"/>
 
         <referencesSearch implementation="com.tttsaurus.ksml.language.navigation.KsmlCodeDeclReferenceSearcher"/>
 

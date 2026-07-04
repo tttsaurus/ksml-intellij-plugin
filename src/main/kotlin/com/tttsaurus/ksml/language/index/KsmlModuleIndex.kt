@@ -27,7 +27,7 @@ class KsmlModuleIndex : FileBasedIndexExtension<String, Void>() {
 
     override fun getInputFilter(): FileBasedIndex.InputFilter =
         FileBasedIndex.InputFilter { file ->
-            file.extension == "ksml"
+            file.fileType.defaultExtension == "ksml"
         }
 
     override fun getIndexer(): DataIndexer<String, Void, FileContent> = DataIndexer { input ->
