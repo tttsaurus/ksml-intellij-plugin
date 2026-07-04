@@ -12,3 +12,11 @@
 - KSML in GLSL `@import` highlight and reference `CTRL Click` resolver
 - Special renderers for `@import`: displays the GL version requirement besides `@import`
 - Delegate GLSL code blocks inside KSML to the GLSL plugin via `LanguageInjector`
+
+## [0.2.0]
+### Added
+- Real-time function call precondition analysis
+- Code completion
+- Go to declaration
+- Find usages (usage UI inlay support)
+- Rename function declaration and all occurrences

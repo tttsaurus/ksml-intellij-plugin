@@ -20,7 +20,14 @@ AND it injects GLSL syntax into KSML code blocks as well as injects KSML meta di
 
 > **Note**:
 > You can find a less buggy version of the GLSL plugin (Roi Mordechay) [here](https://github.com/tttsaurus/glsl-plugin-idea).
-> <br>Unfortunately, there is no other better GLSL plugins to support at the moment.
+> <br>Unfortunately, there are no better GLSL plugins to support at the moment.
+
+## Features
+- Real-time function call precondition analysis
+- Code completion
+- Go to declaration
+- Find usages (usage UI inlay support)
+- Rename function declaration and all occurrences
 
 ## IDEA Versions
 
