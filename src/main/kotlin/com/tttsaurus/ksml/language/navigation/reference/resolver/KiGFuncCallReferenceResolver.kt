@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 
-class KiGFunctionReferenceResolver(
+class KiGFuncCallReferenceResolver(
     private val index: Int,
     private val moduleName: String,
     private val moduleCallArgs: List<String>,

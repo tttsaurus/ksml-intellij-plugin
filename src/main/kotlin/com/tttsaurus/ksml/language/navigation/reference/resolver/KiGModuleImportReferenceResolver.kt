@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.tttsaurus.ksml.grammar.psi.KsmlModuleDecl
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 
-class KiGImportReferenceResolver(
+class KiGModuleImportReferenceResolver(
     private val index: Int,
     element: PsiElement,
     rangeInElement: TextRange,

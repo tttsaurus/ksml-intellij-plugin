@@ -9,9 +9,9 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
-import com.tttsaurus.ksml.language.navigation.reference.resolver.KiGImportReferenceResolver
+import com.tttsaurus.ksml.language.navigation.reference.resolver.KiGModuleImportReferenceResolver
 
-class KiGImportReferenceProvider : PsiReferenceProvider() {
+class KiGModuleImportReferenceProvider : PsiReferenceProvider() {
 
     override fun getReferencesByElement(
         element: PsiElement,
@@ -42,7 +42,7 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
 
             val count = countOccurrences(range.substring(comment.text).trim(), comment.project)
             if (count <= 0) {
-                refs += KiGImportReferenceResolver(
+                refs += KiGModuleImportReferenceResolver(
                     0,
                     comment,
                     range,
@@ -50,7 +50,7 @@ class KiGImportReferenceProvider : PsiReferenceProvider() {
                 )
             } else {
                 for (i in 0 until count) {
-                    refs += KiGImportReferenceResolver(
+                    refs += KiGModuleImportReferenceResolver(
                         i,
                         comment,
                         range,

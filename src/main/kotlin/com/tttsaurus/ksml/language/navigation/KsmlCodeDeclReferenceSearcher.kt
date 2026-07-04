@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
-import com.tttsaurus.ksml.language.navigation.reference.resolver.KiGFunctionReferenceResolver
+import com.tttsaurus.ksml.language.navigation.reference.resolver.KiGFuncCallReferenceResolver
 import com.tttsaurus.ksml.language.navigation.usage.FunctionUsageEntrypoint
 
 class KsmlCodeDeclReferenceSearcher :
@@ -36,8 +36,8 @@ class KsmlCodeDeclReferenceSearcher :
                 val element = psiFile.findElementAt(usage.location.functionStart)?.parent ?: continue
 
                 for (reference in element.references) {
-                    if (reference is KiGFunctionReferenceResolver) {
-                        val r = processor.process(reference)
+                    if (reference is KiGFuncCallReferenceResolver) {
+                        processor.process(reference)
                     }
                 }
             }

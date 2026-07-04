@@ -6,9 +6,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
 import com.tttsaurus.ksml.language.GlslLanguage
-import com.tttsaurus.ksml.language.navigation.reference.provider.KiGFunctionReferenceProvider
-import com.tttsaurus.ksml.language.navigation.reference.provider.KiGImportReferenceProvider
-import com.tttsaurus.ksml.language.navigation.reference.provider.KiGImportedModuleReferenceProvider
+import com.tttsaurus.ksml.language.navigation.reference.provider.KiGFuncCallReferenceProvider
+import com.tttsaurus.ksml.language.navigation.reference.provider.KiGModuleImportReferenceProvider
+import com.tttsaurus.ksml.language.navigation.reference.provider.KiGModuleCallReferenceProvider
 
 class KiGReferenceContributor : PsiReferenceContributor() {
 
@@ -17,19 +17,19 @@ class KiGReferenceContributor : PsiReferenceContributor() {
             PlatformPatterns
                 .psiElement(PsiComment::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
-            KiGImportReferenceProvider()
+            KiGModuleImportReferenceProvider()
         )
         registrar.registerReferenceProvider(
             PlatformPatterns
                 .psiElement(PsiElement::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
-            KiGFunctionReferenceProvider()
+            KiGFuncCallReferenceProvider()
         )
         registrar.registerReferenceProvider(
             PlatformPatterns
                 .psiElement(PsiElement::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
-            KiGImportedModuleReferenceProvider()
+            KiGModuleCallReferenceProvider()
         )
     }
 }

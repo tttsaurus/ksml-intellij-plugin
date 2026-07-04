@@ -13,7 +13,7 @@ import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.embedded.psi.KiGIdentDecl
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileModuleImports
 
-class KiGImportedModuleReferenceResolver(
+class KiGModuleCallReferenceResolver(
     private val index: Int,
     private val moduleName: String,
     element: PsiElement,
