@@ -1,14 +1,19 @@
 package com.tttsaurus.ksml.language.psi
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase
+import com.intellij.injected.editor.DocumentWindow
 import com.intellij.lang.ASTNode
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.LiteralTextEscaper
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.stubs.IStubElementType
+import com.intellij.util.IncorrectOperationException
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.KsmlIcons
@@ -50,9 +55,42 @@ abstract class KsmlCodeDeclMixin :
         return functionName
     }
 
-    // todo: rename
-    override fun setName(name: String): PsiElement? {
-        return null
+    override fun setName(name: String): PsiElement {
+        val manager = InjectedLanguageManager.getInstance(project)
+
+        val injectedFile = manager.getInjectedPsiFiles(this)
+            ?.firstOrNull()
+            ?.first
+            ?.containingFile
+            ?: throw IncorrectOperationException(
+                "Cannot locate injected GLSL file for \"$functionName\"."
+            )
+
+        val identifier = SyntaxTraverser
+            .psiTraverser(injectedFile)
+            .firstOrNull {
+                it.node?.elementType.toString() == "VARIABLE_IDENTIFIER" && it.text == functionName
+            }
+            ?: throw IncorrectOperationException(
+                "Cannot locate function identifier \"$functionName\"."
+            )
+
+        val documentWindow = PsiDocumentManager
+            .getInstance(project)
+            .getDocument(injectedFile) as? DocumentWindow
+            ?: throw IncorrectOperationException(
+                "Injected GLSL document is not editable."
+            )
+
+        documentWindow.replaceString(
+            identifier.textRange.startOffset,
+            identifier.textRange.endOffset,
+            name
+        )
+
+        PsiDocumentManager.getInstance(project).commitDocument(documentWindow.delegate)
+
+        return this
     }
 
     override fun getFunctionName(): String? {

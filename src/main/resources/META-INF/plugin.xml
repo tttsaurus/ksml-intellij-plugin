@@ -112,5 +112,9 @@
 
         <referencesSearch implementation="com.tttsaurus.ksml.language.navigation.KsmlCodeDeclReferenceSearcher"/>
 
+        <targetElementEvaluator
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.language.navigation.KsmlCodeDeclTargetElementEvaluator"/>
+
     </extensions>
 </idea-plugin>

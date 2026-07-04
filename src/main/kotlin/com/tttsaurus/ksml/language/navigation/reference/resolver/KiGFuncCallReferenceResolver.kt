@@ -1,10 +1,15 @@
 package com.tttsaurus.ksml.language.navigation.reference.resolver
 
+import com.intellij.injected.editor.DocumentWindow
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.util.IncorrectOperationException
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
+import com.tttsaurus.ksml.language.utils.glsl.GlslPsiElementFactory
 
 class KiGFuncCallReferenceResolver(
     private val index: Int,
@@ -36,5 +41,40 @@ class KiGFuncCallReferenceResolver(
             }
         }
         return null
+    }
+
+    override fun handleElementRename(newElementName: String): PsiElement {
+        val project = element.project
+
+        if (!InjectedLanguageManager
+                .getInstance(project)
+                .isInjectedFragment(element.containingFile)
+        ) {
+            return element.replace(
+                GlslPsiElementFactory.makeModuleFunctionCallFuncNameIdentifier(
+                    project,
+                    newElementName
+                )
+            )
+        }
+
+        val injectedFile = element.containingFile
+
+        val documentWindow = PsiDocumentManager
+            .getInstance(project)
+            .getDocument(injectedFile) as? DocumentWindow
+            ?: throw IncorrectOperationException(
+                "Injected GLSL document is not editable."
+            )
+
+        documentWindow.replaceString(
+            element.textRange.startOffset,
+            element.textRange.endOffset,
+            newElementName
+        )
+
+        PsiDocumentManager.getInstance(project).commitDocument(documentWindow.delegate)
+
+        return element
     }
 }
