@@ -17,9 +17,9 @@ plugins {
 group = providers.gradleProperty("pluginGroup").get()
 version = providers.gradleProperty("pluginVersion").get()
 
-// Set the JVM language level used to build the project.
+// IDEA 2024.1 (241) runs on Java 17
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 // Configure project's dependencies

@@ -44,6 +44,9 @@ Older or newer versions will likely to be compatible too.
 
 ## Dev Env / Build
 
+- Run Gradle on JDK 21 or newer. Java and Kotlin compilation use the JDK 17 toolchain
+  to support IDEA 2024.1 (241). Gradle can download this toolchain automatically
+- Compile against IDEA 2024.1 the oldest supported platform
 - Import the build script and download deps
 - Install the plugin `Grammar-Kit` **_2023.3.2_** by JetBrains
 - Install the plugin `Plugin DevKit` by JetBrains
