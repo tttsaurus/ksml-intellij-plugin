@@ -3,12 +3,14 @@ package com.tttsaurus.ksml.language.editor
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
 import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
+import com.tttsaurus.ksml.settings.KsmlProjectSettings
 import kotlin.collections.withIndex
 
 class KsmlFoldingBuilder : FoldingBuilderEx() {
@@ -23,8 +25,10 @@ class KsmlFoldingBuilder : FoldingBuilderEx() {
 
         PsiTreeUtil.findChildrenOfType(root, KsmlCodeDecl::class.java).forEach {
             result += FoldingDescriptor(
-                it.codeBlock,
-                it.codeBlock.textRange
+                it.codeBlock.node,
+                it.codeBlock.textRange,
+                null,
+                setOf(root.project.service<KsmlProjectSettings>())
             )
         }
 
@@ -44,9 +48,9 @@ class KsmlFoldingBuilder : FoldingBuilderEx() {
 
                 var glVersion: String? = null
                 if (functionGlVersion != null) {
-                    glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.funcGlVersionIdent)}"
+                    glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.project, codeDecl.funcGlVersionIdent)}"
                 } else if (moduleGlVersion != null) {
-                    glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.moduleGlVersionIdent)}"
+                    glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.project, codeDecl.moduleGlVersionIdent)}"
                 }
 
                 if (glVersion != null) {

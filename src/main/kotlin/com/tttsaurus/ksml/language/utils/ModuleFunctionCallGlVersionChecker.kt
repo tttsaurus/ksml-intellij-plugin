@@ -63,14 +63,15 @@ object ModuleFunctionCallGlVersionChecker {
 
         if (requiredGlVersion != null) {
             val compare = GlslProfileInferencer.compareProfiles(
+                project,
                 fileGlVersion,
                 fileGlVersionIdent,
                 requiredGlVersion,
                 requiredGlVersionIdent
             )
 
-            val target = "GL$requiredGlVersion${GlslProfileInferencer.getProfileDescSymbol(requiredGlVersionIdent)}"
-            val got = "GL$fileGlVersion${GlslProfileInferencer.getProfileDescSymbol(fileGlVersionIdent)}"
+            val target = "GL$requiredGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, requiredGlVersionIdent)}"
+            val got = "GL$fileGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, fileGlVersionIdent)}"
             val payload = Payload(target, got)
 
             return if (compare < 0) {

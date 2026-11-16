@@ -169,9 +169,9 @@ abstract class KsmlCodeDeclMixin :
 
         var glVersion: String? = null
         if (functionGlVersion != null) {
-            glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(funcGlVersionIdent)}"
+            glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, funcGlVersionIdent)}"
         } else if (moduleGlVersion != null) {
-            glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(moduleGlVersionIdent)}"
+            glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, moduleGlVersionIdent)}"
         }
 
         val title = StringBuilder()

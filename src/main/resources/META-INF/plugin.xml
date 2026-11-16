@@ -12,10 +12,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow
                 factoryClass="com.tttsaurus.ksml.tool_window.KsmlToolWindowFactory"
-                id="MyToolWindow"/>
-
-        <postStartupActivity
-                implementation="com.tttsaurus.ksml.startup.KsmlStartupActivity"/>
+                id="KSML"
+                icon="com.tttsaurus.ksml.language.KsmlIcons.FILE"
+                anchor="right"/>
 
         <fileType
                 name="KSML"
@@ -117,4 +116,9 @@
                 implementationClass="com.tttsaurus.ksml.language.navigation.KsmlCodeDeclTargetElementEvaluator"/>
 
     </extensions>
+
+    <projectListeners>
+        <listener class="com.tttsaurus.ksml.settings.KsmlSettingsRefreshListener"
+                  topic="com.tttsaurus.ksml.settings.KsmlSettingsListener"/>
+    </projectListeners>
 </idea-plugin>

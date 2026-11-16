@@ -9,6 +9,7 @@ import com.tttsaurus.ksml.grammar.psi.KsmlGlVersionDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.KsmlIcons
+import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
 
 abstract class KsmlModuleDeclMixin : ASTWrapperPsiElement {
 
@@ -28,9 +29,7 @@ abstract class KsmlModuleDeclMixin : ASTWrapperPsiElement {
         subTitle.append(file.name)
         if (number != null) {
             subTitle.append(" - GL").append(number)
-            if (identifier != null) {
-                subTitle.append(" ").append(identifier)
-            }
+            subTitle.append(GlslProfileInferencer.getProfileDescSymbol(project, identifier))
         }
 
         val ident = PsiTreeUtil.findChildrenOfType(this, PsiElement::class.java)

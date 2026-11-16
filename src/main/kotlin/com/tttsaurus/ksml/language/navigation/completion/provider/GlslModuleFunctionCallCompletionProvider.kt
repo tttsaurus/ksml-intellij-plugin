@@ -94,9 +94,9 @@ class GlslModuleFunctionCallCompletionProvider : CompletionProvider<CompletionPa
 
         var glVersion: String? = null
         if (functionGlVersion != null) {
-            glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.funcGlVersionIdent)}"
+            glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, codeDecl.funcGlVersionIdent)}"
         } else if (moduleGlVersion != null) {
-            glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.moduleGlVersionIdent)}"
+            glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, codeDecl.moduleGlVersionIdent)}"
         }
 
         val tail = StringBuilder()

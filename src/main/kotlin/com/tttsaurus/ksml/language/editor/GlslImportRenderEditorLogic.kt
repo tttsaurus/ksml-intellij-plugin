@@ -139,7 +139,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         val match = regex.find(text) ?: return unknown
 
         val version = match.groupValues[1].toInt()
-        val profile = GlslProfileInferencer.getProfileDescSymbol(match.groupValues.getOrNull(2))
+        val profile = GlslProfileInferencer.getProfileDescSymbol(psiFile.project, match.groupValues.getOrNull(2))
 
         return "GL$version$profile"
     }
@@ -186,6 +186,8 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
         ) return
 
         ApplicationManager.getApplication().invokeLater {
+            if (project.isDisposed || editor.isDisposed) return@invokeLater
+            val defaultProfile = GlslProfileInferencer.getDefaultProfile(project)
             commitDocumentIfNeeded(project, document)
             ReadAction
                 .nonBlocking(Callable<MutableList<ModuleRenderInfo>> {
@@ -193,7 +195,10 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
 
                     buildRenderList(project, document)
                 })
-                .expireWhen { editor.isDisposed }
+                .expireWhen {
+                    editor.isDisposed || project.isDisposed ||
+                        GlslProfileInferencer.getDefaultProfile(project) != defaultProfile
+                }
                 .finishOnUiThread(ModalityState.defaultModalityState()) { renderList ->
                     if (editor.isDisposed) return@finishOnUiThread
 
