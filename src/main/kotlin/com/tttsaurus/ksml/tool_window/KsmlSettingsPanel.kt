@@ -55,9 +55,10 @@ class KsmlSettingsPanel(private val project: Project) : JPanel(BorderLayout()), 
     private val applyButton = JButton(KsmlBundle.message("settings.apply"))
     private val revertButton = JButton(KsmlBundle.message("settings.revert"))
 
-    val preferredFocusComponent: JComponent get() = profileComboBox
+    val preferredFocusComponent: JComponent get() = this
 
     init {
+        isFocusable = true
         border = JBUI.Borders.empty(12)
         add(panel {
             row { label(KsmlBundle.message("settings.project", project.name)) }
