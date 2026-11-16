@@ -3,6 +3,8 @@ import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.ClasspathNormalizer
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
 
 plugins {
@@ -20,6 +22,13 @@ version = providers.gradleProperty("pluginVersion").get()
 // IDEA 2024.1 (241) runs on Java 17
 kotlin {
     jvmToolchain(17)
+}
+
+tasks.named<KotlinCompile>("compileTestKotlin") {
+    // Track main classes directly so tests cannot reuse older bytecode
+    inputs.files(sourceSets.main.map { it.output.classesDirs })
+        .withPropertyName("mainClasses")
+        .withNormalizer(ClasspathNormalizer::class.java)
 }
 
 // Configure project's dependencies
