@@ -6,6 +6,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.ClasspathNormalizer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
+import java.net.URI
 
 plugins {
     id("java") // Java support
@@ -70,15 +71,20 @@ intellijPlatform {
         version = providers.gradleProperty("pluginVersion")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        description = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+        description = providers.fileContents(layout.projectDirectory.file("README.md")).asText.zip(
+            providers.gradleProperty("pluginRepositoryUrl")
+        ) { readme, repositoryUrl ->
             val start = "<!-- Plugin description -->"
             val end = "<!-- Plugin description end -->"
+            val imageBaseUri = URI("${repositoryUrl.replace("https://github.com/", "https://raw.githubusercontent.com/").trimEnd('/')}/main/")
 
-            with(it.lines()) {
+            with(readme.lines()) {
                 if (!containsAll(listOf(start, end))) {
                     throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
                 }
                 subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
+            }.replace(Regex("""(<img\b[^>]*\bsrc=")([^"]+)(")""")) { match ->
+                "${match.groupValues[1]}${imageBaseUri.resolve(match.groupValues[2])}${match.groupValues[3]}"
             }
         }
 
