@@ -80,7 +80,9 @@
 
         <stubIndex implementation="com.tttsaurus.ksml.language.index.KsmlFunctionIndex"/>
 
-        <stubElementTypeHolder class="com.tttsaurus.ksml.language.stub.KsmlStubElementTypes"/>
+        <stubElementTypeHolder
+                class="com.tttsaurus.ksml.language.stub.KsmlStubElementTypes"
+                externalIdPrefix="ksml."/>
 
         <completion.contributor
                 language="Glsl"

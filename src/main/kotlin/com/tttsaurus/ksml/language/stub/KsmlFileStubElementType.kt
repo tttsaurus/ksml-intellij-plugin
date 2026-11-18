@@ -9,7 +9,7 @@ import com.tttsaurus.ksml.language.KsmlLanguage
 
 object KsmlFileStubElementType : IStubFileElementType<KsmlFileStub>(KsmlLanguage.INSTANCE) {
 
-    override fun getStubVersion(): Int = 3
+    override fun getStubVersion(): Int = 4
 
     override fun getExternalId(): String = "ksml.file"
 

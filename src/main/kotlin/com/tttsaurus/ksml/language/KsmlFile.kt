@@ -55,7 +55,7 @@ class KsmlFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, KsmlL
 
     override fun toString(): String = viewProvider.virtualFile.name
 
-    override fun getFileType(): FileType = KsmlFileTypeDef()
+    override fun getFileType(): FileType = viewProvider.fileType
 
     override fun getIcon(flags: Int): Icon = KsmlIcons.FILE
 }

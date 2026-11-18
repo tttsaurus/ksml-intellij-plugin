@@ -3,4 +3,6 @@ package com.tttsaurus.ksml.language.stub
 import com.intellij.psi.stubs.PsiFileStubImpl
 import com.tttsaurus.ksml.language.KsmlFile
 
-class KsmlFileStub(file: KsmlFile?) : PsiFileStubImpl<KsmlFile>(file)
+class KsmlFileStub(file: KsmlFile?) : PsiFileStubImpl<KsmlFile>(file) {
+    override fun getType(): KsmlFileStubElementType = KsmlFileStubElementType
+}
