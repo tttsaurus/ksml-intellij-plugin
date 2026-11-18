@@ -7,8 +7,6 @@ import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileGlVersion
 import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
-import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
-import com.tttsaurus.ksml.language.utils.ksml.KsmlModuleMetadataParser
 
 object ModuleFunctionCallGlVersionChecker {
 
@@ -35,9 +33,9 @@ object ModuleFunctionCallGlVersionChecker {
             val hostFile = host.containingFile ?: return fallbackResult
             if (hostFile !is KsmlFile) return fallbackResult
 
-            val metadata = KsmlModuleMetadataParser.parse(hostFile)
-            fileGlVersion = metadata.glVersion
-            fileGlVersionIdent = metadata.glVersionIdent
+            val caller = host as? KsmlCodeDecl
+            fileGlVersion = caller?.funcGlVersion ?: hostFile.moduleGlVersion
+            fileGlVersionIdent = if (caller?.funcGlVersion != null) caller.funcGlVersionIdent else hostFile.moduleGlVersionIdent
         } else {
             val ver = GlslFileGlVersion.getGlVersion(functionCallInitiatorFile) ?: return fallbackResult
             fileGlVersion = ver.version
@@ -46,19 +44,12 @@ object ModuleFunctionCallGlVersionChecker {
 
         if (fileGlVersion == null) return fallbackResult
 
-        val ksmlFile = targetCodeDecl.containingFile as KsmlFile
-
-        val moduleMetadata = KsmlModuleMetadataParser.parse(ksmlFile)
-        val codeDeclMetadata = KsmlCodeDeclMetadataParser.parse(targetCodeDecl.node.startOffset, ksmlFile.text)
-
-        var requiredGlVersion: Int? = null
-        var requiredGlVersionIdent: String? = null
-        if (codeDeclMetadata.funcGlVersion != null) {
-            requiredGlVersion = codeDeclMetadata.funcGlVersion
-            requiredGlVersionIdent = codeDeclMetadata.funcGlVersionIdent
-        } else if (moduleMetadata.glVersion != null) {
-            requiredGlVersion = moduleMetadata.glVersion
-            requiredGlVersionIdent = moduleMetadata.glVersionIdent
+        val functionVersion = targetCodeDecl.funcGlVersion
+        val requiredGlVersion = functionVersion ?: targetCodeDecl.moduleGlVersion
+        val requiredGlVersionIdent = if (functionVersion != null) {
+            targetCodeDecl.funcGlVersionIdent
+        } else {
+            targetCodeDecl.moduleGlVersionIdent
         }
 
         if (requiredGlVersion != null) {

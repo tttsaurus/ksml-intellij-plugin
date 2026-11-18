@@ -4,7 +4,6 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.lang.injection.InjectedLanguageManager
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -32,21 +31,8 @@ class GlslModuleFuncCallAnnotator : Annotator {
 
         val project = element.project
 
-        val strictDefs = findFunctionDef(
-            moduleCall.moduleName,
-            moduleCall.functionName,
-            moduleCall.arguments,
-            project,
-            true
-        )
-
-        val looseDefs = findFunctionDef(
-            moduleCall.moduleName,
-            moduleCall.functionName,
-            moduleCall.arguments,
-            project,
-            false
-        )
+        val looseDefs = findFunctionDef(moduleCall.moduleName, moduleCall.functionName, project)
+        val strictDefs = looseDefs.filter { it.params?.size == moduleCall.arguments.size }
 
         if (looseDefs.isEmpty()) {
             holder.newAnnotation(
@@ -71,14 +57,6 @@ class GlslModuleFuncCallAnnotator : Annotator {
                     .range(element.textRange)
                     .create()
             } else {
-                val editor = FileEditorManager.getInstance(project).selectedTextEditor ?: return
-                val offset = editor.caretModel.offset
-                val parentTextRange = element.parent?.textRange ?: return
-
-                if (offset in parentTextRange) {
-                    return
-                }
-
                 // is exported check
 
                 val matchingDef = strictDefs[0]
@@ -123,9 +101,7 @@ class GlslModuleFuncCallAnnotator : Annotator {
     private fun findFunctionDef(
         moduleName: String,
         functionName: String,
-        funcCallArgs: List<String>,
         project: Project,
-        matchArgs: Boolean,
     ): List<KsmlCodeDecl> {
 
         if (project.isDisposed) return emptyList()
@@ -139,9 +115,7 @@ class GlslModuleFuncCallAnnotator : Annotator {
 
         decls.forEach {
             if (it.moduleName == moduleName) {
-                if (!matchArgs || it.params?.size == funcCallArgs.size) {
-                    result += it
-                }
+                result += it
             }
         }
 

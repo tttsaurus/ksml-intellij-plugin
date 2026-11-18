@@ -1,6 +1,7 @@
 package com.tttsaurus.ksml.language
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndex
@@ -14,6 +15,11 @@ import com.tttsaurus.ksml.language.index.modulecall.ModuleFunctionCallLocation
 
 object SymbolIndexEntrypoint {
 
+    private inline fun <T> indexResult(action: () -> T): Result<T> = runCatching(action).onFailure {
+        // let non-blocking read actions retry when a write interrupts index access
+        if (it is ProcessCanceledException) throw it
+    }
+
     private const val CATCHING: Boolean = true
 
     fun getAllFunctionNames(project: Project): Collection<String> {
@@ -24,7 +30,7 @@ object SymbolIndexEntrypoint {
     }
 
     private fun getAllFunctionNamesCatching(project: Project): Collection<String> {
-        return runCatching {
+        return indexResult {
             StubIndex.getInstance().getAllKeys(FUNCTION_INDEX_KEY, project)
         }.getOrNull() ?: emptyList()
     }
@@ -41,7 +47,7 @@ object SymbolIndexEntrypoint {
     }
 
     private fun getAllModulesCatching(project: Project): Collection<String> {
-        return runCatching {
+        return indexResult {
             FileBasedIndex.getInstance().getAllKeys(MODULE_INDEX_NAME, project)
         }.getOrNull() ?: emptyList()
     }
@@ -66,7 +72,7 @@ object SymbolIndexEntrypoint {
         moduleName: String,
         functionName: String
     ): Map<VirtualFile, List<ModuleFunctionCallLocation>> {
-        val map = runCatching {
+        val map = indexResult {
             val result = hashMapOf<VirtualFile, MutableList<ModuleFunctionCallLocation>>()
             val key = ModuleFunctionCallKey(moduleName, functionName)
             FileBasedIndex.getInstance().processValues(
@@ -114,7 +120,7 @@ object SymbolIndexEntrypoint {
     }
 
     private fun getMatchingFilesCatching(project: Project, moduleName: String): Collection<VirtualFile> {
-        val files = runCatching {
+        val files = indexResult {
             FileBasedIndex.getInstance().getContainingFiles(
                 MODULE_INDEX_NAME,
                 moduleName,
@@ -140,7 +146,7 @@ object SymbolIndexEntrypoint {
     }
 
     private fun getMatchingCodeDeclsCatching(project: Project, functionName: String): Collection<KsmlCodeDecl> {
-        val decls = runCatching {
+        val decls = indexResult {
             StubIndex.getElements(
                 FUNCTION_INDEX_KEY,
                 functionName,

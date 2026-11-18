@@ -7,6 +7,7 @@ import com.tttsaurus.ksml.language.VisualPrefabs
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Rectangle
+import java.awt.RenderingHints
 
 class BackgroundRenderer : CustomHighlighterRenderer {
 
@@ -30,17 +31,22 @@ class BackgroundRenderer : CustomHighlighterRenderer {
             lineHeight
         )
 
-        val g2 = g as Graphics2D
+        val g2 = g.create() as Graphics2D
         val cornerRadius = (0.45f * lineHeight).toInt()
 
-        g2.color = VisualPrefabs.MODULE_IMPORT_SPECIAL_RENDER_MODULE_TEXT_BG_COLOR
-        g2.fillRoundRect(
-            rect.x,
-            rect.y + 1,
-            rect.width,
-            rect.height - 2,
-            cornerRadius,
-            cornerRadius
-        )
+        try {
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+            g2.color = VisualPrefabs.MODULE_IMPORT_SPECIAL_RENDER_MODULE_TEXT_BG_COLOR
+            g2.fillRoundRect(
+                rect.x,
+                rect.y + 1,
+                rect.width,
+                rect.height - 2,
+                cornerRadius,
+                cornerRadius
+            )
+        } finally {
+            g2.dispose()
+        }
     }
 }

@@ -28,7 +28,7 @@ class KsmlFoldingBuilder : FoldingBuilderEx() {
                 it.codeBlock.node,
                 it.codeBlock.textRange,
                 null,
-                setOf(root.project.service<KsmlProjectSettings>())
+                setOf(root.containingFile, root.project.service<KsmlProjectSettings>())
             )
         }
 

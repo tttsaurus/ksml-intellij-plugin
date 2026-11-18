@@ -8,7 +8,7 @@ object KsmlModuleMetadataParser {
         Regex("""(?m)^\s*@module\s+(\S+)""")
 
     private val glVersionRegex =
-        Regex("""(?m)^\s*@gl_version\s+(\d+)(?:\s+(\S+))?""")
+        Regex("""(?m)^[\t ]*@gl_version[\t ]+(\d+)(?:[\t ]+([a-zA-Z_][a-zA-Z0-9_]*))?""")
 
     fun parse(file: KsmlFile): KsmlModuleMetadata {
         val text = file.text
@@ -20,7 +20,7 @@ object KsmlModuleMetadataParser {
             moduleName = moduleMatch?.groupValues?.getOrNull(1),
             moduleFileName = file.virtualFile.name,
             glVersion = glMatch?.groupValues?.getOrNull(1)?.toIntOrNull(),
-            glVersionIdent = glMatch?.groupValues?.getOrNull(2)
+            glVersionIdent = glMatch?.groups?.get(2)?.value
         )
     }
 }

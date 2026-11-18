@@ -1,29 +1,19 @@
 package com.tttsaurus.ksml.language.editor
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.service
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.event.DocumentEvent
-import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.fileEditor.FileDocumentManager
-import com.intellij.util.concurrency.EdtExecutorService
 import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
-import com.tttsaurus.ksml.settings.KsmlProjectSettings
-import com.tttsaurus.ksml.settings.KsmlSettingsListener
-import java.util.concurrent.TimeUnit
 
 class GlslEditorListener : GlslImportRenderEditorLogic() {
 
@@ -33,69 +23,24 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
     private val GLSL_BACKGROUNDS_KEY: Key<MutableList<RangeHighlighter>> =
         Key.create("GLSL_BACKGROUNDS")
 
-    private val GLSL_DOCUMENT_LISTENER_KEY: Key<DocumentListener> =
-        Key.create("GLSL_DOCUMENT_LISTENER")
-
-    private val GLSL_SETTINGS_DISPOSABLE_KEY: Key<Disposable> =
-        Key.create("GLSL_SETTINGS_DISPOSABLE")
-
     override fun editorCreated(event: EditorFactoryEvent) {
         val editor = event.editor
         val virtualFile = FileDocumentManager.getInstance().getFile(editor.document) ?: return
-
-        if (virtualFile.fileType.defaultExtension != "glsl") return
-
+        val extension = virtualFile.fileType.defaultExtension
+        if (extension != "glsl" && extension != "ksml") return
         val project = editor.project ?: return
-        val settingsDisposable = Disposer.newDisposable(project.service<KsmlProjectSettings>(), "KSML editor settings")
-        editor.putUserData(GLSL_SETTINGS_DISPOSABLE_KEY, settingsDisposable)
-        project.messageBus.connect(settingsDisposable).subscribe(KsmlSettingsListener.TOPIC, KsmlSettingsListener {
-            if (!editor.isDisposed) updateRenderers(editor, null, true)
-        })
-
-        val listener = object : DocumentListener {
-            override fun documentChanged(event: DocumentEvent) {
-                updateRenderers(editor, event)
-            }
+        val refresh = project.service<KsmlEditorRefreshService>()
+        if (extension == "glsl") {
+            refresh.registerEditor(editor) { updateRenderers(editor) }
+        } else {
+            refresh.registerEditor(editor)
         }
-
-        editor.putUserData(GLSL_DOCUMENT_LISTENER_KEY, listener)
-        editor.document.addDocumentListener(listener)
-        thisLogger().info("GlslEditorListener: document listener installed")
-
-        EdtExecutorService.getScheduledExecutorInstance()
-            .schedule({
-                ApplicationManager.getApplication().invokeLater {
-                    if (!editor.isDisposed) {
-                        updateRenderers(editor, null, true)
-                    }
-                }
-            }, 100, TimeUnit.MILLISECONDS)
-
-        EdtExecutorService.getScheduledExecutorInstance()
-            .schedule({
-                ApplicationManager.getApplication().invokeLater {
-                    if (!editor.isDisposed) {
-                        updateRenderers(editor, null, true)
-                    }
-                }
-            }, 3, TimeUnit.SECONDS)
     }
 
     override fun editorReleased(event: EditorFactoryEvent) {
         val editor = event.editor
-
-        editor.getUserData(GLSL_SETTINGS_DISPOSABLE_KEY)?.let { Disposer.dispose(it) }
-        editor.putUserData(GLSL_SETTINGS_DISPOSABLE_KEY, null)
-
-        editor.getUserData(GLSL_DOCUMENT_LISTENER_KEY)?.let { listener ->
-            editor.document.removeDocumentListener(listener)
-        }
-        editor.putUserData(GLSL_DOCUMENT_LISTENER_KEY, null)
-        thisLogger().info("GlslEditorListener: document listener disposed")
-
+        editor.project?.getServiceIfCreated(KsmlEditorRefreshService::class.java)?.unregisterEditor(editor)
         disposeRenderers(editor)
-
-        thisLogger().info("GlslEditorListener: renderers disposed")
     }
 
     override fun installRenderers(editor: Editor, renderList: MutableList<ModuleRenderInfo>) {

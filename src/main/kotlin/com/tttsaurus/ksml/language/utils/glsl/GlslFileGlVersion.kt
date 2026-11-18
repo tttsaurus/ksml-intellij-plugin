@@ -15,7 +15,7 @@ object GlslFileGlVersion {
     )
 
     private val VERSION_REGEX =
-        Regex("""#version\s+(\d+)(?:\s+([a-zA-Z_][a-zA-Z0-9_]*))?""")
+        Regex("""(?m)^[\t ]*#[\t ]*version[\t ]+(\d+)(?:[\t ]+([a-zA-Z_][a-zA-Z0-9_]*))?""")
 
     fun getGlVersion(file: PsiFile): GlVersion? {
         return CachedValuesManager.getCachedValue(file) {

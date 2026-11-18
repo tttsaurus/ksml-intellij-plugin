@@ -13,6 +13,8 @@ import com.intellij.psi.PsiLanguageInjectionHost
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.SyntaxTraverser
 import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import com.intellij.util.IncorrectOperationException
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
@@ -31,6 +33,14 @@ abstract class KsmlCodeDeclMixin :
     constructor(node: ASTNode) : super(node)
 
     constructor(stub: KsmlCodeDeclStub, nodeType: IStubElementType<*, *>) : super(stub, nodeType)
+
+    private val metadata
+        get() = CachedValuesManager.getCachedValue(this) {
+            CachedValueProvider.Result.create(
+                KsmlCodeDeclMetadataParser.parse(textRange.startOffset, containingFile.text),
+                containingFile
+            )
+        }
 
     override fun isValidHost() = true
 
@@ -126,28 +136,24 @@ abstract class KsmlCodeDeclMixin :
     override fun getFuncGlVersion(): Int? {
         // funcGlVersion can be null
         stub?.let { return it.funcGlVersion }
-        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.funcGlVersion
     }
 
     override fun getFuncGlVersionIdent(): String? {
         // funcGlVersionIdent can be null
         stub?.let { return it.funcGlVersionIdent }
-        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.funcGlVersionIdent
     }
 
     override fun getIsExport(): Boolean {
         stub?.isExport?.let { return it }
         // isExport must not be null. parse manually
-        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.isExport
     }
 
     override fun getFeatureRequired(): String? {
         // featureRequired can be null
         stub?.let { return it.featureRequired }
-        val metadata = KsmlCodeDeclMetadataParser.parse(node.startOffset, containingFile.text)
         return metadata.featureRequired
     }
 
