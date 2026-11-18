@@ -10,12 +10,16 @@ import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.HighlighterTargetArea
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.FileEditorManagerListener
+import com.intellij.openapi.fileEditor.TextEditor
+import com.intellij.openapi.vfs.VirtualFile
 import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.editor.helper.EditorListenerHelper
 import com.tttsaurus.ksml.language.editor.renderer.BackgroundRenderer
 import com.tttsaurus.ksml.language.editor.renderer.BadgeRenderer
 
-class GlslEditorListener : GlslImportRenderEditorLogic() {
+class GlslEditorListener : GlslImportRenderEditorLogic(), FileEditorManagerListener {
 
     private val GLSL_INLAYS_KEY: Key<MutableList<Inlay<*>>> =
         Key.create("GLSL_INLAYS")
@@ -23,12 +27,34 @@ class GlslEditorListener : GlslImportRenderEditorLogic() {
     private val GLSL_BACKGROUNDS_KEY: Key<MutableList<RangeHighlighter>> =
         Key.create("GLSL_BACKGROUNDS")
 
+    override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
+        source.getAllEditors(file).filterIsInstance<TextEditor>().forEach { initializeWhenLoaded(source, it.editor) }
+    }
+
+    internal fun initializeOpenEditors(manager: FileEditorManager) {
+        manager.allEditors.filterIsInstance<TextEditor>().forEach { initializeWhenLoaded(manager, it.editor) }
+    }
+
+    private fun initializeWhenLoaded(manager: FileEditorManager, editor: Editor) {
+        manager.runWhenLoaded(editor) {
+            if (!editor.isDisposed && !manager.project.isDisposed) {
+                invalidateRenderCache(editor)
+                initializeEditor(editor)
+            }
+        }
+    }
+
     override fun editorCreated(event: EditorFactoryEvent) {
-        val editor = event.editor
+        initializeEditor(event.editor)
+    }
+
+    private fun initializeEditor(editor: Editor) {
+        if (editor.isDisposed) return
         val virtualFile = FileDocumentManager.getInstance().getFile(editor.document) ?: return
         val extension = virtualFile.fileType.defaultExtension
         if (extension != "glsl" && extension != "ksml") return
         val project = editor.project ?: return
+        if (project.isDisposed) return
         val refresh = project.service<KsmlEditorRefreshService>()
         if (extension == "glsl") {
             refresh.registerEditor(editor) { updateRenderers(editor) }

@@ -49,6 +49,9 @@
         <editorFactoryListener
                 implementation="com.tttsaurus.ksml.language.editor.GlslEditorListener"/>
 
+        <postStartupActivity
+                implementation="com.tttsaurus.ksml.language.editor.KsmlEditorStartupActivity"/>
+
         <languageInjector
                 implementation="com.tttsaurus.ksml.language.inject.GlslInKsmlInjector"/>
 
@@ -118,6 +121,8 @@
     </extensions>
 
     <projectListeners>
+        <listener class="com.tttsaurus.ksml.language.editor.GlslEditorListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
         <listener class="com.tttsaurus.ksml.settings.KsmlSettingsRefreshListener"
                   topic="com.tttsaurus.ksml.settings.KsmlSettingsListener"/>
     </projectListeners>

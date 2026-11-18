@@ -84,7 +84,7 @@ class KsmlEditorRefreshService(private val project: Project) : Disposable {
     }
 
     fun registerEditor(editor: Editor, refreshBadges: (() -> Unit)? = null) {
-        editors[editor] = refreshBadges
+        if (!editors.containsKey(editor)) editors[editor] = refreshBadges
         request(editor.document, FileDocumentManager.getInstance().getFile(editor.document))
     }
 
@@ -125,9 +125,10 @@ class KsmlEditorRefreshService(private val project: Project) : Disposable {
         val restarted = mutableSetOf<PsiFile>()
         for ((editor, refreshBadges) in editors.toMap()) {
             if (editor.isDisposed) continue
-            val file = psiDocuments.getPsiFile(editor.document) ?: continue
-            if (!all && file.virtualFile !in files) continue
+            val virtualFile = FileDocumentManager.getInstance().getFile(editor.document)
+            if (!all && virtualFile !in files) continue
             refreshBadges?.invoke()
+            val file = psiDocuments.getPsiFile(editor.document) ?: continue
             if (restarted.add(file)) daemon.restart(file)
             if (file.fileType.defaultExtension == "ksml") folding.scheduleAsyncFoldingUpdate(editor)
         }

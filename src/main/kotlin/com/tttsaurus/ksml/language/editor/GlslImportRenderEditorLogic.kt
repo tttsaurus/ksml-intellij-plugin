@@ -40,10 +40,12 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
 
     companion object {
         private val RENDER_GENERATION_KEY = Key.create<Long>("ksml.badge.generation")
+        private val LAST_RENDER_LIST_KEY = Key.create<MutableList<ModuleRenderInfo>>("LAST_RENDER_LIST")
     }
 
-    private val LAST_RENDER_LIST_KEY: Key<MutableList<ModuleRenderInfo>> =
-        Key.create("LAST_RENDER_LIST")
+    protected fun invalidateRenderCache(editor: Editor) {
+        editor.putUserData(LAST_RENDER_LIST_KEY, null)
+    }
 
     abstract fun installRenderers(editor: Editor, renderList: MutableList<ModuleRenderInfo>)
 
