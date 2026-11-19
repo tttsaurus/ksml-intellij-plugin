@@ -2,6 +2,19 @@
 
 # ksml-intellij-plugin Changelog
 
+## [0.3.1]
+### Fixed
+- Fix delayed editor refresh and reduce latency when updating KSML annotations and import badges
+- Fix import badges not appearing in already open GLSL files
+- Fix KSML stub storage and function indexing
+- Fix GLSL version and profile detection in module compatibility checks
+
+### Improved
+- Rework editor refresh scheduling
+- Optimize function call analysis and reduce redundant metadata parsing
+- Improve badge rendering with antialiasing
+- Improve GitHub Release changelog generation
+
 ## [0.3.0]
 ### Added
 - Project settings for the default GLSL profile and standard library module source URLs
