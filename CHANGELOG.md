@@ -2,6 +2,27 @@
 
 # ksml-intellij-plugin Changelog
 
+## [0.3.2]
+### Added
+- Add checks for declaration order, function annotations, and `@code` blocks
+- Validate import names, duplicate imports, and unresolved imports
+- Add `Remove declaration` quick fixes for duplicate imports
+- Add GLSL version and profile completion
+- Add module completion for `@requires` and `// @import`
+- Add navigation from `@requires` to module declarations
+
+### Changed
+- Align GLSL version requirements and `@gl_requires` overrides with KSML spec v2.1
+- Remove the default GLSL profile setting and profile inference
+- Display version requirements as `GL330 CORE`, `GL330 COM`, or `GL140`
+- Report module requirement mismatches as notices and function requirement mismatches as warnings
+
+### Fixed
+- Fix internal function visibility checks across overloads
+- Fix ordinary comments being treated as imports
+- Fix import completion and diagnostic ranges in injected GLSL comments
+- Fix release draft generation for manually maintained changelogs
+
 ## [0.3.1]
 ### Fixed
 - Fix delayed editor refresh and reduce latency when updating KSML annotations and import badges
