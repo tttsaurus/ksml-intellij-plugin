@@ -46,6 +46,10 @@
                 language="KSML"
                 implementationClass="com.tttsaurus.ksml.language.analysis.annotator.KsmlMetaDirectiveAnnotator"/>
 
+        <annotator
+                language="KSML"
+                implementationClass="com.tttsaurus.ksml.language.analysis.annotator.KsmlCodeBlockAnnotator"/>
+
         <editorFactoryListener
                 implementation="com.tttsaurus.ksml.language.editor.GlslEditorListener"/>
 
@@ -61,6 +65,10 @@
         <psi.referenceContributor
                 language="Glsl"
                 implementation="com.tttsaurus.ksml.language.navigation.reference.KiGReferenceContributor"/>
+
+        <psi.referenceContributor
+                language="KSML"
+                implementation="com.tttsaurus.ksml.language.navigation.reference.KsmlDependencyReferenceContributor"/>
 
         <annotator
                 language="Glsl"
@@ -95,6 +103,14 @@
         <completion.contributor
                 language="KSML"
                 implementationClass="com.tttsaurus.ksml.language.navigation.completion.KsmlCompletionContributor"/>
+
+        <completion.contributor
+                language="KsmlInGlsl"
+                implementationClass="com.tttsaurus.ksml.language.navigation.completion.KsmlImportCompletionContributor"/>
+
+        <completion.contributor
+                language="Glsl"
+                implementationClass="com.tttsaurus.ksml.language.navigation.completion.KsmlImportCompletionContributor"/>
 
         <lang.commenter
                 language="KSML"

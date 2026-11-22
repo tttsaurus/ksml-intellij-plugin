@@ -7,6 +7,7 @@ import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
+import com.intellij.lang.injection.InjectedLanguageManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
@@ -68,7 +69,7 @@ class GlslModuleFunctionCallCompletionProvider : CompletionProvider<CompletionPa
 
         if (searchList.isEmpty()) return
 
-        searchList
+        val sorted = searchList
             .distinctBy { it.first }
             .sortedWith(
                 compareByDescending<Pair<String, Int>> { it.second }
@@ -76,7 +77,7 @@ class GlslModuleFunctionCallCompletionProvider : CompletionProvider<CompletionPa
                     .thenBy { it.first }
             )
 
-        for (search in searchList) {
+        for (search in sorted) {
             val codeDecls = SymbolIndexEntrypoint.getMatchingCodeDecls(project, search.first)
             for (codeDecl in codeDecls) {
                 if (codeDecl.moduleName == moduleName) {
@@ -107,7 +108,8 @@ class GlslModuleFunctionCallCompletionProvider : CompletionProvider<CompletionPa
             tail.append("[").append(glVersion).append("]")
         }
 
-        val bold: Boolean = codeDecl.isExport && ModuleFunctionCallGlVersionChecker
+        val visible = codeDecl.isExport || InjectedLanguageManager.getInstance(project).isInjectedFragment(file)
+        val bold: Boolean = visible && ModuleFunctionCallGlVersionChecker
             .doesFileHaveRequiredGlVersion(
                 project,
                 file,

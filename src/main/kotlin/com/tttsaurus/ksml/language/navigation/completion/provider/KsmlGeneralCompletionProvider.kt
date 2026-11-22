@@ -9,6 +9,8 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.util.ProcessingContext
 import com.tttsaurus.ksml.language.KsmlIcons
+import com.tttsaurus.ksml.language.KsmlFile
+import com.tttsaurus.ksml.language.utils.glsl.GlslVersionRequirement
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.utils.StringExtensions.fuzzyMatchScore
 
@@ -43,36 +45,39 @@ class KsmlGeneralCompletionProvider : CompletionProvider<CompletionParameters>()
                 )
             )
         } else {
-            val searchList = mutableListOf<Pair<String, Int>>()
-            val modules = SymbolIndexEntrypoint.getAllModules(project)
-
-            for (module in modules) {
-                val score = input.fuzzyMatchScore(module)
-                if (score >= 0) {
-                    searchList += module to score
+            val lineStart = chars.subSequence(0, params.offset).lastIndexOf('\n') + 1
+            val prefix = chars.subSequence(lineStart, params.offset).toString()
+            val version = Regex("""^[\t ]*@(gl_version|gl_requires)[\t ]+([0-9]*)$""").matchEntire(prefix)
+            if (version != null) {
+                GlslVersionRequirement.supportedVersions.forEach {
+                    result.addElement(LookupElementBuilder.create(it.toString()).withIcon(AllIcons.Nodes.Aspect))
                 }
+                return
             }
 
-            if (searchList.isEmpty()) return
+            val profile = Regex("""^[\t ]*@(gl_version|gl_requires)[\t ]+(\d+)[\t ]+[A-Za-z_]*$""").matchEntire(prefix)
+            if (profile != null) {
+                val number = profile.groupValues[2].toIntOrNull() ?: return
+                if (number in GlslVersionRequirement.supportedVersions && number >= 150) {
+                    result.addAllElements(listOf("core", "compat", "compatibility").map { LookupElementBuilder.create(it) })
+                }
+                return
+            }
 
-            searchList
-                .distinctBy { it.first }
-                .sortedWith(
-                    compareByDescending<Pair<String, Int>> { it.second }
-                        .thenBy { it.first.length }
-                        .thenBy { it.first }
-                )
+            if (!Regex("""^[\t ]*@requires[\t ]+[A-Za-z_0-9]*$""").matches(prefix)) return
+            val original = params.originalFile as? KsmlFile ?: return
+            val imported = original.requiredModules.filter { it.range.startOffset !in lineStart..params.offset }.map { it.moduleName }.toSet()
+            val modules = SymbolIndexEntrypoint.getAllModules(project)
+                .asSequence()
+                .filter { it != original.moduleName && it !in imported }
+                .map { it to input.fuzzyMatchScore(it) }.filter { it.second >= 0 }
+                .distinctBy { it.first }.sortedWith(compareByDescending<Pair<String, Int>> { it.second }.thenBy { it.first })
+                .toList()
 
-            for (search in searchList) {
-                result.addElement(
-                    PrioritizedLookupElement.withPriority(
-                        LookupElementBuilder
-                            .create(search.first)
-                            .withBoldness(true)
-                            .withIcon(KsmlIcons.FILE),
-                        1000.0
-                    )
-                )
+            for ((name, _) in modules) {
+                result.addElement(PrioritizedLookupElement.withPriority(
+                    LookupElementBuilder.create(name).withBoldness(true).withIcon(KsmlIcons.FILE), 1000.0
+                ))
             }
         }
     }

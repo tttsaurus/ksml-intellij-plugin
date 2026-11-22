@@ -20,8 +20,7 @@ class KsmlInGlslInjector : LanguageInjector {
         val index = raw.indexOf("@import")
         if (index < 0) return
 
-        val afterSlashes = raw.removePrefix("//").trimStart()
-        if (!afterSlashes.startsWith("@import")) return
+        if (!Regex("""^//[\t ]*@import(?:[\t ]|$)""").containsMatchIn(raw)) return
 
         val end = raw.indexOfLast { !it.isWhitespace() } + 1
         if (end <= index) return

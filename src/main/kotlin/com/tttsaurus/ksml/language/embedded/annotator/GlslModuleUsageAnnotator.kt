@@ -23,8 +23,7 @@ class GlslModuleUsageAnnotator : Annotator {
         if (!text.contains(".")) return
 
         if (text.allIndicesOf(".").all { index ->
-                (index >= 1 && index <= text.length - 2) &&
-                        (text[index - 1].isDigit() && text[index + 1].isDigit())
+                (index >= 1 && index <= text.length - 2) && (text[index - 1].isDigit() && text[index + 1].isDigit())
             }) {
             return
         }
@@ -58,7 +57,7 @@ class GlslModuleUsageAnnotator : Annotator {
             if (SymbolIndexEntrypoint.getAllModules(element.project).contains(moduleName)) {
                 holder.newAnnotation(
                     HighlightSeverity.ERROR,
-                    KsmlBundle.message("KsmlInGlsl.moduleNotImported")
+                    KsmlBundle.message("structure.moduleNotImported")
                 )
                     .range(
                         TextRange(

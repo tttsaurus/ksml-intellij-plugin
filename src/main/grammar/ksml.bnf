@@ -13,6 +13,7 @@
   implements("code_decl")="com.tttsaurus.ksml.language.psi.KsmlCodeDeclInterface"
 
   mixin("module_decl")="com.tttsaurus.ksml.language.psi.KsmlModuleDeclMixin"
+  mixin("requires_decl")="com.tttsaurus.ksml.language.psi.KsmlRequiresDeclMixin"
 
   tokens = [
     AT='@'

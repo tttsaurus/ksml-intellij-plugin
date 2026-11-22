@@ -30,67 +30,62 @@ class GlslModuleFuncCallAnnotator : Annotator {
         val moduleCall = GlslModuleCallParser.parse(ppp.text) ?: return
 
         val project = element.project
+        if (DumbService.isDumb(project)) return
 
         val looseDefs = findFunctionDef(moduleCall.moduleName, moduleCall.functionName, project)
         val strictDefs = looseDefs.filter { it.params?.size == moduleCall.arguments.size }
 
-        if (looseDefs.isEmpty()) {
+        if (strictDefs.isEmpty()) {
             holder.newAnnotation(
                 HighlightSeverity.ERROR,
-                KsmlBundle.message("KsmlInGlsl.functionDefNotFound")
+                if (looseDefs.isEmpty()) KsmlBundle.message("function.unresolved")
+                else KsmlBundle.message("function.arityMismatch", moduleCall.arguments.size)
             )
+                .range(element.textRange)
+                .create()
+            return
+        }
+
+        val file = element.containingFile ?: return
+        val visibleDefs = if (InjectedLanguageManager.getInstance(project).isInjectedFragment(file)) strictDefs
+            else strictDefs.filter { it.isExport }
+        if (visibleDefs.isEmpty()) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, KsmlBundle.message("function.notExported"))
+                .range(element.textRange)
+                .create()
+            return
+        }
+
+        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+            .range(element.textRange)
+            .textAttributes(VisualPrefabs.MODULE_FUNC_CALL_HIGHLIGHT)
+            .create()
+        if (visibleDefs.size > 1) {
+            holder.newAnnotation(
+                HighlightSeverity.WEAK_WARNING,
+                KsmlBundle.message("function.ambiguous")
+            )
+                .textAttributes(VisualPrefabs.FUNCTION_CALL_UNCLEAR_DEF)
                 .range(element.textRange)
                 .create()
         }
 
-        if (!strictDefs.isEmpty()) {
-            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                .range(element.textRange)
-                .textAttributes(VisualPrefabs.MODULE_FUNC_CALL_HIGHLIGHT)
-                .create()
-            if (strictDefs.size > 1) {
-                holder.newAnnotation(
-                    HighlightSeverity.WEAK_WARNING,
-                    KsmlBundle.message("KsmlInGlsl.functionDefUnclear")
+        val checks = visibleDefs.map {
+            ModuleFunctionCallGlVersionChecker.doesFileHaveRequiredGlVersion(project, file, it)
+        }
+
+        if (checks.none { it.first }) {
+            val requirements = checks.mapNotNull { it.second?.requiredGlVersionString }.distinct().joinToString(" / ")
+            holder.newAnnotation(
+                HighlightSeverity.WARNING,
+                KsmlBundle.message(
+                    "version.functionMismatch",
+                    requirements, checks.first().second?.envGlVersionString ?: "UNKNOWN_GL_VERSION"
                 )
-                    .textAttributes(VisualPrefabs.FUNCTION_CALL_UNCLEAR_DEF)
-                    .range(element.textRange)
-                    .create()
-            } else {
-                // is exported check
-
-                val matchingDef = strictDefs[0]
-                val file = element.containingFile ?: return
-
-                if (!matchingDef.isExport && !InjectedLanguageManager
-                        .getInstance(project)
-                        .isInjectedFragment(file)
-                ) {
-                    holder.newAnnotation(
-                        HighlightSeverity.ERROR,
-                        KsmlBundle.message("KsmlInGlsl.functionNotExported")
-                    )
-                        .range(element.textRange)
-                        .create()
-                }
-
-            }
-
-            val file = element.containingFile ?: return
-            val checks = strictDefs.map {
-                ModuleFunctionCallGlVersionChecker.doesFileHaveRequiredGlVersion(project, file, it)
-            }
-
-            if (checks.none { it.first }) {
-                val requirements = checks.mapNotNull { it.second?.requiredGlVersionString }.distinct().joinToString(" / ")
-                holder.newAnnotation(
-                    HighlightSeverity.WARNING,
-                    KsmlBundle.message(
-                        "KsmlInGlsl.functionCallGlRequirementNotMet",
-                        requirements, checks.first().second?.envGlVersionString ?: "UNKNOWN_GL_VERSION"
-                    )
-                ).range(element.textRange).create()
-            }
+            )
+                .range(element.textRange)
+                .create()
         }
     }
 

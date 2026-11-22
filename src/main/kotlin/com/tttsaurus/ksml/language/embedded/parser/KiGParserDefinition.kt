@@ -76,6 +76,7 @@ class KiGParserDefinition : ParserDefinition {
         return object : PsiFileImpl(KiGFileElementType.INSTANCE, KiGFileElementType.INSTANCE, viewProvider) {
             override fun getFileType() = viewProvider.virtualFile.fileType
             override fun accept(visitor: PsiElementVisitor) {
+                visitor.visitFile(this)
             }
         }
     }

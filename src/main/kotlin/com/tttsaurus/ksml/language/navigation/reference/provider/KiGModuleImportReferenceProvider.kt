@@ -22,6 +22,7 @@ class KiGModuleImportReferenceProvider : PsiReferenceProvider() {
             ?: return PsiReference.EMPTY_ARRAY
 
         val text = comment.text
+        if (!Regex("""^//[\t ]*@import(?:[\t ]|$)""").containsMatchIn(text)) return PsiReference.EMPTY_ARRAY
 
         val importPrefix = "@import"
         val prefixIndex = text.indexOf(importPrefix)
@@ -33,7 +34,7 @@ class KiGModuleImportReferenceProvider : PsiReferenceProvider() {
         val content = text.substring(contentStartIndex)
 
         val regex = Regex("""[a-zA-Z_][a-zA-Z0-9_]*""")
-        val matches = regex.findAll(content)
+        val matches = regex.findAll(content).take(1)
 
         for (match in matches) {
             val startInComment = contentStartIndex + match.range.first
