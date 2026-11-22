@@ -18,7 +18,7 @@ import com.intellij.psi.util.PsiModificationTracker
 import com.tttsaurus.ksml.language.KsmlFile
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
-import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
+import com.tttsaurus.ksml.language.utils.glsl.GlslVersionRequirement
 import java.util.concurrent.Callable
 
 data class ModuleRenderInfo(
@@ -34,8 +34,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
     private data class RenderSnapshot(
         val renderList: MutableList<ModuleRenderInfo>,
         val documentStamp: Long,
-        val psiStamp: Long,
-        val profile: GlslProfileInferencer.GlProfile
+        val psiStamp: Long
     )
 
     companion object {
@@ -106,8 +105,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
 
         val module = psiFile as? KsmlFile ?: return unknown
         val version = module.moduleGlVersion ?: return unknown
-        val profile = GlslProfileInferencer.getProfileDescSymbol(module.project, module.moduleGlVersionIdent)
-        return "GL$version$profile"
+        return GlslVersionRequirement.resolve(version, module.moduleGlVersionIdent)?.displayName ?: unknown
     }
 
     private fun buildRenderList(project: Project, document: Document): MutableList<ModuleRenderInfo> {
@@ -142,8 +140,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
             RenderSnapshot(
                 buildRenderList(project, document),
                 document.modificationStamp,
-                PsiModificationTracker.getInstance(project).modificationCount,
-                GlslProfileInferencer.getDefaultProfile(project)
+                PsiModificationTracker.getInstance(project).modificationCount
             )
         })
             .inSmartMode(project)
@@ -154,8 +151,7 @@ abstract class GlslImportRenderEditorLogic : EditorFactoryListener {
             .finishOnUiThread(ModalityState.nonModal()) { snapshot ->
                 if (!editor.isDisposed && editor.getUserData(RENDER_GENERATION_KEY) == generation &&
                     document.modificationStamp == snapshot.documentStamp &&
-                    PsiModificationTracker.getInstance(project).modificationCount == snapshot.psiStamp &&
-                    GlslProfileInferencer.getDefaultProfile(project) == snapshot.profile) {
+                    PsiModificationTracker.getInstance(project).modificationCount == snapshot.psiStamp) {
                     applyRenderList(editor, snapshot.renderList)
                 } else if (!editor.isDisposed && editor.getUserData(RENDER_GENERATION_KEY) == generation) {
                     updateRenderers(editor)

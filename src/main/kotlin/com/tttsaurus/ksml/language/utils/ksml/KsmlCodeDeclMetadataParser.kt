@@ -30,7 +30,8 @@ object KsmlCodeDeclMetadataParser {
         val before = fileContent.substring(0, codeDeclStartOffset)
         val lines = before.lines()
 
-        for (line in lines.asReversed()) {
+        for (sourceLine in lines.asReversed()) {
+            val line = sourceLine.substringBefore("//").trimEnd()
             if (stopRegexes.any { it.matches(line) }) {
                 break
             }

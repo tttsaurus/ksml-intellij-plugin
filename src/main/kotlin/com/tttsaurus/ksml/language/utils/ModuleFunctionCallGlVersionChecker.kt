@@ -6,7 +6,7 @@ import com.intellij.psi.PsiFile
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileGlVersion
-import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
+import com.tttsaurus.ksml.language.utils.glsl.GlslVersionRequirement
 
 object ModuleFunctionCallGlVersionChecker {
 
@@ -25,53 +25,18 @@ object ModuleFunctionCallGlVersionChecker {
 
         val langInjectionManager = InjectedLanguageManager.getInstance(project)
 
-        var fileGlVersion: Int? = null
-        var fileGlVersionIdent: String? = null
-
-        if (langInjectionManager.isInjectedFragment(functionCallInitiatorFile)) {
+        val provided = if (langInjectionManager.isInjectedFragment(functionCallInitiatorFile)) {
             val host = langInjectionManager.getInjectionHost(functionCallInitiatorFile) ?: return fallbackResult
-            val hostFile = host.containingFile ?: return fallbackResult
-            if (hostFile !is KsmlFile) return fallbackResult
-
+            val hostFile = host.containingFile as? KsmlFile ?: return fallbackResult
             val caller = host as? KsmlCodeDecl
-            fileGlVersion = caller?.funcGlVersion ?: hostFile.moduleGlVersion
-            fileGlVersionIdent = if (caller?.funcGlVersion != null) caller.funcGlVersionIdent else hostFile.moduleGlVersionIdent
+            if (caller != null) GlslVersionRequirement.of(caller)
+            else GlslVersionRequirement.resolve(hostFile.moduleGlVersion, hostFile.moduleGlVersionIdent)
         } else {
-            val ver = GlslFileGlVersion.getGlVersion(functionCallInitiatorFile) ?: return fallbackResult
-            fileGlVersion = ver.version
-            fileGlVersionIdent = ver.ident
-        }
+            val version = GlslFileGlVersion.getGlVersion(functionCallInitiatorFile) ?: return fallbackResult
+            GlslVersionRequirement.resolve(version.version, version.ident, ksml = false)
+        } ?: return fallbackResult
 
-        if (fileGlVersion == null) return fallbackResult
-
-        val functionVersion = targetCodeDecl.funcGlVersion
-        val requiredGlVersion = functionVersion ?: targetCodeDecl.moduleGlVersion
-        val requiredGlVersionIdent = if (functionVersion != null) {
-            targetCodeDecl.funcGlVersionIdent
-        } else {
-            targetCodeDecl.moduleGlVersionIdent
-        }
-
-        if (requiredGlVersion != null) {
-            val compare = GlslProfileInferencer.compareProfiles(
-                project,
-                fileGlVersion,
-                fileGlVersionIdent,
-                requiredGlVersion,
-                requiredGlVersionIdent
-            )
-
-            val target = "GL$requiredGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, requiredGlVersionIdent)}"
-            val got = "GL$fileGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, fileGlVersionIdent)}"
-            val payload = Payload(target, got)
-
-            return if (compare < 0) {
-                Pair(false, payload)
-            } else {
-                Pair(true, payload)
-            }
-        }
-
-        return fallbackResult
+        val required = GlslVersionRequirement.of(targetCodeDecl) ?: return fallbackResult
+        return provided.satisfies(required) to Payload(required.displayName, provided.displayName)
     }
 }

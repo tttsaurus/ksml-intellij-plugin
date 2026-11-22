@@ -22,7 +22,7 @@ import com.tttsaurus.ksml.language.KsmlIcons
 import com.tttsaurus.ksml.language.utils.ksml.KsmlCodeDeclMetadataParser
 import com.tttsaurus.ksml.language.stub.KsmlCodeDeclStub
 import com.tttsaurus.ksml.language.utils.glsl.GlslFunctionSignExtractor
-import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
+import com.tttsaurus.ksml.language.utils.glsl.GlslVersionRequirement
 
 abstract class KsmlCodeDeclMixin :
     StubBasedPsiElementBase<KsmlCodeDeclStub>,
@@ -170,15 +170,7 @@ abstract class KsmlCodeDeclMixin :
     }
 
     override fun getPresentation(): ItemPresentation? {
-        val moduleGlVersion = moduleGlVersion
-        val functionGlVersion = funcGlVersion
-
-        var glVersion: String? = null
-        if (functionGlVersion != null) {
-            glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, funcGlVersionIdent)}"
-        } else if (moduleGlVersion != null) {
-            glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, moduleGlVersionIdent)}"
-        }
+        val glVersion = GlslVersionRequirement.of(this)?.displayName
 
         val title = StringBuilder()
         title.append("${returnType ?: "UNKNOWN_TYPE"} ${functionName ?: "UNKNOWN_FUNCTION"}")

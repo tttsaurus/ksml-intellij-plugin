@@ -16,7 +16,7 @@ import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.utils.ModuleFunctionCallGlVersionChecker
 import com.tttsaurus.ksml.language.utils.StringExtensions.fuzzyMatchScore
-import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
+import com.tttsaurus.ksml.language.utils.glsl.GlslVersionRequirement
 import kotlin.collections.withIndex
 
 class GlslModuleFunctionCallCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -89,15 +89,7 @@ class GlslModuleFunctionCallCompletionProvider : CompletionProvider<CompletionPa
     private fun buildCompletionResult(project: Project, file: PsiFile, codeDecl: KsmlCodeDecl): LookupElement {
         val functionName = codeDecl.functionName ?: "UNKNOWN_FUNCTION"
 
-        val moduleGlVersion = codeDecl.moduleGlVersion
-        val functionGlVersion = codeDecl.funcGlVersion
-
-        var glVersion: String? = null
-        if (functionGlVersion != null) {
-            glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, codeDecl.funcGlVersionIdent)}"
-        } else if (moduleGlVersion != null) {
-            glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(project, codeDecl.moduleGlVersionIdent)}"
-        }
+        val glVersion = GlslVersionRequirement.of(codeDecl)?.displayName
 
         val tail = StringBuilder()
         tail.append("(")

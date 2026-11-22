@@ -3,11 +3,9 @@ package com.tttsaurus.ksml.tool_window
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.ui.InputValidatorEx
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.wm.ToolWindowManager
-import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.CollectionListModel
 import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.components.JBList
@@ -15,7 +13,6 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import com.tttsaurus.ksml.KsmlBundle
-import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer.GlProfile
 import com.tttsaurus.ksml.settings.KsmlProjectSettings
 import com.tttsaurus.ksml.settings.KsmlProjectSettings.SettingsState
 import com.tttsaurus.ksml.settings.KsmlSettingsListener
@@ -34,18 +31,6 @@ class KsmlSettingsPanel(private val project: Project) : JPanel(BorderLayout()), 
     private var baseline = snapshot()
     private var disposed = false
 
-    private val profileComboBox = ComboBox(GlProfile.entries.toTypedArray()).apply {
-        name = "defaultGlslProfile"
-        renderer = SimpleListCellRenderer.create("") { profile ->
-            KsmlBundle.message(
-                when (profile) {
-                    GlProfile.CORE -> "settings.profile.core"
-                    GlProfile.COMPATIBLE -> "settings.profile.compatibility"
-                }
-            )
-        }
-        selectedItem = baseline.defaultGlslProfile
-    }
     private val urlModel = CollectionListModel(baseline.stdlibSourceUrls)
     private val urlList = JBList(urlModel).apply {
         name = "stdlibSourceUrls"
@@ -62,10 +47,6 @@ class KsmlSettingsPanel(private val project: Project) : JPanel(BorderLayout()), 
         border = JBUI.Borders.empty(12)
         add(panel {
             row { label(KsmlBundle.message("settings.project", project.name)) }
-            group(KsmlBundle.message("settings.glsl")) {
-                row(KsmlBundle.message("settings.profile.label")) { cell(profileComboBox) }
-                row { comment(KsmlBundle.message("settings.profile.description")) }
-            }
             group(KsmlBundle.message("settings.stdlib")) {
                 row { comment(KsmlBundle.message("settings.stdlib.description")) }
                 row { cell(createUrlEditor()).align(AlignX.FILL) }
@@ -79,14 +60,13 @@ class KsmlSettingsPanel(private val project: Project) : JPanel(BorderLayout()), 
             }
         }, BorderLayout.NORTH)
 
-        profileComboBox.addActionListener { updateButtons() }
         urlModel.addListDataListener(object : ListDataListener {
             override fun intervalAdded(event: ListDataEvent) = updateButtons()
             override fun intervalRemoved(event: ListDataEvent) = updateButtons()
             override fun contentsChanged(event: ListDataEvent) = updateButtons()
         })
         applyButton.addActionListener {
-            settings.updateSettings(profileComboBox.selectedItem as GlProfile, urlModel.items)
+            settings.stdlibSourceUrls = urlModel.items
             reset()
         }
         revertButton.addActionListener { reset() }
@@ -147,12 +127,10 @@ class KsmlSettingsPanel(private val project: Project) : JPanel(BorderLayout()), 
     private fun snapshot(): SettingsState = settings.state.copy(stdlibSourceUrls = settings.stdlibSourceUrls)
 
     private fun draft(): SettingsState = SettingsState(
-        defaultGlslProfile = profileComboBox.selectedItem as GlProfile,
         stdlibSourceUrls = urlModel.items.toList()
     )
 
     private fun setDraft(state: SettingsState) {
-        profileComboBox.selectedItem = state.defaultGlslProfile
         urlModel.replaceAll(state.stdlibSourceUrls)
         updateButtons()
     }

@@ -11,5 +11,5 @@ class KsmlFunctionIndex : StringStubIndexExtension<KsmlCodeDecl>() {
 
     override fun getKey(): StubIndexKey<String, KsmlCodeDecl> = FUNCTION_INDEX_KEY
 
-    override fun getVersion(): Int = 2
+    override fun getVersion(): Int = 3
 }

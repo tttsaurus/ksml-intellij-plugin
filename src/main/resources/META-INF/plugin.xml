@@ -71,6 +71,10 @@
                 implementationClass="com.tttsaurus.ksml.language.embedded.annotator.GlslModuleFuncCallAnnotator"/>
 
         <annotator
+                language="Glsl"
+                implementationClass="com.tttsaurus.ksml.language.embedded.annotator.GlslVersionAnnotator"/>
+
+        <annotator
                 language="KsmlInGlsl"
                 implementationClass="com.tttsaurus.ksml.language.embedded.annotator.KiGImportAnnotator"/>
 

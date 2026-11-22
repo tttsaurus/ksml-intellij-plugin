@@ -29,7 +29,7 @@ object GlslFileGlVersion {
                 val profileGroup = it.groups[2]
 
                 GlVersion(
-                    version = versionGroup.value.toInt(),
+                    version = versionGroup.value.toIntOrNull() ?: -1,
                     versionRange = TextRange(
                         versionGroup.range.first,
                         versionGroup.range.last + 1

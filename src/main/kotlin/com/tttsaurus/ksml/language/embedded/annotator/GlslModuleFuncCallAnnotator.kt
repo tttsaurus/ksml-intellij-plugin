@@ -74,26 +74,22 @@ class GlslModuleFuncCallAnnotator : Annotator {
                         .create()
                 }
 
-                // gl version check
+            }
 
-                val result = ModuleFunctionCallGlVersionChecker.doesFileHaveRequiredGlVersion(
-                    project,
-                    file,
-                    matchingDef
-                )
+            val file = element.containingFile ?: return
+            val checks = strictDefs.map {
+                ModuleFunctionCallGlVersionChecker.doesFileHaveRequiredGlVersion(project, file, it)
+            }
 
-                if (!result.first) {
-                    holder.newAnnotation(
-                        HighlightSeverity.ERROR,
-                        KsmlBundle.message(
-                            "KsmlInGlsl.functionCallGlRequirementNotMet",
-                            result.second?.requiredGlVersionString ?: "UNKNOWN_GL_VERSION",
-                            result.second?.envGlVersionString ?: "UNKNOWN_GL_VERSION"
-                        )
+            if (checks.none { it.first }) {
+                val requirements = checks.mapNotNull { it.second?.requiredGlVersionString }.distinct().joinToString(" / ")
+                holder.newAnnotation(
+                    HighlightSeverity.WARNING,
+                    KsmlBundle.message(
+                        "KsmlInGlsl.functionCallGlRequirementNotMet",
+                        requirements, checks.first().second?.envGlVersionString ?: "UNKNOWN_GL_VERSION"
                     )
-                        .range(element.textRange)
-                        .create()
-                }
+                ).range(element.textRange).create()
             }
         }
     }

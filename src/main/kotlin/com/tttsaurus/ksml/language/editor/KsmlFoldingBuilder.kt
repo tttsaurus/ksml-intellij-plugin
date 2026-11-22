@@ -3,14 +3,12 @@ package com.tttsaurus.ksml.language.editor
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.FoldingBuilderEx
 import com.intellij.lang.folding.FoldingDescriptor
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.tttsaurus.ksml.grammar.psi.KsmlCodeDecl
 import com.tttsaurus.ksml.grammar.psi.KsmlTypes
-import com.tttsaurus.ksml.language.utils.glsl.GlslProfileInferencer
-import com.tttsaurus.ksml.settings.KsmlProjectSettings
+import com.tttsaurus.ksml.language.utils.glsl.GlslVersionRequirement
 import kotlin.collections.withIndex
 
 class KsmlFoldingBuilder : FoldingBuilderEx() {
@@ -28,7 +26,7 @@ class KsmlFoldingBuilder : FoldingBuilderEx() {
                 it.codeBlock.node,
                 it.codeBlock.textRange,
                 null,
-                setOf(root.containingFile, root.project.service<KsmlProjectSettings>())
+                setOf(root.containingFile)
             )
         }
 
@@ -43,15 +41,7 @@ class KsmlFoldingBuilder : FoldingBuilderEx() {
                 val title = StringBuilder()
                 val codeDecl = node.psi.parent as? KsmlCodeDecl ?: return "..."
 
-                val moduleGlVersion = codeDecl.moduleGlVersion
-                val functionGlVersion = codeDecl.funcGlVersion
-
-                var glVersion: String? = null
-                if (functionGlVersion != null) {
-                    glVersion = "GL$functionGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.project, codeDecl.funcGlVersionIdent)}"
-                } else if (moduleGlVersion != null) {
-                    glVersion = "GL$moduleGlVersion${GlslProfileInferencer.getProfileDescSymbol(codeDecl.project, codeDecl.moduleGlVersionIdent)}"
-                }
+                val glVersion = GlslVersionRequirement.of(codeDecl)?.displayName
 
                 if (glVersion != null) {
                     title.append(glVersion).append(" | ")
