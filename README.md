@@ -1,11 +1,14 @@
 # Kirino Shader Meta Language Support
 
 <!-- Plugin description -->
-This is the IntelliJ support of Kirino Shader Meta Language (KSML) for GLSL.
+This is the IntelliJ support of Kirino Shader Meta Language v2.1 (KSML) for GLSL.
 
 KSML is a runtime-agnostic engineering layer for GLSL. 
 Unlike engine-specific shader systems, it's non-invasive and also provides 
 modules, namespaces, and first-class IDE support.
+
+- KSML Specification: https://github.com/CleanroomMC/KSML-Spec
+- Official KSML Compiler: https://github.com/CleanroomMC/KSML-Compiler
 
 **GLSL**
 ![showcase](screenshot1.png)
