@@ -11,26 +11,16 @@ import com.tttsaurus.ksml.language.KsmlFile
 import com.tttsaurus.ksml.language.SymbolIndexEntrypoint
 import com.tttsaurus.ksml.language.VisualPrefabs
 import com.tttsaurus.ksml.language.utils.glsl.GlslFileModuleImports
-import com.tttsaurus.ksml.language.utils.StringExtensions.allIndicesOf
 
 class GlslModuleUsageAnnotator : Annotator {
+
+    private val moduleCallPrefix = Regex("""^([A-Za-z_][A-Za-z0-9_]*)\.[A-Za-z_][A-Za-z0-9_]*\s*\(""")
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val node = element.node ?: return
         if (node.elementType.toString() != "UNARY_EXPR") return
 
-        val text = element.text
-        if (!text.contains(".")) return
-
-        if (text.allIndicesOf(".").all { index ->
-                (index >= 1 && index <= text.length - 2) && (text[index - 1].isDigit() && text[index + 1].isDigit())
-            }) {
-            return
-        }
-
-        val moduleName = text.substringBefore('.', missingDelimiterValue = "")
-        if (moduleName.isEmpty()) return
-        if (!moduleName.matches(Regex("[a-zA-Z_][a-zA-Z0-9_]*"))) return
+        val moduleName = moduleCallPrefix.find(element.text)?.groupValues?.get(1) ?: return
 
         val moduleNames = mutableSetOf<String>()
 

@@ -23,13 +23,15 @@ class KiGReferenceContributor : PsiReferenceContributor() {
             PlatformPatterns
                 .psiElement(PsiElement::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
-            KiGFuncCallReferenceProvider()
+            KiGFuncCallReferenceProvider(),
+            PsiReferenceRegistrar.HIGHER_PRIORITY
         )
         registrar.registerReferenceProvider(
             PlatformPatterns
                 .psiElement(PsiElement::class.java)
                 .withLanguage(GlslLanguage.GLSL_LANGUAGE),
-            KiGModuleCallReferenceProvider()
+            KiGModuleCallReferenceProvider(),
+            PsiReferenceRegistrar.HIGHER_PRIORITY
         )
     }
 }

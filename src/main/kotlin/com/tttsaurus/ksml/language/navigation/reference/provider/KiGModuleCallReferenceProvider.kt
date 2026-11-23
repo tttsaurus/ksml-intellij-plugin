@@ -30,6 +30,7 @@ class KiGModuleCallReferenceProvider : PsiReferenceProvider() {
         val ppp = element.parent?.parent?.parent ?: return PsiReference.EMPTY_ARRAY
         val moduleCall = GlslModuleCallParser.parse(ppp.text) ?: return PsiReference.EMPTY_ARRAY
         if (moduleCall.moduleName != element.text) return PsiReference.EMPTY_ARRAY
+        if (element.textRange.startOffset != ppp.textRange.startOffset) return PsiReference.EMPTY_ARRAY
 
         val count = countOccurrences(moduleCall.moduleName, element, element.project)
         if (count <= 0) {
